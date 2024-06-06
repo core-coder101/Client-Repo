@@ -1,0 +1,15 @@
+.main{
+    width: auto;
+    margin-left: 78px;
+    height: 100vh;
+    transition: all 0.5s ease;
+    background-color: rgb(17, 17, 61);
+
+    position: relative;
+}
+.sidebarOpen{
+    margin-left: 250px;
+}
+.contentArea{
+    padding-top: 70px;
+}
