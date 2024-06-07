@@ -1,7 +1,14 @@
 import React, { useEffect,useRef, useState } from 'react';
 import '../css/Sidebar.css';
+import { BsPersonFill } from "react-icons/bs";
+import { useAuth } from './context/AuthProvider';
+import { TbHexagonLetterHFilled } from "react-icons/tb";
+
 
 function Sidebar({setSidebarOpen}) {
+
+  const { user, logout } = useAuth()
+
 
     const [scrollbarVisibility, setScrollbarVisibility] = useState("scrollbarDisappear")
 
@@ -9,12 +16,10 @@ function Sidebar({setSidebarOpen}) {
   
   const sidebarRef = useRef(null);
   const closeBtnRef = useRef(null);
-  const searchBtnRef = useRef(null);
 
   useEffect(() => {
     const sidebar = sidebarRef.current;
     const closeBtn = closeBtnRef.current;
-    const searchBtn = searchBtnRef.current;
 
     const handleSidebarToggle = () => {
       sidebar.classList.toggle("open");
@@ -22,7 +27,6 @@ function Sidebar({setSidebarOpen}) {
     };
 
     closeBtn.addEventListener("click", handleSidebarToggle);
-    searchBtn.addEventListener("click", handleSidebarToggle);
 
     function menuBtnChange() {
       if (sidebar.classList.contains("open")) {
@@ -35,7 +39,6 @@ function Sidebar({setSidebarOpen}) {
     // Cleanup event listeners on component unmount
     return () => {
       closeBtn.removeEventListener("click", handleSidebarToggle);
-      searchBtn.removeEventListener("click", handleSidebarToggle);
     };
   }, []);
 
@@ -44,16 +47,11 @@ function Sidebar({setSidebarOpen}) {
       <div>
         <div className="sidebar" ref={sidebarRef}>
           <div className="logo-details">
-            <i className="bx bxl-c-plus-plus icon" />
-            <div className="logo_name">CodingLab</div>
+            <TbHexagonLetterHFilled color='white' style={{width: "30px", height: "30px", marginRight:"10px"}} />
+            <div className="logo_name">Hustlers</div>
             <i className="bx bx-menu" id="btn" ref={closeBtnRef} onClick={()=>{setSidebarOpen(prev => !prev)}} />
           </div>
           <ul className={"nav-list " + scrollbarVisibility} onMouseEnter={()=>{setScrollbarVisibility("")}} onMouseLeave={()=>{setScrollbarVisibility("scrollbarDisappear")}}>
-            <li>
-              <i className="bx bx-search" ref={searchBtnRef} />
-              <input type="text" placeholder="Search..." />
-              <span className="tooltip">Search</span>
-            </li>
             <li>
               <a href="#">
                 <i className="bx bx-grid-alt" />
@@ -113,13 +111,13 @@ function Sidebar({setSidebarOpen}) {
 
             <li className="profile">
               <div className="profile-details">
-                <img src="profile.jpg" alt="profileImg" />
+                <BsPersonFill color='white' style={{width: "30px", height: "30px", marginRight: "10px"}} />
                 <div className="name_job">
-                  <div className="name">Prem Shahi</div>
-                  <div className="job">Web designer</div>
+                  <div className="name">{user.Name}</div>
+                  <div className="job">{user.Role}</div>
                 </div>
               </div>
-              <i className="bx bx-log-out" id="log_out" />
+              <i className="bx bx-log-out" id="log_out" onClick={()=>{logout()}} />
             </li>
           </ul>
         </div>

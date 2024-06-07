@@ -1,27 +1,37 @@
-import React, { useState } from 'react'
-import Sidebar from './components/sidebar.jsx'
+import React, { useEffect } from 'react'
 import Login from './components/Login.jsx'
-import Navbar from './components/Navbar.jsx'
 import "./App.css"
+import { useAuth } from './components/context/AuthProvider';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import PublicRoute from './components/Auth/PublicRoute.jsx'
+import Template from './components/Template.jsx'
+import PrivateRoute from './components/Auth/PrivateRoute.jsx';
+import Dashboard from './components/Dashboard.jsx';
 
 export default function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  let sidebarClass = ""
-  if(sidebarOpen){sidebarClass = "sidebarOpen"} else {sidebarClass = ""}
+  const {result} = useAuth()
+  
+    useEffect(()=>{
+      console.log(result);
+  }, [result])
+  
+  
+  
+
+  const router = createBrowserRouter([
+    {
+      path: "/login",
+      element: <PublicRoute element={<Login />} />
+    },
+    {
+      path: "/",
+      element: <PrivateRoute element={<Template element={<Dashboard />} />} />
+    }
+])
 
   return (
     <div>
-      {/* <Sidebar setSidebarOpen={setSidebarOpen} />
-      <div className={'main ' + sidebarClass}>
-        <Navbar />
-        <div className='contentArea'>
-          <h1>.</h1>
-        </div>
-        <div>
-          
-        </div>
-      </div> */}
-      <Login/>
+          <RouterProvider router={router} />
     </div>
   )
 }

@@ -57,3 +57,23 @@
 .react-dropdown-select{
     box-shadow: none !important;
 }
+.logout{
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 0.25rem;
+    background-color: #1D1B31;
+    margin-right: 15px;
+    transition: all 0.4s ease;
+}
+.logout:hover{
+    background-color: #2f2c51;
+    cursor: pointer;
+}
+.logout p{
+    margin: 0;
+    margin-right: 8px;
+    user-select: none;
+    color: white;
+    font-size: 15px;
+}

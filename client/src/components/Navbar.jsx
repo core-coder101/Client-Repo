@@ -3,10 +3,13 @@ import "../css/Navbar.css"
 import { IoSearch } from "react-icons/io5";
 import { FaHome } from "react-icons/fa";
 import Select from "react-dropdown-select";
-
+import { IoExitOutline } from "react-icons/io5";
+import { useAuth } from './context/AuthProvider';
 
 
 export default function Navbar() {
+
+  const { logout } = useAuth()
 
   const [selectedValue, setSelectedValue] = useState([{
     label: 'Main Campus',
@@ -23,10 +26,8 @@ export default function Navbar() {
         value: 'Second Campus',
         }
         ];
-  
         
-        
-        
+
         return (
           <div className='Navbar'>
       <div className='leftItems'>
@@ -49,7 +50,10 @@ export default function Navbar() {
         </div>
       </div>
       <div className='rightItems'>
-
+            <div className='logout' onClick={()=>{logout()}}>
+              <p>Logout</p>
+              <IoExitOutline color='white' />
+            </div>
       </div>
     </div>
   )
