@@ -11,7 +11,7 @@ export default function App() {
 
   return (
     <div>
-      <Sidebar setSidebarOpen={setSidebarOpen} />
+      {/* <Sidebar setSidebarOpen={setSidebarOpen} />
       <div className={'main ' + sidebarClass}>
         <Navbar />
         <div className='contentArea'>
@@ -20,7 +20,8 @@ export default function App() {
         <div>
           
         </div>
-      </div>
+      </div> */}
+      <Login/>
     </div>
   )
 }
