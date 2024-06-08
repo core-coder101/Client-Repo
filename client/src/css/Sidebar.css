@@ -40,7 +40,7 @@
   transition: all 0.5s ease;
 }
 .sidebar.open .logo-details .icon,
-.sidebar.open .logo-details .logo_name{
+.sidebar.open .logo-details .logo_name {
   opacity: 1;
 }
 .sidebar .logo-details #btn{
@@ -55,7 +55,7 @@
   cursor: pointer;
   transition: all 0.5s ease;
 }
-.sidebar.open .logo-details #btn{
+.sidebar.open .logo-details #btn {
   text-align: right;
 }
 .sidebar i{
@@ -99,7 +99,7 @@
   top: 50%;
   transform: translateY(-50%);
 }
-.sidebar.open li .tooltip{
+.sidebar.open li .tooltip {
   display: none;
 }
 .sidebar input{
@@ -279,3 +279,26 @@ ul{
   .scrollbarDisappear::-webkit-scrollbar-thumb{
     background: transparent !important;
   }
+  .sc-aYaIB{
+    display: flex !important;
+    width: 100% !important;
+    border-radius: 12px !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    transition: all 0.4s ease !important;
+    background: #11101D !important;
+  }
+  .sc-aYaIB:hover{
+    background: #FFF !important;
+    color: black;
+  }
+.sc-aYaIB{
+  border: none !important;
+}
+.sc-aYaIB > div{
+  display: flex !important;
+  align-items: center !important;
+}
+.sc-aYaIB > svg {
+  color: white;
+}

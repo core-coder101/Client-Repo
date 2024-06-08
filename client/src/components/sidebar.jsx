@@ -3,12 +3,17 @@ import '../css/Sidebar.css';
 import { BsPersonFill } from "react-icons/bs";
 import { useAuth } from './context/AuthProvider';
 import { TbHexagonLetterHFilled } from "react-icons/tb";
+import SubMenu from './SubMenu';
+import { RiArrowDropDownLine } from "react-icons/ri";
+import { MdKeyboardArrowUp } from "react-icons/md";
+import { CiMail } from "react-icons/ci";
 
 
-function Sidebar({setSidebarOpen}) {
+
+
+function Sidebar({setSidebarOpen, sidebarOpen}) {
 
   const { user, logout } = useAuth()
-
 
     const [scrollbarVisibility, setScrollbarVisibility] = useState("scrollbarDisappear")
 
@@ -42,6 +47,28 @@ function Sidebar({setSidebarOpen}) {
     };
   }, []);
 
+
+  const data = [{
+    title: 'Overview',
+    path: '/',
+    icon: <CiMail />,
+    iconClosed: <RiArrowDropDownLine color='white' />,
+    iconOpened: <MdKeyboardArrowUp color='white' />,
+
+    subNav: [
+      {
+        title: 'Users',
+        path: '/overview/users',
+        icon: <CiMail />
+      },
+      {
+        title: 'Revenue',
+        path: '/overview/revenue',
+        icon: <CiMail />
+      }
+    ]
+  }]
+
   return (
     <>
       <div>
@@ -73,6 +100,7 @@ function Sidebar({setSidebarOpen}) {
               </a>
               <span className="tooltip">Messages</span>
             </li>
+            <SubMenu sidebarOpen={sidebarOpen} item={data[0]} key={0} />
             <li>
               <a href="#">
                 <i className="bx bx-pie-chart-alt-2" />

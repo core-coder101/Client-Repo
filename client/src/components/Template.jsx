@@ -9,7 +9,7 @@ export default function Template({ element }) {
 
     return (
         <div>
-            <Sidebar setSidebarOpen={setSidebarOpen} />
+            <Sidebar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
             <div className={'main ' + sidebarClass}>
                 <Navbar />
                 <div className='contentArea'>
