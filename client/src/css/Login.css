@@ -1,7 +1,7 @@
 .Login{
     height: 100vh;
     width: 100%;
-    background-image: url("../img/classroom.png");
+    background-image: url("../img/classroom.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
@@ -16,9 +16,10 @@
     padding: 0 20px 0 20px;
     width: 450px;
     height: 450px;
-    background-image: linear-gradient(to bottom right, rgb(255, 175, 100), rgb(255, 227, 88));
+    background-image: linear-gradient(to bottom right, #1d1b3184, #11101d7c);
     /* box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px; */
     box-shadow: rgb(0, 0, 0) 0px 22px 70px 4px;
+    border-radius: 1rem;
 }
 .Main form{
     display: flex;
@@ -34,12 +35,31 @@
     padding: 10px 15px;
     border: none;
     outline: none;
+    background-color: #1d1b3192;
+    -webkit-text-fill-color: white !important;
+    color: white;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+}
+.Main form > input:hover{
+    transition: all 0.4s ease;
+    background-color: #1f1d3ae9;
 }
 .Main form > button {
     border: none;
     margin-bottom: 10px;
     border-radius: 2rem;
     padding: 10px 15px;
+    background-color: rgba(40, 37, 80, 0.71);
+    color: white;
+}
+.Main form > button:hover{
+    transition: all 0.4s ease;
+    background-color: #1f1d3ae9;
 }
 .Role{
     display: flex;
@@ -73,11 +93,10 @@ p{
     margin: 0;
     margin-bottom: 5px;
     font-size: smaller;
-    color: grey;
+    color: white;
 }
 a{
     text-decoration: none;
-
 }
 h1{
     color: white;
@@ -92,7 +111,7 @@ h1{
     background-color: transparent;
     padding: 0;
     margin: 0;
-    color: blue;
+    color: rgb(123, 123, 250);
 }
 .hidden{
     transition: all 0.3s;
@@ -101,7 +120,7 @@ h1{
 .errorDiv{
     width: 100%;
     height: 40px;
-    background-color: rgb(233, 96, 96);
+    background-color: rgba(255, 54, 54, 0.45);
     border-radius: 0.25rem;
     margin-bottom: 20px;
     display: flex;
@@ -112,4 +131,17 @@ h1{
     color: white;
     margin: 0;
     font-size: medium;
+}
+.rememberMe{
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+.rememberMe p{
+    margin: 0; 
+    margin-left: 5px;
+}
+.rememberMe input:hover{
+    cursor: pointer;
 }

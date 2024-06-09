@@ -1,0 +1,36 @@
+.dashboard{
+    width: 100%;
+    height: 100%;
+    background-color: #12102c;
+}
+.cardsDiv{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.card{
+    background-color: #25233c;
+    border-radius: 0.5rem;
+    color: white;
+    margin-left: 15px;
+    margin-top: 20px;
+    min-width: 100px;
+}
+.card button{
+    border: none;
+    border-radius: 0.5rem;
+    outline: none;
+    width: 100%;
+    margin: 0;
+    background-color: #353355;
+    color: white;
+    font-size: medium;
+    margin-top: 20px;
+}
+.card h4{
+    margin: 0;
+    margin: 20px 0 10px 20px;
+}
+.card h6{
+    margin: 0 0 10px 20px;
+}
