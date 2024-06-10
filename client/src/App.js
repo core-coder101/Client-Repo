@@ -10,6 +10,7 @@ import ManageClasses from './components/ManageClasses.jsx';
 import CreateClass from './components/CreateClass.jsx';
 import CreateTeacher from './components/CreateTeacher.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import CreateStudent from './components/CreateStudent.jsx';
 
 export default function App() {
   const {result} = useAuth()
@@ -41,6 +42,10 @@ export default function App() {
     {
       path: "/manageclasses",
       element: <PrivateRoute element={<Template element={<ManageClasses />} />} />
+    },
+    {
+      path: "/createstudent",
+      element: <PrivateRoute element={<Template element={<CreateStudent />} />} />
     }
 ])
 
