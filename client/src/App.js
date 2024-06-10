@@ -6,7 +6,9 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import PublicRoute from './components/Auth/PublicRoute.jsx'
 import Template from './components/Template.jsx'
 import PrivateRoute from './components/Auth/PrivateRoute.jsx';
-import Dashboard from './components/Dashboard.jsx';
+import ManageClasses from './components/ManageClasses.jsx';
+import CreateClass from './components/CreateClass.jsx';
+import CreateTeacher from './components/CreateTeacher.jsx';
 
 export default function App() {
   const {result} = useAuth()
@@ -25,7 +27,7 @@ export default function App() {
     },
     {
       path: "/",
-      element: <PrivateRoute element={<Template element={<Dashboard />} />} />
+      element: <PrivateRoute element={<Template element={<CreateTeacher />} />} />
     }
 ])
 
