@@ -26,6 +26,9 @@
     margin-left: 20px;
     font-size: 23px;
 }
+.arrow:hover{
+    cursor: pointer;
+}
 .FormBorder{
     border: 1px solid rgb(46, 46, 46);
     margin: 25px;

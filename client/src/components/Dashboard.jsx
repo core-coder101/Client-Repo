@@ -1,6 +1,5 @@
 import React from 'react'
 import "../css/dashboard.css"
-import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { FaRegCreditCard } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
@@ -27,12 +26,12 @@ export default function Dashboard() {
     <div className='dashboard'>
       <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
-            <div className='d-flex'><FaRegArrowAltCircleLeft className='arrow' /><h4>Dashboard</h4></div>
+            <div className='d-flex'><h4>Dashboard</h4></div>
             <div className='ms-auto me-4'></div>
           </div>
         </div>
-        <div className='cardsDiv'>
-          <div className='card col-3' style={{backgroundColor: "#DC493B"}}>
+        <div className='cardsDiv '>
+          <div className='card ' style={{backgroundColor: "#DC493B"}}>
             <FaRegCreditCard color='black' style={cardBackgroundIconStyles} />
             <h4>27</h4>
             <h6>Dues - Amount: ****</h6>

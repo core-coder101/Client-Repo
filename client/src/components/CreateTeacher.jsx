@@ -3,10 +3,13 @@ import "../css/Teacher.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CreateTeacher() {
     const { CSRFToken, user } = useAuth();
+
+    const navigate = useNavigate()
 
     if (user.token) {
         axios.defaults.headers.common['Authorization'] =
@@ -76,7 +79,7 @@ export default function CreateTeacher() {
             <div className='mt-2 mb-4'>
                 <div className='headingNavbar d-flex justify-content-center'>
                     <div className='d-flex'>
-                        <FaRegArrowAltCircleLeft className='arrow' />
+                        <FaRegArrowAltCircleLeft onClick={()=>{navigate("/")}} className='arrow' />
                         <h4>Dashboard \ Admit a new teacher</h4>
                     </div>
                     <div className='ms-auto me-4'></div>

@@ -13,7 +13,7 @@ export default function ManageClasses() {
     <div className='dashboard'>
         <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
-            <div className='d-flex'><FaRegArrowAltCircleLeft className='arrow' /><h4>Dashboard \ Manage Classes</h4></div>
+            <div className='d-flex'><FaRegArrowAltCircleLeft className='arrow' onClick={()=>{navigate("/")}} /><h4>Dashboard \ Manage Classes</h4></div>
             <button onClick={()=>{navigate("/createclass")}} type='button' className='ms-auto me-4 btn btn-primary'>Add a new class</button>
           </div>
         </div>
