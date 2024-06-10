@@ -42,7 +42,6 @@ export default function CreateTeacher() {
                 }
             );
             setResult(response.data);
-            
         } catch (error) {
             console.error(error);
             setResult({ success: false, message: "Failed to create teacher" });
