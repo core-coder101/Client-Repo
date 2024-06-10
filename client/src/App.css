@@ -6,17 +6,31 @@
     /* background-color: rgb(17, 17, 61); */
     background-color: white;
     position: relative;
+    overflow: hidden;
 }
 .sidebarOpen{
     margin-left: 250px;
 }
 .contentArea{
     padding-top: 70px;
-    height: 100vh
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;    
+}
+.contentArea::-webkit-scrollbar{
+    width: 5px; 
+}
+.contentArea::-webkit-scrollbar-track{
+    margin-top: 70px;
+    background: transparent !important;
+}
+.contentArea::-webkit-scrollbar-thumb{
+    background: rgb(26,27,30) !important;
+    border-radius: 5px;
+    transition: all 0.3s;
 }
 .protest-revolution-regular {
     font-family: "Protest Revolution", sans-serif;
     font-weight: 400;
     font-style: normal;
   }
-  
