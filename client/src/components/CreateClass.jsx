@@ -1,9 +1,40 @@
-import React from 'react'
+import React , {useEffect , useState} from 'react'
 import "../css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-
+import { useAuth } from './context/AuthProvider';
+import axios from 'axios';
 
 export default function CreateClass(){
+
+  const { CSRFToken, user } = useAuth();
+  const [teachers, setteachers] = useState(null);
+
+  const createTeacher = async () =>{
+  try {
+    const response = await axios.get(
+        'http://127.0.0.1:8000/api/GetTeacher'
+        ,{
+            headers: {
+                'X-CSRF-TOKEN': CSRFToken,
+                'Content-Type': 'application/json',
+                'API-TOKEN': 'IT is to secret you cannot break it :)',
+            },
+        }
+    );
+    setteachers(response.data);
+} catch (error) {
+    console.error(error);
+    setteachers({ success: false, message: "Failed to create teacher" });
+}}
+
+useEffect(()=>{
+  console.log(teachers);
+}, [teachers])
+
+useEffect(()=>{
+  createTeacher()
+},[]);
+
     return(
         <div className='createClass'>
         <div className='mt-2 mb-4'>
@@ -27,12 +58,15 @@ export default function CreateClass(){
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        <select id="cars" className='Forminput' name="cars">
-  <option value="volvo">Volvo XC90</option>
-  <option value="saab">Saab 95</option>
-  <option value="mercedes">Mercedes SLK</option>
-  <option value="audi">Audi TT</option>
-</select>
+        <select id="cars" className='Forminput' name="teachers">
+            {teachers && teachers.length > 0 && teachers.map((teacher) => {
+              return <option value={teacher.name}>{teacher[0].name}</option>
+            })}
+            <option value="volvo">Volvo XC90</option>
+            <option value="saab">Saab 95</option>
+            <option value="mercedes">Mercedes SLK</option>
+            <option value="audi">Audi TT</option>
+        </select>
         </div>
         <div>
             <button className='btn btn-primary mt-3 w-100' type='button'>Submit</button>

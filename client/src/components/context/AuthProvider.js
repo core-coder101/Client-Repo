@@ -6,6 +6,8 @@ const AuthContext = createContext();
 
 export const  AuthProvider = ({ children }) => {
 
+
+
     const [CSRFToken, setCSRFToken] = useState('');
     const [result, setResult] = useState("")
     const [user, setUser] = useState(()=>{
@@ -14,9 +16,18 @@ export const  AuthProvider = ({ children }) => {
         return storedUser ? JSON.parse(storedUser) : ""
     })
 
+    if (user.token) {
+        axios.defaults.headers.common['Authorization'] =
+        `Bearer ${user.token}`;
+    }
+
     useEffect(()=>{
         localStorage.setItem("user", JSON.stringify(user))
     }, [result])
+
+
+    
+
 
     useEffect(() => {
         if(!CSRFToken){
