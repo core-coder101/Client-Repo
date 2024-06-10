@@ -1,7 +1,6 @@
 .dashboard{
     width: 100%;
     height: 100%;
-    background-color: #12102c;
 }
 .cardsDiv{
     display: flex;
@@ -15,6 +14,7 @@
     margin-left: 15px;
     margin-top: 20px;
     min-width: 100px;
+    position: relative;
 }
 .card button{
     border: none;

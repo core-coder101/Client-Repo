@@ -302,3 +302,18 @@ ul{
 .sc-aYaIB > svg {
   color: white;
 }
+.sidebarIcon{
+  margin-left: 20px;
+  width: 18px;
+  height: 18px;
+}
+.sc-eqUzNf:hover{
+  background-color: white !important;
+  color: black !important;
+  transition: all 0.4s ease !important;
+}
+.sc-eqUzNf{
+  padding-left: 20px !important;
+  background-color: #1D1B31 !important;
+  margin-right: 5px;
+}

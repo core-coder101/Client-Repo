@@ -2,14 +2,19 @@ import React from 'react'
 import "../css/table.less"
 import "../css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
-export default function Dashboard() {
+export default function ManageClasses() {
+
+
+  const navigate = useNavigate()
+
   return (
     <div className='dashboard'>
         <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
             <div className='d-flex'><FaRegArrowAltCircleLeft className='arrow' /><h4>Dashboard \ Manage Classes</h4></div>
-            <button type='button' className='ms-auto me-4 btn btn-primary'>Add a new class</button>
+            <button onClick={()=>{navigate("/createclass")}} type='button' className='ms-auto me-4 btn btn-primary'>Add a new class</button>
           </div>
         </div>
         <div className='outerTable'>

@@ -5,7 +5,7 @@
     border-radius: 6px;
     height: 100vh;
     min-width: 70vw;
-    overflow: scroll;
+    overflow: auto;
 }
 .headingNavbar h4{
     margin: auto;

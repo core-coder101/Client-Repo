@@ -50,7 +50,7 @@
 .react-dropdown-select-dropdown{
     background-color:#1D1B31 !important;
     border: none !important;
-    overflow-x: none;
+    overflow-x: none !important;
 }
 .react-dropdown-select-item{
     border: none !important;

@@ -7,8 +7,10 @@ import SubMenu from './SubMenu';
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
 import { CiMail } from "react-icons/ci";
-
-
+import { Link } from 'react-router-dom';
+import { SiGoogleclassroom } from "react-icons/si";
+import { IoAddOutline } from "react-icons/io5";
+import { FaChalkboardTeacher } from "react-icons/fa";
 
 
 function Sidebar({setSidebarOpen, sidebarOpen}) {
@@ -16,7 +18,6 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
   const { user, logout } = useAuth()
 
     const [scrollbarVisibility, setScrollbarVisibility] = useState("scrollbarDisappear")
-
 
   
   const sidebarRef = useRef(null);
@@ -49,22 +50,22 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
 
 
   const data = [{
-    title: 'Overview',
-    path: '/',
-    icon: <CiMail />,
-    iconClosed: <RiArrowDropDownLine color='white' />,
-    iconOpened: <MdKeyboardArrowUp color='white' />,
+    title: 'Classes',
+    path: '',
+    icon: <SiGoogleclassroom />,
+    iconClosed: <RiArrowDropDownLine />,
+    iconOpened: <MdKeyboardArrowUp />,
 
     subNav: [
       {
-        title: 'Users',
-        path: '/overview/users',
-        icon: <CiMail />
+        title: 'Manage Classes',
+        path: '/manageclasses',
+        icon: <SiGoogleclassroom />
       },
       {
-        title: 'Revenue',
-        path: '/overview/revenue',
-        icon: <CiMail />
+        title: 'Create Class',
+        path: '/createclass',
+        icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
       }
     ]
   }]
@@ -80,34 +81,20 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
           </div>
           <ul className={"nav-list " + scrollbarVisibility} onMouseEnter={()=>{setScrollbarVisibility("")}} onMouseLeave={()=>{setScrollbarVisibility("scrollbarDisappear")}}>
             <li>
-              <a href="#">
+              <Link to="/">
                 <i className="bx bx-grid-alt" />
                 <span className="links_name">Dashboard</span>
-              </a>
+              </Link>
               <span className="tooltip">Dashboard</span>
             </li>
             <li>
-              <a href="#">
-                <i className="bx bx-user" />
-                <span className="links_name">User</span>
-              </a>
-              <span className="tooltip">User</span>
-            </li>
-            <li>
-              <a href="#">
-                <i className="bx bx-chat" />
-                <span className="links_name">Messages</span>
-              </a>
-              <span className="tooltip">Messages</span>
+              <Link to="/createteacher">
+                <i className="bx"><FaChalkboardTeacher /></i>
+                <span className="links_name">Create Teacher</span>
+              </Link>
+              <span className="tooltip">Create Teacher</span>
             </li>
             <SubMenu sidebarOpen={sidebarOpen} item={data[0]} key={0} />
-            <li>
-              <a href="#">
-                <i className="bx bx-pie-chart-alt-2" />
-                <span className="links_name">Analytics</span>
-              </a>
-              <span className="tooltip">Analytics</span>
-            </li>
             <li>
               <a href="#">
                 <i className="bx bx-folder" />

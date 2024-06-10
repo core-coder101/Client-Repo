@@ -40,8 +40,14 @@ const DropdownLink = styled(Link)`
   }
 `;
 
-const SubMenu = ({ item, sidebarOpen }) => {
+const SubMenu = ({ item, sidebarOpen,  }) => {
   const [subnav, setSubnav] = useState(false);
+
+  useEffect(()=>{
+    if(!sidebarOpen){
+      setSubnav(false)
+    }
+  }, [sidebarOpen])
 
   const showSubnav = () => setSubnav(!subnav);
 
