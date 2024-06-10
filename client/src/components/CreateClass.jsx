@@ -3,11 +3,14 @@ import "../css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateClass(){
 
   const { CSRFToken, user } = useAuth();
   const [teachers, setteachers] = useState(null);
+
+  const navigate = useNavigate()
 
   const createTeacher = async () =>{
   try {
@@ -39,7 +42,7 @@ useEffect(()=>{
         <div className='createClass'>
         <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
-            <div className='d-flex'><FaRegArrowAltCircleLeft className='arrow' /><h4>Dashboard \ Create a New Class</h4></div>
+            <div className='d-flex'><FaRegArrowAltCircleLeft className='arrow' onClick={()=>{navigate("/")}} /><h4>Dashboard \ Create a New Class</h4></div>
             <div className='ms-auto me-4'></div>
           </div>
         </div>

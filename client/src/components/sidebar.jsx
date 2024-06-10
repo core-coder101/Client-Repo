@@ -6,11 +6,11 @@ import { TbHexagonLetterHFilled } from "react-icons/tb";
 import SubMenu from './SubMenu';
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
-import { CiMail } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 import { SiGoogleclassroom } from "react-icons/si";
 import { IoAddOutline } from "react-icons/io5";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import { PiStudentFill } from "react-icons/pi";
 
 
 function Sidebar({setSidebarOpen, sidebarOpen}) {
@@ -49,7 +49,7 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
   }, []);
 
 
-  const data = [{
+  const classesData = {
     title: 'Classes',
     path: '',
     icon: <SiGoogleclassroom />,
@@ -68,7 +68,27 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
         icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
       }
     ]
-  }]
+  }
+  const studentsData = {
+    title: 'Students',
+    path: '',
+    icon: <PiStudentFill />,
+    iconClosed: <RiArrowDropDownLine />,
+    iconOpened: <MdKeyboardArrowUp />,
+
+    subNav: [
+      {
+        title: 'Manage Students',
+        path: '',
+        icon: <PiStudentFill />
+      },
+      {
+        title: 'Add Student',
+        path: '/addstudent',
+        icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
+      },
+    ]
+  }
 
   return (
     <>
@@ -88,14 +108,15 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
               <span className="tooltip">Dashboard</span>
             </li>
             <li>
-              <Link to="/createteacher">
+              <Link to="/addteacher">
                 <i className="bx"><FaChalkboardTeacher /></i>
-                <span className="links_name">Create Teacher</span>
+                <span className="links_name">Add Teacher</span>
               </Link>
-              <span className="tooltip">Create Teacher</span>
+              <span className="tooltip">Add Teacher</span>
             </li>
-            <SubMenu sidebarOpen={sidebarOpen} item={data[0]} key={0} />
-            <li>
+            <SubMenu sidebarOpen={sidebarOpen} item={classesData} key={0} />
+            <SubMenu sidebarOpen={sidebarOpen} item={studentsData} key={1} />
+            {/* <li>
               <a href="#">
                 <i className="bx bx-folder" />
                 <span className="links_name">File Manager</span>
@@ -122,7 +143,7 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
                 <span className="links_name">Setting</span>
               </a>
               <span className="tooltip">Setting</span>
-            </li>
+            </li> */}
 
             <li className="profile">
               <div className="profile-details">

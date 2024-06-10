@@ -32,7 +32,7 @@ export default function App() {
       element: <PrivateRoute element={<Template element={<Dashboard />} />} />
     },
     {
-      path: "/createteacher",
+      path: "/addteacher",
       element: <PrivateRoute element={<Template element={<CreateTeacher />} />} />
     },
     {
@@ -44,7 +44,7 @@ export default function App() {
       element: <PrivateRoute element={<Template element={<ManageClasses />} />} />
     },
     {
-      path: "/createstudent",
+      path: "/addstudent",
       element: <PrivateRoute element={<Template element={<CreateStudent />} />} />
     }
 ])
