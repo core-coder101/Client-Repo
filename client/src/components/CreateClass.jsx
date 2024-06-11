@@ -179,7 +179,7 @@ const handleSubmit = (e) => {
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        <select id="cars" className='Forminput' name="ClassTeacherID" onChange={handleChange}>
+        <select id="cars" className='Forminput mb-4' name="ClassTeacherID" onChange={handleChange}>
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacherArray) => {
           if (teacherArray && teacherArray.length > 0) {
             const teacher = teacherArray[0];
