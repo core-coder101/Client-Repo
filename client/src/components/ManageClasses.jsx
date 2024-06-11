@@ -16,6 +16,8 @@ export default function ManageClasses() {
     }
 
   const [Classes , SetClasses] = useState('');
+  const [ErrorMessage , setErrorMessage] = useState('');
+
 
   const GetClasses = async () =>{
     try {
@@ -32,7 +34,7 @@ export default function ManageClasses() {
       SetClasses(response.data);
   } catch (error) {
       console.error(error);
-      SetClasses({ success: false, message: "Failed to create teacher" });
+      setErrorMessage({ success: false, message: "Failed to Load Classes" });
   }}
 
 
@@ -42,6 +44,35 @@ export default function ManageClasses() {
 
 
   const navigate = useNavigate()
+
+
+  const Delete = async(id) => {
+    try {
+      const response = await axios.post(
+          'http://127.0.0.1:8000/api/Delete',{ID:id}
+          ,{
+              headers: {
+                  'X-CSRF-TOKEN': CSRFToken,
+                  'Content-Type': 'application/json',
+                  'API-TOKEN': 'IT is to secret you cannot break it :)',
+              },
+          }
+      );
+      SetClasses(response.data);
+  } catch (error) {
+      console.error(error);
+      setErrorMessage({ success: false, message: "Failed to Delete Class" });
+  }
+  }
+
+  const Edit = (id) => {
+    navigate(`/createclass/${id}`);
+  };
+
+  const Details = (id) =>{
+    
+  }
+
 
   return (
     <div className='dashboard'>
@@ -75,93 +106,12 @@ export default function ManageClasses() {
               <td data-title="Name">{Class.ClassName}</td>
               <td data-title="TeacherName">{Class.ClassTeacherID}</td>
               <td data-title="Floor">{Class.ClassFloor}</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
+              <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  class="btn btn-info">Details</button></td>
+              <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} class="btn btn-warning">Edit</button></td>
+              <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} class="btn btn-danger">Delete</button></td>
             </tr>
           );
             })}
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-              <td data-title="Rank">10 th</td>
-              <td data-title="Name">10 white House</td>
-              <td data-title="TeacherName">Ahmad Mujtaba</td>
-              <td data-title="Floor">A3</td>
-              <td data-title="Details"><button type="button" class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
           </tbody>
         </table>
       </div>
