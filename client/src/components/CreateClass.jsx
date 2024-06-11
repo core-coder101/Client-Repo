@@ -13,6 +13,7 @@ export default function CreateClass(){
   const [teachers, setteachers] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [SuccessMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate()
 
@@ -33,12 +34,25 @@ export default function CreateClass(){
             },
         }
     );
-    setteachers(response.data);
+    if(response.data.success == true){
+      setteachers(response.data.data);
+      
+    }
+    else{
+      setErrorMessage(response.data);
+    }
 } catch (error) {
-    console.error(error);
     setErrorMessage({ success: false, message: "Failed to Load Teachers" });
 }}
 
+
+const [formData, setFormData] = useState({
+  ClassName:  "",
+  ClassRank:  "",
+  ClassFloor: "",
+  ClassTeacherID: "",
+  ClassID : ""
+});
 
 const [ClassData , SetClassData] = useState();
 
@@ -55,9 +69,20 @@ const GetClassData = async () =>{
         }
     );
     console.log(response.data);
-    SetClassData(response.data);
+    if(response.data.success == true){
+      SetClassData(response.data);
+      setFormData({
+        ClassName:  response.data.data.ClassName,
+        ClassRank:  response.data.data.ClassRank,
+        ClassFloor: response.data.data.ClassFloor,
+        ClassTeacherID: response.data.data.ClassTeacherID,
+        ClassID : response.data.data.id
+      });
+    }
+    else{
+      setErrorMessage(response.data);
+    }
 } catch (error) {
-    console.error(error);
     setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
 }
 }
@@ -83,13 +108,6 @@ const [result, setResult] = useState(null);
 
 
 
-const [formData, setFormData] = useState({
-  ClassName: "",
-  ClassRank: "",
-  ClassFloor: "",
-  ClassTeacherID: "",
-  ClassID : ClassData ? ClassData.data.id : ""
-});
 
 const CreateClass = async (formData) => {
   if(formData.ClassID == ""){
@@ -105,10 +123,16 @@ const CreateClass = async (formData) => {
               },
           }
       );
-      setResult(response.data);
+      if(response.data.success == true){
+        setResult(response.data);
+        setSuccessMessage({success: true, message: "Successfully Created a new Class"})
+      }
+      else{
+        setErrorMessage(response.data);
+      }
   } catch (error) {
       console.error(error);
-      setResult({ success: false, message: "Failed to create Class" });
+      setErrorMessage({ success: false, message: "Failed to create Class" });
   }
 }
 else{
@@ -124,23 +148,21 @@ else{
             },
         }
     );
-    setResult(response.data);
+    if(response.data.success == true){
+      setResult(response.data);
+      setSuccessMessage({success: true, message: "Successfully Updated selected Class"})
+    }
+    else{
+      setErrorMessage(response.data);
+    }
 } catch (error) {
-    console.error(error);
-    setResult({ success: false, message: "Failed to Update Class" });
+    setErrorMessage({ success: false, message: "Failed to Update Class" });
 }
 }
 };
 
 
 
-useEffect(() => {
-  if (result && !result.success) {
-      setErrorMessage(result.message);
-  } else {
-      setErrorMessage("");
-  }
-}, [result]);
 
 const handleChange = (e) => {
   const { name, value } = e.target;
@@ -168,29 +190,33 @@ const handleSubmit = (e) => {
         <form onSubmit={handleSubmit}>
         <div className='d-flex flex-column'>
         <label className='label'>Name of the Class</label>
-        <input className='Forminput' placeholder='Enter name of Class' name='ClassName' onChange={handleChange}  defaultValue={ClassData? ClassData.data.ClassName : ""} required></input>
+        <input className='Forminput' placeholder='Enter name of Class' name='ClassName' value={formData.ClassName} onChange={handleChange}  defaultValue={ClassData? ClassData.data.ClassName : ""} required></input>
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Rank of the Class</label>
-        <input className='Forminput' type='number' placeholder='Enter Rank of Class' name='ClassRank' onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassRank : ""} required></input>
+        <input className='Forminput' type='number' placeholder='Enter Rank of Class' name='ClassRank' value={formData.ClassRank} onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassRank : ""} required></input>
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Floor</label>
-        <input className='Forminput' placeholder='Enter name of Floor' name='ClassFloor' onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassFloor : ""} required></input>
+        <input className='Forminput' placeholder='Enter name of Floor' name='ClassFloor' value={formData.ClassFloor} onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassFloor : ""} required></input>
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" onChange={handleChange}required>
-          <option></option>
+        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" value={formData.ClassTeacherID} onChange={handleChange} required>
+        <option></option>
         {ClassData && ClassData.data.id ? 
-          <option value={ClassData.data.teachers[0].id} >{ClassData.data.teachers[0].user.name}</option> : ""}
+          <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.user.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {
             return <option value={teacher.id} >{teacher.user.name}</option>;
         })}
         </select>
         </div>
-        {errorMessage ? <div className='errorDiv'>
-                            <p>{errorMessage}</p>
+        {errorMessage.message ? <div className='errorDiv'>
+                            <p>{errorMessage.message}</p>
+                        </div> : null}
+
+                        {SuccessMessage ? <div className='successDiv'>
+                            <p>{SuccessMessage.message}</p>
                         </div> : null}
         <div>
             <button className='btn btn-primary w-100' type='submit'>Submit</button>
