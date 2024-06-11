@@ -179,20 +179,21 @@ const handleSubmit = (e) => {
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        
-        <select id="cars" className='Forminput' name="ClassTeacherID" onChange={handleChange} >
-        {ClassData && ClassData.data.id ? 
-          <option key={ClassData.data.teachers[0].user.name} value={ClassData.data.teachers[0].id} >{ClassData.data.teachers[0].user.name}</option> : ""}
-        {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher) => {
-            return <option key={teacher.user.name} value={teacher.id} >{teacher.user.name}</option>;
+        <select id="cars" className='Forminput' name="ClassTeacherID" onChange={handleChange}>
+        {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacherArray) => {
+          if (teacherArray && teacherArray.length > 0) {
+            const teacher = teacherArray[0];
+            return <option key={teacher.name} value={teacher.id} >{teacher.name}</option>;
+          }
+          return null;
         })}
         </select>
         </div>
         {errorMessage ? <div className='errorDiv'>
-                            <p>{errorMessage.message}</p>
+                            <p>{errorMessage}</p>
                         </div> : null}
         <div>
-            <button className='btn btn-primary mt-3 w-100' type='submit'>Submit</button>
+            <button className='btn btn-primary w-100' type='submit'>Submit</button>
         </div>
         </form>
         </div>
