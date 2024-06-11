@@ -91,6 +91,7 @@ export default function CreateTeacher() {
                             className='Forminput'
                             placeholder='Enter name of Teacher'
                             name='name'
+                            value={formData.name}
                             onChange={handleChange}
                             required
                         />
@@ -100,6 +101,7 @@ export default function CreateTeacher() {
                             className='Forminput'
                             placeholder='Enter UserName of Teacher'
                             name='userName'
+                            value={formData.userName}
                             onChange={handleChange}
                             required
                         />
@@ -110,6 +112,7 @@ export default function CreateTeacher() {
                             type='email'
                             placeholder='Enter Email of Teacher'
                             name='email'
+                            value={formData.email}
                             onChange={handleChange}
                             required
                         />
@@ -120,6 +123,7 @@ export default function CreateTeacher() {
                             type='date'
                             placeholder='Enter DOB of Teacher'
                             name='TeacherDOB'
+                            value={formData.TeacherDOB}
                             onChange={handleChange}
                             required
                         />
@@ -130,6 +134,7 @@ export default function CreateTeacher() {
                             type='text'
                             placeholder='Enter CNIC of Teacher'
                             name='TeacherCNIC'
+                            value={formData.TeacherCNIC}
                             onChange={handleChange}
                             required
                         />
@@ -140,6 +145,7 @@ export default function CreateTeacher() {
                             type='text'
                             placeholder='Enter Phone Number of Teacher'
                             name='TeacherPhoneNumber'
+                            value={formData.TeacherPhoneNumber}
                             onChange={handleChange}
                             required
                         />
@@ -150,6 +156,7 @@ export default function CreateTeacher() {
                             type='text'
                             placeholder='Enter Home Address of Teacher'
                             name='TeacherHomeAddress'
+                            value={formData.TeacherHomeAddress}
                             onChange={handleChange}
                             required
                         />
@@ -160,6 +167,7 @@ export default function CreateTeacher() {
                             id='religions'
                             className='Forminput'
                             name='TeacherReligion'
+                            value={formData.TeacherReligion}
                             onChange={handleChange}
                             required
                         >
@@ -176,6 +184,7 @@ export default function CreateTeacher() {
                             type='number'
                             placeholder='Enter Starting Salary of Teacher'
                             name='TeacherSalary'
+                            value={formData.TeacherSalary}
                             onChange={handleChange}
                             required
                         />

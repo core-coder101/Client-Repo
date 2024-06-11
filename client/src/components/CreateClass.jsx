@@ -176,19 +176,19 @@ const handleSubmit = (e) => {
         <form onSubmit={handleSubmit}>
         <div className='d-flex flex-column'>
         <label className='label'>Name of the Class</label>
-        <input className='Forminput' placeholder='Enter name of Class' name='ClassName' onChange={handleChange}  defaultValue={ClassData? ClassData.data.ClassName : ""} required></input>
+        <input className='Forminput' placeholder='Enter name of Class' name='ClassName' value={formData.ClassName} onChange={handleChange}  defaultValue={ClassData? ClassData.data.ClassName : ""} required></input>
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Rank of the Class</label>
-        <input className='Forminput' type='number' placeholder='Enter Rank of Class' name='ClassRank' onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassRank : ""} required></input>
+        <input className='Forminput' type='number' placeholder='Enter Rank of Class' name='ClassRank' value={formData.ClassRank} onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassRank : ""} required></input>
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Floor</label>
-        <input className='Forminput' placeholder='Enter name of Floor' name='ClassFloor' onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassFloor : ""} required></input>
+        <input className='Forminput' placeholder='Enter name of Floor' name='ClassFloor' value={formData.ClassFloor} onChange={handleChange} defaultValue={ClassData? ClassData.data.ClassFloor : ""} required></input>
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" onChange={handleChange} required>
+        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" value={formData.ClassTeacherID} onChange={handleChange} required>
         {ClassData && ClassData.data.id ? 
           <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.user.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {

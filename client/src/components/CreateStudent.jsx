@@ -21,8 +21,9 @@ export default function CreateStudent() {
         userName: "",
         email: "",
         StudentDOB: "",
-        StudentGender: "",
+        StudentGender: "Male",
         StudentCNIC: "",
+        StudentClassID:"",
         StudentPhoneNumber:"",
         StudentHomeAddress: "",
         StudentReligion: "Islam",
@@ -35,6 +36,37 @@ export default function CreateStudent() {
         HomeAddress:"",
         GuardiansEmail:""
     });
+
+
+    const [ClassData , SetClassData] = useState("");
+
+    const GetClasses = async () =>{
+        try {
+          const response = await axios.get(
+              'http://127.0.0.1:8000/api/GetClasses'
+              ,{
+                  headers: {
+                      'X-CSRF-TOKEN': CSRFToken,
+                      'Content-Type': 'application/json',
+                      'API-TOKEN': 'IT is to secret you cannot break it :)',
+                  },
+              }
+          );
+          SetClassData(response.data);
+      } catch (error) {
+          console.error(error);
+          setErrorMessage({ success: false, message: "Failed to Load Classes" });
+      }}
+    
+    
+      useEffect(()=>{
+        GetClasses();
+      },[]);
+
+
+
+
+
 
     const [result, setResult] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
@@ -101,6 +133,7 @@ export default function CreateStudent() {
                             className='Forminput'
                             placeholder='Enter name of Student'
                             name='name'
+                            value={formData.name}
                             onChange={handleChange}
                             required
                         />
@@ -110,6 +143,7 @@ export default function CreateStudent() {
                             className='Forminput'
                             placeholder='Enter UserName of Student'
                             name='userName'
+                            value={formData.userName}
                             onChange={handleChange}
                             required
                         />
@@ -118,6 +152,7 @@ export default function CreateStudent() {
                         <input
                             className='Forminput'
                             type='email'
+                            value={formData.email}
                             placeholder='Enter Email of Student'
                             name='email'
                             onChange={handleChange}
@@ -130,6 +165,7 @@ export default function CreateStudent() {
                             type='date'
                             placeholder='Enter DOB of Student'
                             name='StudentDOB'
+                            value={formData.StudentDOB}
                             onChange={handleChange}
                             required
                         />
@@ -139,6 +175,7 @@ export default function CreateStudent() {
                         <select
                             id='Genders'
                             className='Forminput'
+                            value={formData.StudentGender}
                             name='StudentGender'
                             onChange={handleChange}
                             required
@@ -156,9 +193,25 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter CNIC of Student'
                             name='StudentCNIC'
+                            value={formData.StudentCNIC}
                             onChange={handleChange}
                             required
                         />
+                    </div>
+                    <div className='d-flex flex-column mt-3'>
+                        <label className='label'>Class of Student</label>
+                        <select
+                            id='StudentClass'
+                            className='Forminput'
+                            name='StudentClassID'
+                            onChange={handleChange}
+                            value={formData.StudentClassID}
+                            required
+                        >
+                        {ClassData && ClassData.data.map((Class) => {
+                            return (<option value={Class.id}>{Class.ClassRank} {" "} { " " }  {Class.ClassName}</option>);
+                        })}
+                        </select>
                     </div>
                     <div className='d-flex flex-column mt-3'>
                         <input
@@ -166,6 +219,7 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter Phone Number of Student'
                             name='StudentPhoneNumber'
+                            value={formData.StudentPhoneNumber}
                             onChange={handleChange}
                             required
                         />
@@ -176,6 +230,7 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter Home Address of Student'
                             name='StudentHomeAddress'
+                            value={formData.StudentHomeAddress}
                             onChange={handleChange}
                             required
                         />
@@ -186,6 +241,7 @@ export default function CreateStudent() {
                             id='religions'
                             className='Forminput'
                             name='StudentReligion'
+                            value={formData.StudentReligion}
                             onChange={handleChange}
                             required
                         >
@@ -202,16 +258,13 @@ export default function CreateStudent() {
                             type='number'
                             placeholder='Enter Monthly fee of Student'
                             name='StudentMonthlyFee'
+                            value={formData.StudentMonthlyFee}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     
-                    {errorMessage && (
-                        <div className='errorDiv mt-3'>
-                            <p>{errorMessage}</p>
-                        </div>
-                    )}
+
             </div>
             <div className='parentsForm FormBorder ms-auto me-auto'>
             <center><h2 className='protest-revolution-regular'>Parents Data</h2></center>
@@ -224,6 +277,7 @@ export default function CreateStudent() {
                             placeholder='Enter name of Father'
                             name='FatherName'
                             onChange={handleChange}
+                            value={formData.FatherName}
                             required
                         />
                     </div>
@@ -234,6 +288,7 @@ export default function CreateStudent() {
                             placeholder='Enter name of Mother'
                             name='MotherName'
                             onChange={handleChange}
+                            value={formData.MotherName}
                             required
                         />
                     </div>
@@ -243,6 +298,7 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter CNIC of Guardians'
                             name='GuardiansCNIC'
+                            value={formData.GuardiansCNIC}
                             onChange={handleChange}
                             required
                         />
@@ -253,6 +309,7 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter phone number of Guardians'
                             name='GuardiansPhoneNumber'
+                            value={formData.GuardiansPhoneNumber}
                             onChange={handleChange}
                             required
                         />
@@ -263,6 +320,7 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter Extra Phone Number Just in case'
                             name='GuardiansPhoneNumber2'
+                            value={formData.GuardiansPhoneNumber2}
                             onChange={handleChange}
                             required
                         />
@@ -273,6 +331,7 @@ export default function CreateStudent() {
                             type='text'
                             placeholder='Enter Home Address of Guardians'
                             name='HomeAddress'
+                            value={formData.HomeAddress}
                             onChange={handleChange}
                             required
                         />
@@ -284,14 +343,19 @@ export default function CreateStudent() {
                             placeholder='Enter Email of Guardians'
                             name='GuardiansEmail'
                             onChange={handleChange}
+                            value={formData.GuardiansEmail}
                             required
                         />
                     </div>
+                    {errorMessage && (
+                        <div className='errorDiv mt-3'>
+                            <p>{errorMessage.message}</p>
+                        </div>
+                    )}
                     <div className='d-flex flex-column mt-3'>
                         <button className='btn btn-primary' type='submit'>Submit</button>
                     </div>
                     </div>
-                
             </div>
             
             </div>
