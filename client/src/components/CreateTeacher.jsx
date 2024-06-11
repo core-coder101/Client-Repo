@@ -4,9 +4,11 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import defaultImg from "../img/default.png"
 
 
-export default function CreateTeacher() {
+
+export default function CreateTeacher() {    
     const { CSRFToken, user } = useAuth();
 
     const navigate = useNavigate()
@@ -17,6 +19,7 @@ export default function CreateTeacher() {
     }
 
     const [formData, setFormData] = useState({
+        image: null,
         name: "",
         userName: "",
         email: "",
@@ -68,6 +71,16 @@ export default function CreateTeacher() {
         setErrorMessage("");
     };
 
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setFormData({ ...formData, image: e.target.files[0] });
+        }
+    }
+
+    function handleImgClick () {
+        document.getElementById("imageInput").click()
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         createTeacher(formData);
@@ -84,8 +97,13 @@ export default function CreateTeacher() {
                     <div className='ms-auto me-4'></div>
                 </div>
             </div>
-            <div className='FormBorder ms-auto me-auto'>
+            <div className='FormBorder ms-auto me-auto'>       
                 <form onSubmit={handleSubmit}>
+                <div class="profile-container ms-auto me-auto mb-3">
+                    <img src={formData.image ? URL.createObjectURL(formData.image) : defaultImg} alt="Profile Icon" class="profile-icon" onClick={handleImgClick} />
+                </div>
+ 
+                    <input id='imageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
                     <div className='d-flex flex-column'>
                         <input
                             className='Forminput'

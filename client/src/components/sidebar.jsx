@@ -11,6 +11,7 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { IoAddOutline } from "react-icons/io5";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { PiStudentFill } from "react-icons/pi";
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 
 function Sidebar({setSidebarOpen, sidebarOpen}) {
@@ -78,14 +79,13 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
 
     subNav: [
       {
-        title: 'Manage Students',
-        path: '',
-        icon: <PiStudentFill />
-      },
-      {
         title: 'Add Student',
         path: '/addstudent',
         icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
+      },{
+        title: 'Student Information',
+        path: '/studentinformation',
+        icon: <IoInformationCircleOutline style={{width: "20px", height: "20px"}} />
       },
     ]
   }
