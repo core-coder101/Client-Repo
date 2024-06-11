@@ -40,6 +40,10 @@ export default function App() {
       element: <PrivateRoute element={<Template element={<CreateClass />} />} />
     },
     {
+      path: "/createclass/:ID",
+      element: <PrivateRoute element={<Template element={<CreateClass />} />} />
+    },
+    {
       path: "/manageclasses",
       element: <PrivateRoute element={<Template element={<ManageClasses />} />} />
     },

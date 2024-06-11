@@ -4,11 +4,15 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export default function CreateClass(){
 
+  const { ID } = useParams();
   const { CSRFToken, user } = useAuth();
   const [teachers, setteachers] = useState(null);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate()
 
@@ -32,10 +36,36 @@ export default function CreateClass(){
     setteachers(response.data);
 } catch (error) {
     console.error(error);
-    setteachers({ success: false, message: "Failed to create teacher" });
+    setErrorMessage({ success: false, message: "Failed to Load Teachers" });
 }}
 
 
+const [ClassData , SetClassData] = useState();
+
+const GetClassData = async () =>{
+  try {
+    const response = await axios.get(
+        `http://127.0.0.1:8000/api/GetClassData?ID=${ID}`
+        ,{
+            headers: {
+                'X-CSRF-TOKEN': CSRFToken,
+                'Content-Type': 'application/json',
+                'API-TOKEN': 'IT is to secret you cannot break it :)',
+            },
+        }
+    );
+    SetClassData(response.data);
+} catch (error) {
+    console.error(error);
+    setErrorMessage({ success: false, message: "Failed to Load Teachers" });
+}
+}
+
+
+
+if(ID){
+  GetClassData()
+}
 
 
 useEffect(()=>{
@@ -74,11 +104,11 @@ const CreateClass = async (formData) => {
       setResult(response.data);
   } catch (error) {
       console.error(error);
-      setResult({ success: false, message: "Failed to create teacher" });
+      setResult({ success: false, message: "Failed to create Class" });
   }
 };
 
-const [errorMessage, setErrorMessage] = useState("");
+
 
 useEffect(() => {
   if (result && !result.success) {
