@@ -40,6 +40,14 @@ export default function CreateClass(){
 }}
 
 
+const [formData, setFormData] = useState({
+  ClassName:  "",
+  ClassRank:  "",
+  ClassFloor: "",
+  ClassTeacherID: "",
+  ClassID : ""
+});
+
 const [ClassData , SetClassData] = useState();
 
 const GetClassData = async () =>{
@@ -56,6 +64,13 @@ const GetClassData = async () =>{
     );
     console.log(response.data);
     SetClassData(response.data);
+    setFormData({
+        ClassName:  response.data.data.ClassName,
+        ClassRank:  response.data.data.ClassRank,
+        ClassFloor: response.data.data.ClassFloor,
+        ClassTeacherID: response.data.data.ClassTeacherID,
+        ClassID : response.data.data.id
+      });
 } catch (error) {
     console.error(error);
     setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
@@ -83,13 +98,6 @@ const [result, setResult] = useState(null);
 
 
 
-const [formData, setFormData] = useState({
-  ClassName: "",
-  ClassRank: "",
-  ClassFloor: "",
-  ClassTeacherID: "",
-  ClassID : ClassData ? ClassData.data.id : ""
-});
 
 const CreateClass = async (formData) => {
   if(formData.ClassID == ""){
@@ -180,17 +188,16 @@ const handleSubmit = (e) => {
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" onChange={handleChange}required>
-          <option></option>
+        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" onChange={handleChange} required>
         {ClassData && ClassData.data.id ? 
-          <option value={ClassData.data.teachers[0].id} >{ClassData.data.teachers[0].user.name}</option> : ""}
+          <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.user.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {
             return <option value={teacher.id} >{teacher.user.name}</option>;
         })}
         </select>
         </div>
         {errorMessage ? <div className='errorDiv'>
-                            <p>{errorMessage}</p>
+                            <p>{errorMessage.message}</p>
                         </div> : null}
         <div>
             <button className='btn btn-primary w-100' type='submit'>Submit</button>

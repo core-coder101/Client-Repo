@@ -20,21 +20,29 @@ export default function CreateStudent() {
         name: "",
         userName: "",
         email: "",
-        TeacherDOB: "",
-        TeacherCNIC: "",
-        TeacherPhoneNumber: "",
-        TeacherHomeAddress: "",
-        TeacherReligion: "Islam",
-        TeacherSalary: "",
+        StudentDOB: "",
+        StudentGender: "",
+        StudentCNIC: "",
+        StudentPhoneNumber:"",
+        StudentHomeAddress: "",
+        StudentReligion: "Islam",
+        StudentMonthlyFee: "",
+        FatherName:"",
+        MotherName:"",
+        GuardiansCNIC:"",
+        GuardiansPhoneNumber:"",
+        GuardiansPhoneNumber2:"",
+        HomeAddress:"",
+        GuardiansEmail:""
     });
 
     const [result, setResult] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
 
-    const createTeacher = async (formData) => {
+    const CreateStudent = async (formData) => {
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8000/api/CreateTeacher',
+                'http://127.0.0.1:8000/api/CreateStudent',
                 formData,
                 {
                     headers: {
@@ -47,7 +55,7 @@ export default function CreateStudent() {
             setResult(response.data);
         } catch (error) {
             console.error(error);
-            setResult({ success: false, message: "Failed to create teacher" });
+            setErrorMessage({ success: false, message: "Failed to create Student" });
         }
     };
 
@@ -70,7 +78,7 @@ export default function CreateStudent() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createTeacher(formData);
+        CreateStudent(formData);
     };
 
     return (
@@ -84,10 +92,10 @@ export default function CreateStudent() {
                     <div className='ms-auto me-4'></div>
                 </div>
             </div>
+            <form onSubmit={handleSubmit}>
             <div className='row m-0 p-0'>
             <div className='FormBorder ms-auto me-auto'>
             <center><h2 className='protest-revolution-regular'>Students Data</h2></center>
-                <form onSubmit={handleSubmit}>
                     <div className='d-flex flex-column mt-4'>
                         <input
                             className='Forminput'
@@ -129,7 +137,7 @@ export default function CreateStudent() {
                     <div className='d-flex flex-column mt-3'>
                         <label className='label'>Gender of Student</label>
                         <select
-                            id='religions'
+                            id='Genders'
                             className='Forminput'
                             name='StudentGender'
                             onChange={handleChange}
@@ -204,12 +212,10 @@ export default function CreateStudent() {
                             <p>{errorMessage}</p>
                         </div>
                     )}
-                    
-                </form>
             </div>
             <div className='parentsForm FormBorder ms-auto me-auto'>
             <center><h2 className='protest-revolution-regular'>Parents Data</h2></center>
-                <form onSubmit={handleSubmit}>
+                
                     <div className='d-flex flex-column'>
                     <div className='d-flex flex-column mt-3'>
                         <input
@@ -255,6 +261,16 @@ export default function CreateStudent() {
                         <input
                             className='Forminput'
                             type='text'
+                            placeholder='Enter Extra Phone Number Just in case'
+                            name='GuardiansPhoneNumber2'
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className='d-flex flex-column mt-3'>
+                        <input
+                            className='Forminput'
+                            type='text'
                             placeholder='Enter Home Address of Guardians'
                             name='HomeAddress'
                             onChange={handleChange}
@@ -271,10 +287,15 @@ export default function CreateStudent() {
                             required
                         />
                     </div>
+                    <div className='d-flex flex-column mt-3'>
+                        <button className='btn btn-primary' type='submit'>Submit</button>
                     </div>
-                </form>
+                    </div>
+                
             </div>
+            
             </div>
+            </form>
         </div>
     );
 }
