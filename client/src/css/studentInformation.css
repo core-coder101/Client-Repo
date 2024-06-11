@@ -52,3 +52,34 @@
     margin: 25px 25px;
     box-shadow: rgba(0, 0, 0, 0.122) 0px 10px 10px 1px;
 }
+.successDiv{
+    width: 100%;
+    height: 40px;
+    background-color: rgba(88, 255, 54, 0.877);
+    border-radius: 0.25rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.successDiv p{
+    color: white;
+    margin: 0;
+    font-size: medium;
+}
+
+.errorDiv{
+    width: 100%;
+    height: 40px;
+    background-color: rgba(255, 54, 54, 0.45);
+    border-radius: 0.25rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.errorDiv p{
+    color: white;
+    margin: 0;
+    font-size: medium;
+}

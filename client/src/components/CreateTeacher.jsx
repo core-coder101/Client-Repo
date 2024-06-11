@@ -30,6 +30,7 @@ export default function CreateTeacher() {
 
     const [result, setResult] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
+    const [SuccessMessage, setSuccessMessage] = useState("");
 
     const createTeacher = async (formData) => {
         try {
@@ -44,10 +45,15 @@ export default function CreateTeacher() {
                     },
                 }
             );
-            setResult(response.data);
+            if(response.data.success == true){
+                setResult(response.data);
+                setSuccessMessage({success:true, message:"New Teacher created successfully"})
+              }
+              else{
+                setErrorMessage(response.data);
+              }
         } catch (error) {
-            console.error(error);
-            setResult({ success: false, message: "Failed to create teacher" });
+            setErrorMessage({ success: false, message: "Failed to create teacher" });
         }
     };
 
@@ -191,9 +197,12 @@ export default function CreateTeacher() {
                     </div>
                     {errorMessage && (
                         <div className='errorDiv mt-3'>
-                            <p>{errorMessage}</p>
+                            <p>{errorMessage.message}</p>
                         </div>
                     )}
+                    {SuccessMessage ? <div className='successDiv'>
+                            <p>{SuccessMessage.message}</p>
+                        </div> : null}
                     <div>
                         <button className='btn btn-primary mt-3 w-100' type='submit'>
                             Submit

@@ -132,6 +132,21 @@ h1{
     margin: 0;
     font-size: medium;
 }
+.successDiv{
+    width: 100%;
+    height: 40px;
+    background-color: rgba(88, 255, 54, 0.877);
+    border-radius: 0.25rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.successDiv p{
+    color: white;
+    margin: 0;
+    font-size: medium;
+}
 .rememberMe{
     display: flex;
     align-items: center;

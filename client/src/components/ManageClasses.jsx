@@ -16,7 +16,7 @@ export default function ManageClasses() {
     }
 
   const [Classes , SetClasses] = useState('');
-  const [ErrorMessage , setErrorMessage] = useState('');
+  const [errorMessage , setErrorMessage] = useState('');
 
 
   const GetClasses = async () =>{
@@ -114,6 +114,11 @@ export default function ManageClasses() {
           </tbody>
         </table>
       </div>
+      {errorMessage && (
+                        <div className='errorDiv mt-3'>
+                            <p>{errorMessage.message}</p>
+                        </div>
+                    )}
       </div>
     </div>
   )

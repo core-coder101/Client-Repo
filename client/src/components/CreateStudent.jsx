@@ -39,6 +39,10 @@ export default function CreateStudent() {
 
 
     const [ClassData , SetClassData] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [SuccessMessage, setSuccessMessage] = useState("");
+
+
 
     const GetClasses = async () =>{
         try {
@@ -52,13 +56,19 @@ export default function CreateStudent() {
                   },
               }
           );
-          SetClassData(response.data);
+          if(response.data.success == true){
+            setResult(response.data);
+          }
+          else{
+            setErrorMessage(response.data);
+          }
       } catch (error) {
           console.error(error);
           setErrorMessage({ success: false, message: "Failed to Load Classes" });
       }}
-    
-    
+
+
+
       useEffect(()=>{
         GetClasses();
       },[]);
@@ -69,7 +79,6 @@ export default function CreateStudent() {
 
 
     const [result, setResult] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const CreateStudent = async (formData) => {
         try {
@@ -84,9 +93,14 @@ export default function CreateStudent() {
                     },
                 }
             );
-            setResult(response.data);
+            if(response.data.success == true){
+                setResult(response.data);
+                setSuccessMessage({success:true, message: "New Student created successfully"})
+              }
+              else{
+                setErrorMessage(response.data);
+              }
         } catch (error) {
-            console.error(error);
             setErrorMessage({ success: false, message: "Failed to create Student" });
         }
     };
@@ -351,7 +365,13 @@ export default function CreateStudent() {
                         <div className='errorDiv mt-3'>
                             <p>{errorMessage.message}</p>
                         </div>
+                        
                     )}
+                    {SuccessMessage ? <div className='successDiv'>
+                            <p>{SuccessMessage.message}</p>
+                        </div> : null}
+                
+                
                     <div className='d-flex flex-column mt-3'>
                         <button className='btn btn-primary' type='submit'>Submit</button>
                     </div>
