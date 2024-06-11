@@ -54,6 +54,7 @@ const GetClassData = async () =>{
             },
         }
     );
+    console.log(response.data);
     SetClassData(response.data);
 } catch (error) {
     console.error(error);
@@ -87,7 +88,7 @@ const [formData, setFormData] = useState({
   ClassRank: "",
   ClassFloor: "",
   ClassTeacherID: "",
-  ClassID : ClassData? ClassData.data.id : ""
+  ClassID : ClassData ? ClassData.data.id : ""
 });
 
 const CreateClass = async (formData) => {
@@ -179,11 +180,12 @@ const handleSubmit = (e) => {
         </div>
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
-        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" onChange={handleChange}>
+        <select id="cars" className='Forminput mb-3' name="ClassTeacherID" onChange={handleChange}required>
+          <option></option>
         {ClassData && ClassData.data.id ? 
-          <option key={ClassData.data.teachers[0].user.name} value={ClassData.data.teachers[0].id} >{ClassData.data.teachers[0].user.name}</option> : ""}
-        {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher) => {
-            return <option key={teacher.user.name} value={teacher.id} >{teacher.user.name}</option>;
+          <option value={ClassData.data.teachers[0].id} >{ClassData.data.teachers[0].user.name}</option> : ""}
+        {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {
+            return <option value={teacher.id} >{teacher.user.name}</option>;
         })}
         </select>
         </div>

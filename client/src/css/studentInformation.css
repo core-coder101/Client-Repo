@@ -48,3 +48,7 @@
     border: none;
     padding: 0px 10px;
 }
+.tableDiv{
+    margin: 25px 25px;
+    box-shadow: rgba(0, 0, 0, 0.122) 0px 10px 10px 1px;
+}
