@@ -207,7 +207,7 @@ export default function CreateStudent() {
                     
                 </form>
             </div>
-            <div className='FormBorder ms-auto me-auto'>
+            <div className='parentsForm FormBorder ms-auto me-auto'>
             <center><h2 className='protest-revolution-regular'>Parents Data</h2></center>
                 <form onSubmit={handleSubmit}>
                     <div className='d-flex flex-column'>
