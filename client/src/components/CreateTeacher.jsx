@@ -206,6 +206,7 @@ export default function CreateTeacher() {
                             <option value='Buddhism'>Buddhism</option>
                         </select>
                     </div>
+                    
                     <div className='d-flex flex-column mt-3 mb-3'>
                         <input
                             className='Forminput'
