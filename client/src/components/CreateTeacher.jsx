@@ -6,7 +6,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import defaultImg from "../img/default.png"
 import { Tooltip } from "@mui/material"
-
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
 
 
 export default function CreateTeacher() {    
@@ -24,6 +31,7 @@ export default function CreateTeacher() {
         name: "",
         userName: "",
         email: "",
+        subjects: [],
         TeacherDOB: "",
         TeacherCNIC: "",
         TeacherPhoneNumber: "",
@@ -56,6 +64,7 @@ export default function CreateTeacher() {
                     name: "",
                     userName: "",
                     email: "",
+                    subjects: [],
                     TeacherDOB: "",
                     TeacherCNIC: "",
                     TeacherPhoneNumber: "",
@@ -104,6 +113,54 @@ export default function CreateTeacher() {
         createTeacher(formData);
     };
 
+
+
+
+
+
+
+
+
+
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+    PaperProps: {
+        style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+        },
+    },
+    };
+
+    const names = [
+    'Maths',
+    'General Science',
+    'Physics',
+    'Chemistry',
+    'Biology',
+    'Computer Science',
+    'Pakistan Studies',
+    'Urdu',
+    'English',
+    'Islamiat',
+    ];
+
+  const handleSelectChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setFormData((prev)=>{
+        return {
+            ...prev,
+            // On autofill we get a stringified value.
+            subjects: typeof value === 'string' ? value.split(',') : value,
+        }
+    });
+  };
+
+
+
     return (
         <div className='createClass'>
             <div className='mt-2 mb-4'>
@@ -118,9 +175,11 @@ export default function CreateTeacher() {
             <div className='FormBorder ms-auto me-auto'>       
                 <form onSubmit={handleSubmit}>
                     <Tooltip
-                    title="Add Your Image"
-                    placement='bottom'
-                    arrow
+                        title="Add Teacher's Image"
+                        arrow
+                        placement="bottom"
+                        size="lg"
+                        variant="solid"
                     >
                         <div className="profile-container ms-auto me-auto mb-3">
                             <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} />
@@ -134,7 +193,7 @@ export default function CreateTeacher() {
                             placeholder='Enter name of Teacher'
                             name='name'
                             value={formData.name}
-                            onChange={handleChange}
+                            onChange={handleSelectChange}
                             required
                         />
                     </div>
@@ -159,6 +218,40 @@ export default function CreateTeacher() {
                             required
                         />
                     </div>
+                    <InputLabel className='mb-1 mt-2' id="demo-multiple-chip-label">Subjects</InputLabel>
+                    <Tooltip 
+                        title="Subjects that the Teacher will teach" 
+                        arrow
+                        placement="bottom"
+                        size="lg"
+                        variant="solid"
+                    >
+                        <Select
+                            labelId="demo-multiple-chip-label"
+                            id="demo-multiple-chip"
+                            multiple
+                            value={formData.subjects}
+                            onChange={handleSelectChange}
+                            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value} />
+                                ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            >
+                            {names.map((name) => (
+                                <MenuItem
+                                key={name}
+                                value={name}
+                                >
+                                {name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Tooltip>
                     <div className='d-flex flex-column mt-3'>
                         <input
                             className='Forminput'
@@ -248,5 +341,5 @@ export default function CreateTeacher() {
                 </form>
             </div>
         </div>
-    );
+    )
 }
