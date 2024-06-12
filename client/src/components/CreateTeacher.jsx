@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import defaultImg from "../img/default.png"
+import { Tooltip } from "@mui/material"
 
 
 
@@ -83,12 +84,19 @@ export default function CreateTeacher() {
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
-            setFormData({ ...formData, image: e.target.files[0] });
+            const file = e.target.files[0]
+
+            const reader = new FileReader()
+            reader.onload = () => {
+                const dataURL = reader.result
+                setFormData((prev) => {return {...prev, image: dataURL}})
+            }
+            reader.readAsDataURL(file);
         }
     }
 
     function handleImgClick () {
-        document.getElementById("imageInput").click()
+        document.getElementById("teacherImageInput").click()
     }
 
     const handleSubmit = (e) => {
@@ -109,11 +117,17 @@ export default function CreateTeacher() {
             </div>
             <div className='FormBorder ms-auto me-auto'>       
                 <form onSubmit={handleSubmit}>
-                <div class="profile-container ms-auto me-auto mb-3">
-                    <img src={formData.image ? URL.createObjectURL(formData.image) : defaultImg} alt="Profile Icon" class="profile-icon" onClick={handleImgClick} />
-                </div>
+                    <Tooltip
+                    title="Add Your Image"
+                    placement='bottom'
+                    arrow
+                    >
+                        <div className="profile-container ms-auto me-auto mb-3">
+                            <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} />
+                        </div>
+                    </Tooltip>
  
-                    <input id='imageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
+                    <input id='teacherImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
                     <div className='d-flex flex-column'>
                         <input
                             className='Forminput'
