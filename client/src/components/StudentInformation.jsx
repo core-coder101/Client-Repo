@@ -43,14 +43,6 @@ export default function StudentInformation() {
                 }
             );
             SetClasses(response.data);
-            if (response.data.data && response.data.data.length > 0) {
-                const firstClass = response.data.data[0];
-                SetApiSearchData(prevData => ({
-                    ...prevData,
-                    ClassRank: firstClass.ClassRank,
-                    ClassName: firstClass.ClassName
-                }));
-            }
         } catch (error) {
             console.error(error);
             setErrorMessage({ success: false, message: "Failed to Load Classes" });
@@ -129,6 +121,7 @@ export default function StudentInformation() {
                     <div className="inputDiv">
                         <p>Name</p>
                         <select className='input' name='ClassName' value={ApiSearchData.ClassName} onChange={handleChange}>
+                        <option></option>
                             {Classes.data && Classes.data.map((Class, index) => (
                                 ApiSearchData.ClassRank == Class.ClassRank && (
                                     <option key={Class.id} value={Class.ClassName}>{Class.ClassName}</option>
@@ -164,14 +157,14 @@ export default function StudentInformation() {
                         <tbody>
                             {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
                                 <tr key={student.id}>
-                                    <td>{index + 1}</td>
+                                    <td>{student.id}</td>
                                     <td><IoPersonCircle style={{ width: "40px", height: "40px" }} /></td>
-                                    <td>{student.name}</td>
-                                    <td>{student.parentName}</td>
-                                    <td>{student.classRank}</td>
-                                    <td>{student.className}</td>
-                                    <td>{student.campus}</td>
-                                    <td>{student.parentPhone}</td>
+                                    <td>{student.users.name}</td>
+                                    <td>{student.parents.FatherName}</td>
+                                    <td>{ApiSearchData.ClassRank}</td>
+                                    <td>{ApiSearchData.ClassName}</td>
+                                    <td>{ApiSearchData.campus}</td>
+                                    <td>{student.parents.GuardiansPhoneNumber}</td>
                                     <td>
                                         <div className="filterDataDiv generateID innerButtonDiv">
                                             <p>Generate ID</p>
