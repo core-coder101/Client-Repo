@@ -37,6 +37,8 @@
     align-items: center;
     align-self: flex-end;
     height: 40px;
+    justify-content: space-between;
+    transition: all 0.4s ease;
 }
 .filterDataDiv p{
     color: white;
@@ -82,4 +84,33 @@
     color: white;
     margin: 0;
     font-size: medium;
+}
+th, td{
+    text-align: center;
+    vertical-align: middle;
+    font-size: 12px;
+}
+.generateID{
+    background-color: #F19A13;
+}
+.generateID button{
+    background-color: #FFCE0C;
+}
+.resetPassword{
+    background-color: #65BC6F;
+}
+.resetPassword button{
+    background-color: #0F733F;
+}
+.viewProfile{
+    background-color: #046FBC;
+}
+.viewProfile button{
+    background-color: #005793;
+}
+.innerButtonDiv{
+    height: 25px;
+}
+.customButton{
+    
 }
