@@ -44,14 +44,6 @@ export default function StudentInformation() {
                 }
             );
             SetClasses(response.data);
-            if (response.data.data && response.data.data.length > 0) {
-                const firstClass = response.data.data[0];
-                SetApiSearchData(prevData => ({
-                    ...prevData,
-                    ClassRank: firstClass.ClassRank,
-                    ClassName: firstClass.ClassName
-                }));
-            }
         } catch (error) {
             console.error(error);
             setErrorMessage({ success: false, message: "Failed to Load Classes" });
@@ -130,6 +122,7 @@ export default function StudentInformation() {
                     <div className="inputDiv">
                         <p>Name</p>
                         <select className='input' name='ClassName' value={ApiSearchData.ClassName} onChange={handleChange}>
+                        <option></option>
                             {Classes.data && Classes.data.map((Class, index) => (
                                 ApiSearchData.ClassRank == Class.ClassRank && (
                                     <option key={Class.id} value={Class.ClassName}>{Class.ClassName}</option>
@@ -165,6 +158,18 @@ export default function StudentInformation() {
                         <tbody>
                             {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
                                 <tr key={student.id}>
+                                    <td>{student.id}</td>
+                                    <td>
+                                        <div style={{width: "40px", height: "40px"}} className="profile-container ms-auto me-auto mb-3">
+                                            <img src={student.image ? student.image : defaultImg} alt="Profile Icon" className="profile-icon" />
+                                        </div>
+                                    </td>
+                                    <td>{student.users.name}</td>
+                                    <td>{student.parents.FatherName}</td>
+                                    <td>{ApiSearchData.ClassRank}</td>
+                                    <td>{ApiSearchData.ClassName}</td>
+                                    <td>{ApiSearchData.campus}</td>
+                                    <td>{student.parents.GuardiansPhoneNumber}</td>
                                     <td>{index + 1}</td>
                                     <td>
                                         <div style={{width: "40px", height: "40px"}} className="profile-container ms-auto me-auto mb-3">
