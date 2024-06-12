@@ -11,6 +11,7 @@ import { TiDocumentText } from "react-icons/ti";
 import { IoPerson } from "react-icons/io5";
 import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
+import defaultImg from "../img/default.png"
 
 export default function StudentInformation() {
     const navigate = useNavigate();
@@ -165,7 +166,11 @@ export default function StudentInformation() {
                             {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
                                 <tr key={student.id}>
                                     <td>{index + 1}</td>
-                                    <td><IoPersonCircle style={{ width: "40px", height: "40px" }} /></td>
+                                    <td>
+                                        <div style={{width: "40px", height: "40px"}} className="profile-container ms-auto me-auto mb-3">
+                                            <img src={student.image ? student.image : defaultImg} alt="Profile Icon" className="profile-icon" />
+                                        </div>
+                                    </td>
                                     <td>{student.name}</td>
                                     <td>{student.parentName}</td>
                                     <td>{student.classRank}</td>

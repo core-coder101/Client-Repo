@@ -40,7 +40,7 @@ export default function CreateTeacher() {
         TeacherSalary: "",
     });
 
-    const [result, setResult] = useState(null);
+
     const [errorMessage, setErrorMessage] = useState("");
     const [SuccessMessage, setSuccessMessage] = useState("");
 
@@ -58,7 +58,6 @@ export default function CreateTeacher() {
                 }
             );
             if(response.data.success == true){
-                setResult(response.data);
                 setSuccessMessage({success:true, message:"New Teacher created successfully"})
                 setFormData({
                     name: "",
@@ -193,7 +192,7 @@ export default function CreateTeacher() {
                             placeholder='Enter name of Teacher'
                             name='name'
                             value={formData.name}
-                            onChange={handleSelectChange}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -308,7 +307,7 @@ export default function CreateTeacher() {
                         >
                             <option value='Islam'>Islam</option>
                             <option value='Christianity'>Christianity</option>
-                            <option value='Irreligion'>Irreligion</option>
+                            <option value='Atheist'>Atheist</option>
                             <option value='Hinduism'>Hinduism</option>
                             <option value='Buddhism'>Buddhism</option>
                         </select>
