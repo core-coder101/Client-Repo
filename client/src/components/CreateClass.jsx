@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 export default function CreateClass(){
-
+  
   const { ID } = useParams();
   const { CSRFToken, user } = useAuth();
   const [teachers, setteachers] = useState(null);
@@ -36,7 +36,6 @@ export default function CreateClass(){
     );
     if(response.data.success == true){
       setteachers(response.data.data);
-      
     }
     else{
       setErrorMessage(response.data);
@@ -95,9 +94,6 @@ useEffect(()=>{
   }
 },[])
 
-useEffect(()=>{
-  console.log(teachers);
-}, [teachers])
 
 useEffect(()=>{
   GetTeachers();
@@ -105,9 +101,6 @@ useEffect(()=>{
 
 
 const [result, setResult] = useState(null);
-
-
-
 
 const CreateClass = async (formData) => {
   if(formData.ClassID == ""){
@@ -126,6 +119,13 @@ const CreateClass = async (formData) => {
       if(response.data.success == true){
         setResult(response.data);
         setSuccessMessage({success: true, message: "Successfully Created a new Class"})
+        setFormData({
+          ClassName:  "",
+          ClassRank:  "",
+          ClassFloor: "",
+          ClassTeacherID: "",
+          ClassID : ""
+        });
       }
       else{
         setErrorMessage(response.data);
@@ -151,6 +151,13 @@ else{
     if(response.data.success == true){
       setResult(response.data);
       setSuccessMessage({success: true, message: "Successfully Updated selected Class"})
+      setFormData({
+        ClassName:  "",
+        ClassRank:  "",
+        ClassFloor: "",
+        ClassTeacherID: "",
+        ClassID : ""
+      });
     }
     else{
       setErrorMessage(response.data);
@@ -171,6 +178,7 @@ const handleChange = (e) => {
       [name]: value,
   }));
   setErrorMessage("");
+  setSuccessMessage("");
 };
 
 const handleSubmit = (e) => {

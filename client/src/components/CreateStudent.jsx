@@ -60,7 +60,7 @@ export default function CreateStudent() {
               }
           );
           if(response.data.success == true){
-            setResult(response.data);
+            SetClassData(response.data.data);
           }
           else{
             setErrorMessage(response.data);
@@ -114,7 +114,27 @@ export default function CreateStudent() {
             );
             if(response.data.success == true){
                 setResult(response.data);
-                setSuccessMessage({success:true, message: "New Student created successfully"})
+                setSuccessMessage({success:true, message: "New Student created successfully"});
+                setFormData({
+                    name: "",
+                    userName: "",
+                    email: "",
+                    StudentDOB: "",
+                    StudentGender: "Male",
+                    StudentCNIC: "",
+                    StudentClassID:"",
+                    StudentPhoneNumber:"",
+                    StudentHomeAddress: "",
+                    StudentReligion: "Islam",
+                    StudentMonthlyFee: "",
+                    FatherName:"",
+                    MotherName:"",
+                    GuardiansCNIC:"",
+                    GuardiansPhoneNumber:"",
+                    GuardiansPhoneNumber2:"",
+                    HomeAddress:"",
+                    GuardiansEmail:""
+                });
               }
               else{
                 setErrorMessage(response.data);
@@ -124,13 +144,7 @@ export default function CreateStudent() {
         }
     };
 
-    useEffect(() => {
-        if (result && !result.success) {
-            setErrorMessage(result.message);
-        } else {
-            setErrorMessage("");
-        }
-    }, [result]);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -139,6 +153,7 @@ export default function CreateStudent() {
             [name]: value,
         }));
         setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const handleSubmit = (e) => {
@@ -251,7 +266,7 @@ export default function CreateStudent() {
                             value={formData.StudentClassID}
                             required
                         >
-                        {ClassData && ClassData.data.map((Class) => {
+                        {ClassData && ClassData.map((Class) => {
                             return (<option value={Class.id}>{Class.ClassRank} {" "} { " " }  {Class.ClassName}</option>);
                         })}
                         </select>
@@ -379,7 +394,7 @@ export default function CreateStudent() {
                             required
                         />
                     </div>
-                    <div className='d-flex flex-column mt-3'>
+                    <div className='d-flex flex-column mt-3 mb-3'>
                         <input
                             className='Forminput'
                             type='text'
@@ -401,7 +416,7 @@ export default function CreateStudent() {
                         </div> : null}
                 
                 
-                    <div className='d-flex flex-column mt-3'>
+                    <div className='d-flex flex-column '>
                         <button className='btn btn-primary' type='submit'>Submit</button>
                     </div>
                     </div>

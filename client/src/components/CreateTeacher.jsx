@@ -52,6 +52,17 @@ export default function CreateTeacher() {
             if(response.data.success == true){
                 setResult(response.data);
                 setSuccessMessage({success:true, message:"New Teacher created successfully"})
+                setFormData({
+                    name: "",
+                    userName: "",
+                    email: "",
+                    TeacherDOB: "",
+                    TeacherCNIC: "",
+                    TeacherPhoneNumber: "",
+                    TeacherHomeAddress: "",
+                    TeacherReligion: "Islam",
+                    TeacherSalary: "",
+                });
               }
               else{
                 setErrorMessage(response.data);
@@ -61,14 +72,6 @@ export default function CreateTeacher() {
         }
     };
 
-    useEffect(() => {
-        if (result && !result.success) {
-            setErrorMessage(result.message);
-        } else {
-            setErrorMessage("");
-        }
-    }, [result]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -76,6 +79,7 @@ export default function CreateTeacher() {
             [name]: value,
         }));
         setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const handleFileChange = (e) => {
@@ -216,7 +220,7 @@ export default function CreateTeacher() {
                             <option value='Buddhism'>Buddhism</option>
                         </select>
                     </div>
-                    <div className='d-flex flex-column mt-3'>
+                    <div className='d-flex flex-column mt-3 mb-3'>
                         <input
                             className='Forminput'
                             type='number'
@@ -236,7 +240,7 @@ export default function CreateTeacher() {
                             <p>{SuccessMessage.message}</p>
                         </div> : null}
                     <div>
-                        <button className='btn btn-primary mt-3 w-100' type='submit'>
+                        <button className='btn btn-primary w-100' type='submit'>
                             Submit
                         </button>
                     </div>
