@@ -4,8 +4,16 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Tooltip } from '@mui/material';
 import defaultImg from "../img/default.png"
+import { Tooltip } from "@mui/material"
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
 
 
 export default function CreateStudent() {
@@ -23,6 +31,7 @@ export default function CreateStudent() {
         name: "",
         userName: "",
         email: "",
+        subjects: [],
         StudentDOB: "",
         StudentGender: "Male",
         StudentCNIC: "",
@@ -161,6 +170,60 @@ export default function CreateStudent() {
         CreateStudent(formData);
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+    PaperProps: {
+        style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+        },
+    },
+    };
+
+    const names = [
+    'Maths',
+    'General Science',
+    'Physics',
+    'Chemistry',
+    'Biology',
+    'Computer Science',
+    'Pakistan Studies',
+    'Urdu',
+    'English',
+    'Islamiat',
+    ];
+
+  const handleSelectChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setFormData((prev)=>{
+        return {
+            ...prev,
+            // On autofill we get a stringified value.
+            subjects: typeof value === 'string' ? value.split(',') : value,
+        }
+    });
+  };
+
+
+
+
     return (
         <div className='createClass'>
             <div className='mt-2 mb-4'>
@@ -176,10 +239,12 @@ export default function CreateStudent() {
             <div className='row m-0 p-0'>
             <div className='FormBorder ms-auto me-auto'>
             <center><h2 className='protest-revolution-regular mb-3'>Students Data</h2></center>
-            <Tooltip
-                    title="Add Your Image"
-                    placement='bottom'
-                    arrow
+                    <Tooltip
+                        title="Add Student's Image"
+                        arrow
+                        placement="bottom"
+                        size="lg"
+                        variant="solid"
                     >
                         <div className="profile-container ms-auto me-auto mb-3">
                             <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} />
@@ -217,6 +282,40 @@ export default function CreateStudent() {
                             required
                         />
                     </div>
+                    <InputLabel className='mb-1 mt-2' id="demo-multiple-chip-label">Subjects</InputLabel>
+                    <Tooltip 
+                        title="Select the student's subjects" 
+                        arrow
+                        placement="bottom"
+                        size="lg"
+                        variant="solid"
+                    >
+                        <Select
+                            labelId="demo-multiple-chip-label"
+                            id="demo-multiple-chip"
+                            multiple
+                            value={formData.subjects}
+                            onChange={handleSelectChange}
+                            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value} />
+                                ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            >
+                            {names.map((name) => (
+                                <MenuItem
+                                key={name}
+                                value={name}
+                                >
+                                {name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Tooltip>
                     <div className='d-flex flex-column mt-3'>
                         <input
                             className='Forminput'
