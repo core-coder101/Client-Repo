@@ -128,6 +128,7 @@ export default function CreateStudent() {
                     name: "",
                     userName: "",
                     email: "",
+                    subjects: [],
                     StudentDOB: "",
                     StudentGender: "Male",
                     StudentCNIC: "",

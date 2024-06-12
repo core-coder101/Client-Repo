@@ -111,6 +111,9 @@ th, td{
 .innerButtonDiv{
     height: 25px;
 }
-.customButton{
-    
+.DeleteBtn{
+    background-color: #930000;
+    color: white;
+    border: none;
+    padding: 5px;
 }

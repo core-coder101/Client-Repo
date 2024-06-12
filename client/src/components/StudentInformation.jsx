@@ -15,7 +15,16 @@ import defaultImg from "../img/default.png"
 
 export default function StudentInformation() {
     const navigate = useNavigate();
-    const [isOpen, setIsOpen] = useState(false);
+    
+    const [isOpen, setIsOpen] = useState({});
+
+const toggleDropdown = (id) => {
+  setIsOpen(prevState => ({
+    ...prevState,
+    [id]: !prevState[id] // Toggle the dropdown state for the clicked row
+  }));
+};
+
     const { CSRFToken, user } = useAuth();
 
     if (user.token) {
@@ -44,14 +53,6 @@ export default function StudentInformation() {
                 }
             );
             SetClasses(response.data);
-            if (response.data.data && response.data.data.length > 0) {
-                const firstClass = response.data.data[0];
-                SetApiSearchData(prevData => ({
-                    ...prevData,
-                    ClassRank: firstClass.ClassRank,
-                    ClassName: firstClass.ClassName
-                }));
-            }
         } catch (error) {
             console.error(error);
             setErrorMessage({ success: false, message: "Failed to Load Classes" });
@@ -94,12 +95,47 @@ export default function StudentInformation() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         SetApiSearchData(prev => ({
-            ...prev,
-            [name]: value,
+          ...prev,
+          [name]: value,
         }));
+        if (name === 'ClassRank') {
+          // Update ClassName based on the selected ClassRank
+          const selectedClass = Classes.data.find(Class => Class.ClassRank === value);
+          if (selectedClass) {
+            SetApiSearchData(prev => ({
+              ...prev,
+              ClassName: selectedClass.ClassName,
+            }));
+          }
+        }
         setErrorMessage("");
         setSuccessMessage("");
-    };
+      };
+      
+
+
+      const Delete = async(id) => {
+        try {
+          const response = await axios.post(
+              'http://127.0.0.1:8000/api/DeleteStudent',{ID:id}
+              ,{
+                  headers: {
+                      'X-CSRF-TOKEN': CSRFToken,
+                      'Content-Type': 'application/json',
+                      'API-TOKEN': 'IT is to secret you cannot break it :)',
+                  },
+              }
+          );
+      } catch (error) {
+          console.error(error);
+          setErrorMessage({ success: false, message: "Failed to Delete Student" });
+      }
+      }
+    
+      const Edit = (id) => {
+        navigate(`/CreateStudent/${id}`);
+      };
+
 
     return (
         <div>
@@ -165,18 +201,18 @@ export default function StudentInformation() {
                         <tbody>
                             {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
                                 <tr key={student.id}>
-                                    <td>{index + 1}</td>
+                                    <td>{student.id}</td>
                                     <td>
                                         <div style={{width: "40px", height: "40px"}} className="profile-container ms-auto me-auto mb-3">
-                                            <img src={student.image ? student.image : defaultImg} alt="Profile Icon" className="profile-icon" />
+                                            <img src={student.users.images[0] ? `data:image/png;base64,${student.users.images[0].data}` : defaultImg} alt="Profile Icon" className="profile-icon" />
                                         </div>
                                     </td>
-                                    <td>{student.name}</td>
-                                    <td>{student.parentName}</td>
-                                    <td>{student.classRank}</td>
-                                    <td>{student.className}</td>
-                                    <td>{student.campus}</td>
-                                    <td>{student.parentPhone}</td>
+                                    <td>{student.users.name}</td>
+                                    <td>{student.parents.FatherName}</td>
+                                    <td>{ApiSearchData.ClassRank}</td>
+                                    <td>{ApiSearchData.ClassName}</td>
+                                    <td>{ApiSearchData.campus}</td>
+                                    <td>{student.parents.GuardiansPhoneNumber}</td>
                                     <td>
                                         <div className="filterDataDiv generateID innerButtonDiv">
                                             <p>Generate ID</p>
@@ -196,25 +232,25 @@ export default function StudentInformation() {
                                         </div>
                                     </td>
                                     <td>
-                                        <div className="dropdown">
-                                            <button
-                                                className="dropdown-toggle customButton"
-                                                type="button"
-                                                id="dropdownMenuButton"
-                                                data-toggle="dropdown"
-                                                aria-haspopup="true"
-                                                aria-expanded={isOpen}
-                                                onClick={() => { setIsOpen(prev => !prev) }}
-                                            >
-                                                Actions
-                                            </button>
-                                            <div className={`customDropDown dropdown-menu${isOpen ? ' show' : ''}`} aria-labelledby="dropdownMenuButton">
-                                                <a className="dropdown-item" href="#">Edit</a>
-                                                <a className="dropdown-item" href="#">Delete</a>
-                                                <a className="dropdown-item" href="#">Deactivate Student</a>
-                                            </div>
-                                        </div>
-                                    </td>
+          <div className="dropdown">
+            <button
+              className="DeleteBtn dropdown-toggle customButton"
+              type="button"
+              id={`dropdownMenuButton-${student.id}`} // Unique ID for each dropdown
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded={isOpen[student.id]}
+              onClick={() => toggleDropdown(student.id)} // Pass the student ID to toggleDropdown
+            >
+              Actions
+            </button>
+            <div className={` customDropDown dropdown-menu${isOpen[student.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${student.id}`}>
+              <a className="dropdown-item" onClick={()=>{Edit(student.id)}}>Edit</a>
+              <a className="dropdown-item" onClick={()=>{Delete(student.id)}}>Delete</a>
+              <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
+            </div>
+          </div>
+        </td>
                                 </tr>
                             )) : (
                                 <tr>
