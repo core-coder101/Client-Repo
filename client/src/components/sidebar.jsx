@@ -83,8 +83,27 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
         path: '/addstudent',
         icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
       },{
-        title: 'Student Information',
-        path: '/studentinformation',
+        title: 'Students Information',
+        path: '/studentsinformation',
+        icon: <IoInformationCircleOutline style={{width: "20px", height: "20px"}} />
+      },
+    ]
+  }
+  const teachersData = {
+    title: 'Teachers',
+    path: '',
+    icon: <FaChalkboardTeacher />,
+    iconClosed: <RiArrowDropDownLine />,
+    iconOpened: <MdKeyboardArrowUp />,
+
+    subNav: [
+      {
+        title: 'Add Teacher',
+        path: '/addteacher',
+        icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
+      },{
+        title: 'Teachers Information',
+        path: '/teachersinformation',
         icon: <IoInformationCircleOutline style={{width: "20px", height: "20px"}} />
       },
     ]
@@ -107,44 +126,9 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
               </Link>
               <span className="tooltip">Dashboard</span>
             </li>
-            <li>
-              <Link to="/addteacher">
-                <i className="bx"><FaChalkboardTeacher /></i>
-                <span className="links_name">Add Teacher</span>
-              </Link>
-              <span className="tooltip">Add Teacher</span>
-            </li>
             <SubMenu sidebarOpen={sidebarOpen} item={classesData} key={0} />
-            <SubMenu sidebarOpen={sidebarOpen} item={studentsData} key={1} />
-            {/* <li>
-              <a href="#">
-                <i className="bx bx-folder" />
-                <span className="links_name">File Manager</span>
-              </a>
-              <span className="tooltip">Files</span>
-            </li>
-            <li>
-              <a href="#">
-                <i className="bx bx-cart-alt" />
-                <span className="links_name">Order</span>
-              </a>
-              <span className="tooltip">Order</span>
-            </li>
-            <li>
-              <a href="#">
-                <i className="bx bx-heart" />
-                <span className="links_name">Saved</span>
-              </a>
-              <span className="tooltip">Saved</span>
-            </li>
-            <li>
-              <a href="#">
-                <i className="bx bx-cog" />
-                <span className="links_name">Setting</span>
-              </a>
-              <span className="tooltip">Setting</span>
-            </li> */}
-
+            <SubMenu sidebarOpen={sidebarOpen} item={teachersData} key={1} />
+            <SubMenu sidebarOpen={sidebarOpen} item={studentsData} key={2} />
             <li className="profile">
               <div className="profile-details">
                 <BsPersonFill color='white' style={{width: "30px", height: "30px", marginRight: "10px"}} />

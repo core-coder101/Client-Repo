@@ -5,6 +5,7 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Preloader from './Preloader';
 
 export default function ManageClasses() {
 
@@ -96,7 +97,7 @@ export default function ManageClasses() {
             </tr>
           </thead>
           <tbody>
-            
+            {!Classes ? <Preloader /> : null}
             {Classes && Classes.data.map((Class) => {
               console.log(Class);
                 return (

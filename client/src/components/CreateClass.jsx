@@ -15,6 +15,15 @@ export default function CreateClass(){
   const [errorMessage, setErrorMessage] = useState("");
   const [SuccessMessage, setSuccessMessage] = useState("");
 
+  const [formData, setFormData] = useState({
+    ClassName:  "",
+    ClassRank:  "",
+    ClassFloor: "",
+    ClassTeacherID: "",
+    ClassID : ""
+  });
+  
+
   const navigate = useNavigate()
 
     if (user.token) {
@@ -36,6 +45,10 @@ export default function CreateClass(){
     );
     if(response.data.success == true){
       setteachers(response.data.data);
+      setFormData((prev) => ({
+        ...prev,
+        ClassTeacherID: JSON.stringify(response.data.data[0].id)
+    }));
     }
     else{
       setErrorMessage(response.data);
@@ -45,13 +58,6 @@ export default function CreateClass(){
 }}
 
 
-const [formData, setFormData] = useState({
-  ClassName:  "",
-  ClassRank:  "",
-  ClassFloor: "",
-  ClassTeacherID: "",
-  ClassID : ""
-});
 
 
 const [ClassData , SetClassData] = useState();
@@ -212,7 +218,6 @@ const handleSubmit = (e) => {
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
         <select id="cars" className='Forminput mb-3' name="ClassTeacherID" value={formData.ClassTeacherID} onChange={handleChange} required>
-        <option></option>
         {ClassData && ClassData.data.id ? 
           <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.users.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {

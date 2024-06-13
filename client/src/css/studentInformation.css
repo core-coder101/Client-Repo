@@ -117,3 +117,6 @@ th, td{
     border: none;
     padding: 5px;
 }
+.dropdown-item:hover{
+    cursor: pointer;
+}
