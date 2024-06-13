@@ -115,7 +115,7 @@ const toggleDropdown = (id) => {
       const Delete = async(id) => {
         try {
           const response = await axios.post(
-              'http://127.0.0.1:8000/api/DeleteStudent',{ID:id}
+              'http://127.0.0.1:8000/api/DeleteTeacher',{ID:id}
               ,{
                   headers: {
                       'X-CSRF-TOKEN': CSRFToken,
@@ -132,7 +132,7 @@ const toggleDropdown = (id) => {
       }
     
       const Edit = (id) => {
-        navigate(`/CreateStudent/${id}`);
+        navigate(`/addteacher/${id}`);
       };
 
 
@@ -263,7 +263,7 @@ const toggleDropdown = (id) => {
               Actions
             </button>
             <div className={` customDropDown dropdown-menu${isOpen[teacher.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${teacher.id}`}>
-              <a className="dropdown-item" onClick={()=>{Edit(teacher.id)}}>Edit</a>
+              <a className="dropdown-item" onClick={()=>{Edit(teacher.users.id)}}>Edit</a>
               <a className="dropdown-item" onClick={()=>{Delete(teacher.id)}}>Delete</a>
               <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
             </div>

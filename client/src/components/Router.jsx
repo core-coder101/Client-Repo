@@ -56,5 +56,9 @@ export const router = createBrowserRouter([
     {
       path: "/teachersinformation",
       element: <PrivateRoute element={<Template element={<TeachersInformation />} />} />
+    },
+    {
+      path: "/addteacher/:ID",
+      element: <PrivateRoute element={<Template element={<CreateTeacher />} />} />
     }
 ])
