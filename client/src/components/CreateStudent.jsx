@@ -141,6 +141,7 @@ export default function CreateStudent() {
                     name: "",
                     userName: "",
                     email: "",
+                    subjects: [],
                     StudentDOB: "",
                     StudentGender: "Male",
                     StudentCNIC: "",
@@ -520,7 +521,7 @@ export default function CreateStudent() {
                     <div className='d-flex flex-column mt-3 mb-3'>
                         <input
                             className='Forminput'
-                            type='text'
+                            type='email'
                             placeholder='Enter Email of Guardians'
                             name='GuardiansEmail'
                             onChange={handleChange}

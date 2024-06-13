@@ -5,14 +5,12 @@ import "../css/Teacher.css";
 import "../css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
 import "../css/studentInformation/all.min.css";
-import { IoPersonCircle } from "react-icons/io5";
 import { FaKey } from "react-icons/fa6";
 import { TiDocumentText } from "react-icons/ti";
 import { IoPerson } from "react-icons/io5";
 import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
-
 export default function StudentInformation() {
     const navigate = useNavigate();
     
@@ -21,7 +19,7 @@ export default function StudentInformation() {
 const toggleDropdown = (id) => {
   setIsOpen(prevState => ({
     ...prevState,
-    [id]: !prevState[id] // Toggle the dropdown state for the clicked row
+    [id]: !prevState[id]
   }));
 };
 
@@ -237,6 +235,7 @@ const toggleDropdown = (id) => {
                                             <p>View Profile</p>
                                             <button><IoPerson color='white' style={{ width: "18px", height: "18px" }} /></button>
                                         </div>
+                                        
                                     </td>
                                     <td>
           <div className="dropdown">
