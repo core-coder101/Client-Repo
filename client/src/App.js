@@ -12,6 +12,7 @@ import CreateTeacher from './components/CreateTeacher.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import CreateStudent from './components/CreateStudent.jsx';
 import StudentInformation from './components/StudentInformation.jsx';
+import PopupExample from './components/popup.jsx';
 
 export default function App() {
   const {result} = useAuth()
@@ -55,7 +56,18 @@ export default function App() {
     {
       path: "/studentinformation",
       element: <PrivateRoute element={<Template element={<StudentInformation />} />} />
+    },
+    {
+      path: "/CreateStudent/:ID",
+      element: <PrivateRoute element={<Template element={<CreateStudent />} />} />
     }
+    ,
+    {
+      path: "/popup",
+      element: <PopupExample />
+    }
+    
+
 ])
 
   return (

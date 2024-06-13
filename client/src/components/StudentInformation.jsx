@@ -126,6 +126,7 @@ const toggleDropdown = (id) => {
                   },
               }
           );
+
       } catch (error) {
           console.error(error);
           setErrorMessage({ success: false, message: "Failed to Delete Student" });
@@ -245,7 +246,7 @@ const toggleDropdown = (id) => {
               Actions
             </button>
             <div className={` customDropDown dropdown-menu${isOpen[student.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${student.id}`}>
-              <a className="dropdown-item" onClick={()=>{Edit(student.id)}}>Edit</a>
+              <a className="dropdown-item" onClick={()=>{Edit(student.users.id)}}>Edit</a>
               <a className="dropdown-item" onClick={()=>{Delete(student.id)}}>Delete</a>
               <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
             </div>

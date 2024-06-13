@@ -14,9 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-
+import { useParams } from 'react-router-dom';
 
 export default function CreateStudent() {
+
+    const { ID } = useParams();
     const { CSRFToken, user } = useAuth();
 
     const navigate = useNavigate()
@@ -104,6 +106,41 @@ export default function CreateStudent() {
 
 
 
+      const [StudentData , SetStudentData] = useState();
+
+      const GetStudentData = async () =>{
+        try {
+          const response = await axios.get(
+              `http://127.0.0.1:8000/api/GetStudentData?ID=${ID}`
+              ,{
+                  headers: {
+                      'X-CSRF-TOKEN': CSRFToken,
+                      'Content-Type': 'application/json',
+                      'API-TOKEN': 'IT is to secret you cannot break it :)',
+                  },
+              }
+          );
+          console.log(response.data);
+          if(response.data.success == true){
+            SetStudentData(response.data.data);
+          }
+          else{
+            setErrorMessage(response.data);
+          }
+      } catch (error) {
+          setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
+      }
+      }
+      
+
+
+    useEffect(()=>{
+        if(ID){
+            GetStudentData()
+        }
+    },[]);
+
+
 
 
     const [result, setResult] = useState(null);
@@ -156,6 +193,60 @@ export default function CreateStudent() {
 
 
 
+
+
+    const UpdateStudent = async (formData) => {
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/UpdateStudent',
+                formData,
+                {
+                    headers: {
+                        'X-CSRF-TOKEN': CSRFToken,
+                        'Content-Type': 'application/json',
+                        'API-TOKEN': 'IT is to secret you cannot break it :)',
+                    },
+                }
+            );
+            if(response.data.success == true){
+                setResult(response.data);
+                setSuccessMessage({success:true, message: "Student Updated successfully"});
+                setFormData({
+                    name: "",
+                    userName: "",
+                    email: "",
+                    subjects: [],
+                    StudentDOB: "",
+                    StudentGender: "Male",
+                    StudentCNIC: "",
+                    StudentClassID:"",
+                    StudentPhoneNumber:"",
+                    StudentHomeAddress: "",
+                    StudentReligion: "Islam",
+                    StudentMonthlyFee: "",
+                    FatherName:"",
+                    MotherName:"",
+                    GuardiansCNIC:"",
+                    GuardiansPhoneNumber:"",
+                    GuardiansPhoneNumber2:"",
+                    HomeAddress:"",
+                    GuardiansEmail:""
+                });
+              }
+              else{
+                setErrorMessage(response.data);
+              }
+        } catch (error) {
+            setErrorMessage({ success: false, message: "Failed to Update Student" });
+        }
+    };
+
+
+
+
+
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -168,7 +259,12 @@ export default function CreateStudent() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (StudentData && StudentData.length > 0 && StudentData[0].users) {
+            UpdateStudent(formData);
+        }
+        else{
         CreateStudent(formData);
+        }
     };
 
 
@@ -178,8 +274,39 @@ export default function CreateStudent() {
 
 
 
+    useEffect(() => {
+        if (StudentData && StudentData.length > 0 && StudentData[0].users) {
+            let subjects = [];
 
-
+            // Assuming StudentData[0].users.subjects[0] is an array
+            for (let subject of StudentData[0].users.subjects) {
+                subjects.push(subject.SubjectName);
+            }
+            setFormData({
+                ID : ID,
+                name: StudentData[0].users.name || "",
+                userName: StudentData[0].users.userName || "",
+                email: StudentData[0].users.email || "",
+                subjects: subjects,
+                StudentDOB: StudentData[0].StudentDOB || "",
+                StudentGender: "Male",
+                StudentCNIC: StudentData[0].StudentCNIC || "",
+                StudentClassID: "",
+                StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
+                StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
+                StudentReligion: "Islam",
+                StudentMonthlyFee: StudentData[0].StudentMonthlyFee || "",
+                FatherName: StudentData[0].parents.FatherName || "",
+                MotherName: StudentData[0].parents.MotherName || "",
+                GuardiansCNIC: StudentData[0].parents.GuardiansCNIC || "",
+                GuardiansPhoneNumber: StudentData[0].parents.GuardiansPhoneNumber || "",
+                GuardiansPhoneNumber2: StudentData[0].parents.GuardiansPhoneNumber2 || "",
+                HomeAddress: StudentData[0].parents.HomeAddress || "",
+                GuardiansEmail: StudentData[0].parents.GuardiansEmail || "",
+            });
+        }
+    }, [StudentData]);
+    
 
 
 
@@ -248,10 +375,23 @@ export default function CreateStudent() {
                         variant="solid"
                     >
                         <div className="profile-container ms-auto me-auto mb-3">
-                            <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} />
-                        </div>
+                        <img 
+  src={
+    formData.image? formData.image :
+    StudentData && StudentData.length > 0 && StudentData[0].users && StudentData[0].users.images && StudentData[0].users.images.length > 0 && StudentData[0].users.images[0].data
+      ? `data:image/png;base64,${StudentData[0].users.images[0].data}`
+      : formData.image
+        ? formData.image
+        : defaultImg
+  }
+  alt="Profile Icon"
+  className="profile-icon"
+  onClick={handleImgClick}
+/>
+
+                            </div>
                     </Tooltip>
-                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
+                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' required onChange={handleFileChange} />
                     <div className='d-flex flex-column mt-4'>
                         <input
                             className='Forminput'
