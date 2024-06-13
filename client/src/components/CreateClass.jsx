@@ -214,9 +214,9 @@ const handleSubmit = (e) => {
         <select id="cars" className='Forminput mb-3' name="ClassTeacherID" value={formData.ClassTeacherID} onChange={handleChange} required>
         <option></option>
         {ClassData && ClassData.data.id ? 
-          <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.user.name}</option> : ""}
+          <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.users.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {
-            return <option value={teacher.id} >{teacher.user.name}</option>;
+            return <option value={teacher.id} >{teacher.users.name}</option>;
         })}
         </select>
         </div>
