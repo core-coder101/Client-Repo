@@ -59,6 +59,7 @@ export default function CreateClass(){
 
 
 
+
 const [ClassData , SetClassData] = useState();
 
 const GetClassData = async () =>{

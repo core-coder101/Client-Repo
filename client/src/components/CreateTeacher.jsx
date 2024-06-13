@@ -14,10 +14,12 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
 
 
 export default function CreateTeacher() {    
+    const { ID } = useParams();
 
 
     smoothscroll.polyfill()
@@ -48,6 +50,8 @@ export default function CreateTeacher() {
 
     const [errorMessage, setErrorMessage] = useState("");
     const [SuccessMessage, setSuccessMessage] = useState("");
+
+
 
     const [open, setOpen] = useState(false)
     const [imgClass, setImgClass] = useState("")
@@ -90,6 +94,46 @@ export default function CreateTeacher() {
         }
     };
 
+
+
+    const UpdateTeacher = async (formData) => {
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/UpdateTeacher',
+                formData,
+                {
+                    headers: {
+                        'X-CSRF-TOKEN': CSRFToken,
+                        'Content-Type': 'application/json',
+                        'API-TOKEN': 'IT is to secret you cannot break it :)',
+                    },
+                }
+            );
+            if(response.data.success == true){
+                setSuccessMessage({success:true, message:"Teacher Updated successfully"})
+                setFormData({
+                    name: "",
+                    userName: "",
+                    email: "",
+                    subjects: [],
+                    TeacherDOB: "",
+                    TeacherCNIC: "",
+                    TeacherPhoneNumber: "",
+                    TeacherHomeAddress: "",
+                    TeacherReligion: "Islam",
+                    TeacherSalary: "",
+                });
+              }
+              else{
+                setErrorMessage(response.data);
+              }
+        } catch (error) {
+            setErrorMessage({ success: false, message: "Failed to Update Teacher" });
+        }
+    };
+
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -119,7 +163,12 @@ export default function CreateTeacher() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createTeacher(formData);
+        if (TeacherData  && TeacherData.users) {
+            UpdateTeacher(formData);
+        }
+        else{
+            createTeacher(formData);
+        }
     };
 
 
@@ -170,6 +219,74 @@ export default function CreateTeacher() {
 
 
 
+
+  const [TeacherData , SetTeacherData] = useState();
+
+  const GetTeacherData = async () =>{
+    try {
+      const response = await axios.get(
+          `http://127.0.0.1:8000/api/GetTeacherData?ID=${ID}`
+          ,{
+              headers: {
+                  'X-CSRF-TOKEN': CSRFToken,
+                  'Content-Type': 'application/json',
+                  'API-TOKEN': 'IT is to secret you cannot break it :)',
+              },
+          }
+      );
+      console.log(response.data);
+      if(response.data.success == true){
+        SetTeacherData(response.data.data);
+      }
+      else{
+        setErrorMessage(response.data);
+      }
+  } catch (error) {
+      setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
+  }
+  }
+  
+
+
+useEffect(()=>{
+    if(ID){
+        GetTeacherData()
+    }
+},[]);
+
+
+
+
+
+useEffect(() => {
+    if (TeacherData && TeacherData.users) {
+        let subjects = [];
+
+        for (let subject of TeacherData.users.subjects) {
+            subjects.push(subject.SubjectName);
+        }
+
+        setFormData({
+            ID : ID,
+            name: TeacherData.users.name || "",
+            userName: TeacherData.users.userName || "",
+            email: TeacherData.users.email || "",
+            subjects: subjects,
+            TeacherDOB: TeacherData.TeacherDOB || "",
+            TeacherCNIC: TeacherData.TeacherCNIC || "",
+            TeacherPhoneNumber: TeacherData.TeacherPhoneNumber || "",
+            TeacherHomeAddress: TeacherData.TeacherHomeAddress || "",
+            TeacherReligion: "Islam",
+            TeacherSalary: TeacherData.TeacherSalary || "",
+        });
+    }
+}, [TeacherData]);
+
+
+
+
+
+
   function handleInvalid(e){
     if(formData.image){
         return
@@ -214,8 +331,20 @@ function scrollToImg(){
                         variant="solid"
                         open={open}
                     >
-                        <div className={"profile-container ms-auto me-auto mb-3 " + imgClass}>
-                            <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}} />
+                        <div className={"profile-container ms-auto me-auto mb-3 " + imgClass} onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}}>
+                        <img 
+                            src={
+                                formData.image ? formData.image :
+                                TeacherData && TeacherData.users && TeacherData.users.images  && TeacherData.users.images[0].data
+                                ? `data:image/png;base64,${TeacherData.users.images[0].data}`
+                                : formData.image
+                                    ? formData.image
+                                    : defaultImg
+                            }
+                            alt="Profile Icon"
+                            className="profile-icon"
+                            onClick={handleImgClick}
+                        />
                         </div>
                     </Tooltip>
  
