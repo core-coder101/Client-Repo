@@ -11,17 +11,25 @@ import { IoPerson } from "react-icons/io5";
 import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
+import Popup from "react-animated-popup"
+import Preloader from './Preloader';
+
+
+
 export default function StudentInformation() {
+
+    const [visible, setVisible] = useState(false)
+
     const navigate = useNavigate();
     
     const [isOpen, setIsOpen] = useState({});
 
-const toggleDropdown = (id) => {
-  setIsOpen(prevState => ({
-    ...prevState,
-    [id]: !prevState[id]
-  }));
-};
+    const toggleDropdown = (id) => {
+    setIsOpen(prevState => ({
+        ...prevState,
+        [id]: !prevState[id]
+    }));
+    };
 
     const { CSRFToken, user } = useAuth();
 
@@ -31,7 +39,6 @@ const toggleDropdown = (id) => {
 
     const [Classes, SetClasses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    const [SuccessMessage, setSuccessMessage] = useState('');
 
     const [ApiSearchData, SetApiSearchData] = useState({
         campus: "Main Campus",
@@ -113,7 +120,6 @@ const toggleDropdown = (id) => {
           }
         }
         setErrorMessage("");
-        setSuccessMessage("");
       };
       
 
@@ -130,6 +136,17 @@ const toggleDropdown = (id) => {
                   },
               }
           );
+
+          if(response.data.success == true){
+            setErrorMessage(response.data.message)
+            SetStudentInformation((prev)=>{
+                return prev.filter((student) => {
+                    return !(student.id === id)
+                })
+            })
+          } else{
+            setErrorMessage(response.data.message)
+          }
 
       } catch (error) {
           console.error(error);
@@ -238,31 +255,38 @@ const toggleDropdown = (id) => {
                                         
                                     </td>
                                     <td>
-          <div className="dropdown">
-            <button
-              className="DeleteBtn dropdown-toggle customButton"
-              type="button"
-              id={`dropdownMenuButton-${student.id}`} // Unique ID for each dropdown
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded={isOpen[student.id]}
-              onClick={() => toggleDropdown(student.id)} // Pass the student ID to toggleDropdown
-            >
-              Actions
-            </button>
-            <div className={` customDropDown dropdown-menu${isOpen[student.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${student.id}`}>
-              <a className="dropdown-item" onClick={()=>{Edit(student.users.id)}}>Edit</a>
-              <a className="dropdown-item" onClick={()=>{Delete(student.id)}}>Delete</a>
-              <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
-            </div>
-          </div>
-        </td>
+                                    <div className="dropdown">
+                                        <button
+                                            className="DeleteBtn dropdown-toggle customButton"
+                                            type="button"
+                                            id={`dropdownMenuButton-${student.id}`}
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded={isOpen[student.id]}
+                                            onClick={() => toggleDropdown(student.id)}
+                                        >
+
+                                        Actions
+                                        
+                                        </button>
+                                        <div className={` customDropDown dropdown-menu${isOpen[student.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${student.id}`}>
+                                            <a className="dropdown-item" onClick={()=>{Edit(student.users.id)}}>Edit</a>
+                                            <a className="dropdown-item" onClick={()=>{Delete(student.id)}}>Delete</a>
+                                            <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
+                                        </div>
+                                    </div>
+                                    </td>
                                 </tr>
                             )) : (
                                 <tr>
                                     <td colSpan="12" className="text-center">No Student Information Available</td>
                                 </tr>
                             )}
+                            {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                                <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                                    <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+                                </div>
+                            </Popup> : null}
                         </tbody>
                     </table>
                 </div>

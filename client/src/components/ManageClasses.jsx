@@ -6,6 +6,7 @@ import { useAuth } from './context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Preloader from './Preloader';
+import Popup from 'react-animated-popup';
 
 export default function ManageClasses() {
 
@@ -60,6 +61,7 @@ export default function ManageClasses() {
           }
       );
       SetClasses(response.data);
+      setErrorMessage(response.data)
   } catch (error) {
       console.error(error);
       setErrorMessage({ success: false, message: "Failed to Delete Class" });
@@ -104,7 +106,7 @@ export default function ManageClasses() {
               <tr>
               <td data-title="Rank">{Class.ClassRank} th</td>
               <td data-title="Name">{Class.ClassName}</td>
-              <td data-title="TeacherName">{Class.teachers.user.name}</td>
+              <td data-title="TeacherName">{Class.teachers.users.name}</td>
               <td data-title="Floor">{Class.ClassFloor}</td>
               <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  class="btn btn-info">Details</button></td>
               <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} class="btn btn-warning">Edit</button></td>
@@ -115,11 +117,11 @@ export default function ManageClasses() {
           </tbody>
         </table>
       </div>
-      {errorMessage && (
-                        <div className='errorDiv mt-3'>
-                            <p>{errorMessage.message}</p>
-                        </div>
-                    )}
+        {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+            <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+            </div>
+        </Popup> : null}
       </div>
     </div>
   )

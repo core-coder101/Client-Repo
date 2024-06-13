@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import Popup from 'react-animated-popup';
 
 export default function CreateClass(){
   
@@ -13,7 +14,6 @@ export default function CreateClass(){
   const [teachers, setteachers] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [SuccessMessage, setSuccessMessage] = useState("");
 
   const [formData, setFormData] = useState({
     ClassName:  "",
@@ -125,7 +125,7 @@ const CreateClass = async (formData) => {
       );
       if(response.data.success == true){
         setResult(response.data);
-        setSuccessMessage({success: true, message: "Successfully Created a new Class"})
+        setErrorMessage({success: true, message: "Successfully Created a new Class"})
         setFormData({
           ClassName:  "",
           ClassRank:  "",
@@ -157,7 +157,7 @@ else{
     );
     if(response.data.success == true){
       setResult(response.data);
-      setSuccessMessage({success: true, message: "Successfully Updated selected Class"})
+      setErrorMessage({success: true, message: "Successfully Updated selected Class"})
       setFormData({
         ClassName:  "",
         ClassRank:  "",
@@ -185,7 +185,6 @@ const handleChange = (e) => {
       [name]: value,
   }));
   setErrorMessage("");
-  setSuccessMessage("");
 };
 
 const handleSubmit = (e) => {
@@ -219,19 +218,17 @@ const handleSubmit = (e) => {
         <label className='label'>Name of the Teacher</label>
         <select id="cars" className='Forminput mb-3' name="ClassTeacherID" value={formData.ClassTeacherID} onChange={handleChange} required>
         {ClassData && ClassData.data.id ? 
-          <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.user.name}</option> : ""}
+          <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.users.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {
-            return <option value={teacher.id} >{teacher.user.name}</option>;
+            return <option value={teacher.id} >{teacher.users.name}</option>;
         })}
         </select>
         </div>
-        {errorMessage.message ? <div className='errorDiv'>
-                            <p>{errorMessage.message}</p>
-                        </div> : null}
-
-                        {SuccessMessage ? <div className='successDiv'>
-                            <p>{SuccessMessage.message}</p>
-                        </div> : null}
+          {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+              <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                  <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+              </div>
+          </Popup> : null}
         <div>
             <button className='btn btn-primary w-100' type='submit'>Submit</button>
         </div>

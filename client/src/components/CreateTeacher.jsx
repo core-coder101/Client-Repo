@@ -16,6 +16,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
+import Popup from 'react-animated-popup';
 
 
 export default function CreateTeacher() {    
@@ -48,8 +49,7 @@ export default function CreateTeacher() {
     });
 
 
-    const [errorMessage, setErrorMessage] = useState("");
-    const [SuccessMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState(null);
 
 
 
@@ -72,7 +72,7 @@ export default function CreateTeacher() {
                 }
             );
             if(response.data.success == true){
-                setSuccessMessage({success:true, message:"New Teacher created successfully"})
+                setErrorMessage({success:true, message:"New Teacher created successfully"})
                 setFormData({
                     name: "",
                     userName: "",
@@ -110,7 +110,7 @@ export default function CreateTeacher() {
                 }
             );
             if(response.data.success == true){
-                setSuccessMessage({success:true, message:"Teacher Updated successfully"})
+                setErrorMessage({success:true, message:"Teacher Updated successfully"})
                 setFormData({
                     name: "",
                     userName: "",
@@ -141,7 +141,6 @@ export default function CreateTeacher() {
             [name]: value,
         }));
         setErrorMessage("");
-        setSuccessMessage("");
     };
 
     const handleFileChange = (e) => {
@@ -348,7 +347,7 @@ function scrollToImg(){
                         </div>
                     </Tooltip>
  
-                    <input id='teacherImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
+                    <input id='teacherImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} required />
                     <div className='d-flex flex-column'>
                         <input
                             className='Forminput'
@@ -487,14 +486,11 @@ function scrollToImg(){
                             required
                         />
                     </div>
-                    {errorMessage && (
-                        <div className='errorDiv mt-3'>
-                            <p>{errorMessage.message}</p>
-                        </div>
-                    )}
-                    {SuccessMessage ? <div className='successDiv'>
-                            <p>{SuccessMessage.message}</p>
-                        </div> : null}
+                    {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage(null)} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                            <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                                <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+                            </div>
+                        </Popup> : null}
                     <div>
                         <button className='btn btn-primary w-100' type='submit'>
                             Submit

@@ -16,6 +16,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
+import Popup from 'react-animated-popup';
 
 
 export default function CreateStudent() {
@@ -59,8 +60,7 @@ export default function CreateStudent() {
 
 
     const [ClassData , SetClassData] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [SuccessMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const [open, setOpen] = useState(false)
     const [imgClass, setImgClass] = useState("")
@@ -155,10 +155,6 @@ export default function CreateStudent() {
     },[]);
 
 
-
-
-    const [result, setResult] = useState(null);
-
     const CreateStudent = async (formData) => {
         try {
             const response = await axios.post(
@@ -173,8 +169,7 @@ export default function CreateStudent() {
                 }
             );
             if(response.data.success == true){
-                setResult(response.data);
-                setSuccessMessage({success:true, message: "New Student created successfully"});
+                setErrorMessage({success:true, message: "New Student created successfully"});
                 setFormData({
                     name: "",
                     userName: "",
@@ -224,8 +219,7 @@ export default function CreateStudent() {
                 }
             );
             if(response.data.success == true){
-                setResult(response.data);
-                setSuccessMessage({success:true, message: "Student Updated successfully"});
+                setErrorMessage({success:true, message: "Student Updated successfully"});
                 setFormData({
                     name: "",
                     userName: "",
@@ -269,7 +263,6 @@ export default function CreateStudent() {
             [name]: value,
         }));
         setErrorMessage("");
-        setSuccessMessage("");
     };
 
     const handleSubmit = (e) => {
@@ -409,23 +402,21 @@ export default function CreateStudent() {
                         open={open}
                     >
                         <div className={"profile-container ms-auto me-auto mb-3 " + imgClass } onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}} >
-                        <img 
-  src={
-    formData.image? formData.image :
-    StudentData && StudentData.length > 0 && StudentData[0].users && StudentData[0].users.images && StudentData[0].users.images.length > 0 && StudentData[0].users.images[0].data
-      ? `data:image/png;base64,${StudentData[0].users.images[0].data}`
-      : formData.image
-        ? formData.image
-        : defaultImg
-  }
-  alt="Profile Icon"
-  className="profile-icon"
-  onClick={handleImgClick}
-/>
-
-                            </div>
+                            <img 
+                                src={
+                                    formData.image? formData.image :
+                                    StudentData && StudentData.length > 0 && StudentData[0].users && StudentData[0].users.images && StudentData[0].users.images.length > 0 && StudentData[0].users.images[0].data
+                                    ? `data:image/png;base64,${StudentData[0].users.images[0].data}`
+                                    : formData.image
+                                        ? formData.image
+                                        : defaultImg
+                                }
+                                alt="Profile Icon"
+                                className="profile-icon"
+                                onClick={handleImgClick}
+                            />
+                        </div>
                     </Tooltip>
-                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' required onChange={handleFileChange} />
                     <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} required />
                     <div className='d-flex flex-column mt-4'>
                         <input
@@ -680,15 +671,11 @@ export default function CreateStudent() {
                             required
                         />
                     </div>
-                    {errorMessage && (
-                        <div className='errorDiv mt-3'>
-                            <p>{errorMessage.message}</p>
+                    {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage(null)} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                            <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
                         </div>
-                        
-                    )}
-                    {SuccessMessage ? <div className='successDiv'>
-                            <p>{SuccessMessage.message}</p>
-                        </div> : null}
+                    </Popup> : null}
                 
                 
                     <div className='d-flex flex-column '>

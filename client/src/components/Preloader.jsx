@@ -3,7 +3,7 @@ import { ThreeDots } from "react-loader-spinner"
 
 export default function Preloader() {
   return (
-    <div className='d-flex justify-content-center align-items-center' style={{width: "100%", height: "100%"}} >
+    <div className='d-flex' style={{width: "100vw", height: "50vh", justifyContent: "center", alignItems: "center"}} >
         <ThreeDots
             visible={true}
             height="100"
