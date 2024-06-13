@@ -36,7 +36,6 @@
     flex-direction: column;
 }
 
-
 .Forminput{
     padding: 8px;
     margin: 0px;
@@ -101,6 +100,9 @@ form{
   }
   .profile-container:hover{
     cursor: pointer;
+    transform: scale(1.1);
+  }
+  .imgHover{
     transform: scale(1.1);
   }
   .profile-icon {

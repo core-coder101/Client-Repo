@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "../css/Teacher.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useAuth } from './context/AuthProvider';
@@ -54,6 +54,10 @@ export default function CreateStudent() {
     const [errorMessage, setErrorMessage] = useState("");
     const [SuccessMessage, setSuccessMessage] = useState("");
 
+    const [open, setOpen] = useState(false)
+    const [imgClass, setImgClass] = useState("")
+
+    const topRef = useRef(null)
 
 
     const GetClasses = async () =>{
@@ -171,14 +175,24 @@ export default function CreateStudent() {
     };
 
 
-
-
-
-
-
-
-
-
+    function handleInvalid(e){
+        if(formData.image){
+            return;
+        }
+        e.preventDefault()
+        setOpen(true)
+        setImgClass("imgHover")
+        scrollToImg()
+        setTimeout(()=>{
+            setOpen(false)
+            setImgClass("")
+        }, 1000)
+    }
+    function scrollToImg(){
+        if(topRef.current){
+            topRef.current.scrollIntoView({behavior: 'smooth', block: 'start'})
+        }
+    }
 
 
 
@@ -230,12 +244,12 @@ export default function CreateStudent() {
                 <div className='headingNavbar d-flex justify-content-center'>
                     <div className='d-flex'>
                         <FaRegArrowAltCircleLeft onClick={()=>{navigate("/")}} className='arrow' />
-                        <h4>Dashboard \ Admit a new Student</h4>
+                        <h4 ref={topRef}>Dashboard \ Admit a new Student</h4>
                     </div>
                     <div className='ms-auto me-4'></div>
                 </div>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} onInvalid={(e)=>{handleInvalid(e)}}>
             <div className='row m-0 p-0'>
             <div className='FormBorder ms-auto me-auto'>
             <center><h2 className='protest-revolution-regular mb-3'>Students Data</h2></center>
@@ -245,12 +259,13 @@ export default function CreateStudent() {
                         placement="bottom"
                         size="lg"
                         variant="solid"
+                        open={open}
                     >
-                        <div className="profile-container ms-auto me-auto mb-3">
+                        <div className={"profile-container ms-auto me-auto mb-3 " + imgClass} onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}} >
                             <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} />
                         </div>
                     </Tooltip>
-                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
+                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} required />
                     <div className='d-flex flex-column mt-4'>
                         <input
                             className='Forminput'
