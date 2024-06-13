@@ -14,9 +14,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import smoothscroll from 'smoothscroll-polyfill';
 
 
 export default function CreateStudent() {
+
+
+    smoothscroll.polyfill()
+
     const { CSRFToken, user } = useAuth();
 
     const navigate = useNavigate()
@@ -74,6 +79,10 @@ export default function CreateStudent() {
           );
           if(response.data.success == true){
             SetClassData(response.data.data);
+            setFormData(prev => ({
+                ...prev,
+                StudentClassID: JSON.stringify(response.data.data[0].id)
+            }));
           }
           else{
             setErrorMessage(response.data);
@@ -190,7 +199,7 @@ export default function CreateStudent() {
     }
     function scrollToImg(){
         if(topRef.current){
-            topRef.current.scrollIntoView({behavior: 'smooth', block: 'start'})
+            topRef.current.scrollIntoView({behavior: 'smooth'})
         }
     }
 

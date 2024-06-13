@@ -14,9 +14,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import smoothscroll from 'smoothscroll-polyfill';
 
 
 export default function CreateTeacher() {    
+
+
+    smoothscroll.polyfill()
+
     const { CSRFToken, user } = useAuth();
 
     const navigate = useNavigate()
@@ -182,7 +187,7 @@ export default function CreateTeacher() {
 
 function scrollToImg(){
     if(topRef.current){
-        topRef.current.scrollIntoView({behavior: 'smooth', block: 'start'})
+        topRef.current.scrollIntoView({behavior: 'smooth'})
     }
 }
 

@@ -55,6 +55,10 @@ export default function App() {
     {
       path: "/studentinformation",
       element: <PrivateRoute element={<Template element={<StudentInformation />} />} />
+    },
+    {
+      path: "/CreateStudent/:ID",
+      element: <PrivateRoute element={<Template element={<CreateStudent />} />} />
     }
 ])
 
