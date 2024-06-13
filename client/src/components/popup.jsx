@@ -1,11 +1,18 @@
-import React,{useState} from 'react';
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
+import React , {useState} from 'react';
+import Popup from 'react-animated-popup';
 
-const PopupExample = () => (
-  <Popup trigger={<button> Trigger</button>} position="right center">
-    <div>Popup content here !!</div>
+
+
+const PopupExample = () => {
+    const [visible, setVisible] = useState(false)
+ return(
+  <>
+  <button className='btn btn-primary'>Open Popup</button>
+    <Popup visible={visible} onClose={() => setVisible(false)}>
+    <p>I am a popup!</p>
   </Popup>
-);
+  </>
+ )
+};
 
 export default PopupExample;
