@@ -167,6 +167,7 @@ const toggleDropdown = (id) => {
                     <div className="inputDiv">
                         <p>Name</p>
                         <select className='input' name='ClassName' value={ApiSearchData.ClassName} onChange={handleChange}>
+                        <option></option>
                             {Classes.data && Classes.data.map((Class, index) => (
                                 ApiSearchData.ClassRank == Class.ClassRank && (
                                     <option key={Class.id} value={Class.ClassName}>{Class.ClassName}</option>
