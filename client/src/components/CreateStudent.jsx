@@ -408,7 +408,7 @@ export default function CreateStudent() {
                         variant="solid"
                         open={open}
                     >
-                        <div className="profile-container ms-auto me-auto mb-3">
+                        <div className={"profile-container ms-auto me-auto mb-3 " + imgClass } onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}} >
                         <img 
   src={
     formData.image? formData.image :
@@ -424,9 +424,6 @@ export default function CreateStudent() {
 />
 
                             </div>
-                        <div className={"profile-container ms-auto me-auto mb-3 " + imgClass} onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}} >
-                            <img src={formData.image ? formData.image : defaultImg} alt="Profile Icon" className="profile-icon" onClick={handleImgClick} />
-                        </div>
                     </Tooltip>
                     <input id='studentImageInput' className='imageInput d-none' name='image' type='file' required onChange={handleFileChange} />
                     <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} required />
