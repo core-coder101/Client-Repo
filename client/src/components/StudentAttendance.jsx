@@ -204,6 +204,12 @@ export default function StudentAttendance() {
           columns={columns}
           pageSize={5}
           checkboxSelection
+          initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
         onRowSelectionModelChange={(newSelection)=>{
             setSelectedRows(newSelection);
         }}
