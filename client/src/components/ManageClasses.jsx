@@ -104,7 +104,7 @@ export default function ManageClasses() {
               <tr>
               <td data-title="Rank">{Class.ClassRank} th</td>
               <td data-title="Name">{Class.ClassName}</td>
-              <td data-title="TeacherName">{Class.teachers.user.name}</td>
+              <td data-title="TeacherName">{Class.teachers.users.name}</td>
               <td data-title="Floor">{Class.ClassFloor}</td>
               <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  class="btn btn-info">Details</button></td>
               <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} class="btn btn-warning">Edit</button></td>
