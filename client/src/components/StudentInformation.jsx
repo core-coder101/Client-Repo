@@ -188,10 +188,10 @@ export default function StudentInformation() {
                     <div className="inputDiv">
                         <p>Class</p>
                         <select className='input' name='ClassRank' onChange={handleChange}>
-                            {Classes.data && Classes.data.map(Class => (
-                                <option key={Class.id} value={Class.ClassRank}>{Class.ClassRank}</option>
-                            ))}
-                        </select>
+  {Classes.data && Array.from(new Set(Classes.data.map(Class => Class.ClassRank))).map(rank => (
+    <option key={rank} value={rank}>{rank}</option>
+  ))}
+</select>
                     </div>
                     <div className="inputDiv">
                         <p>Name</p>

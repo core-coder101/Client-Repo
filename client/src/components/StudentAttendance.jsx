@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import "../css/Teacher.css";
@@ -23,13 +23,6 @@ export default function StudentAttendance() {
     const navigate = useNavigate();
     
     const [isOpen, setIsOpen] = useState({});
-
-    const toggleDropdown = (id) => {
-    setIsOpen(prevState => ({
-        ...prevState,
-        [id]: !prevState[id]
-    }));
-    };
 
     const { CSRFToken, user } = useAuth();
 
@@ -122,48 +115,9 @@ export default function StudentAttendance() {
         setErrorMessage("");
       };
       
-
-
-      const Delete = async(id) => {
-        try {
-          const response = await axios.post(
-              'http://127.0.0.1:8000/api/DeleteStudent',{ID:id}
-              ,{
-                  headers: {
-                      'X-CSRF-TOKEN': CSRFToken,
-                      'Content-Type': 'application/json',
-                      'API-TOKEN': 'IT is to secret you cannot break it :)',
-                  },
-              }
-          );
-
-          if(response.data.success == true){
-            setErrorMessage(response.data.message)
-            SetStudentInformation((prev)=>{
-                return prev.filter((student) => {
-                    return !(student.id === id)
-                })
-            })
-          } else{
-            setErrorMessage(response.data.message)
-          }
-
-      } catch (error) {
-          console.error(error);
-          setErrorMessage({ success: false, message: "Failed to Delete Student" });
-      }
-      }
-    
-      const Edit = (id) => {
-        navigate(`/CreateStudent/${id}`);
-      };
-
-
-
-
-      // Columns configuration
+      
       const columns = [
-        { field: 'id', headerName: 'Sr no.', width: 75 },
+        { field: 'ID', headerName: 'Sr no.', width: 75 },
         { field: 'StudentName', headerName: 'Student Name', width: 140 },
         { field: 'FatherName', headerName: 'Father Name', width: 140 },
         {
@@ -188,57 +142,20 @@ export default function StudentAttendance() {
         },
       ];
     
-      // Prepare rows data
-      const rows = StudentInformation.map((student, index) => ({
-        ID:student.id,
-        id: index + 1,
+
+    const rows = StudentInformation.map((student, index) => ({
+        id:student.id,
+        ID: index + 1,
         StudentName: student.users.name,
         FatherName: student.parents.FatherName,
         age: student.StudentDOB,
         PhoneNumber: student.StudentPhoneNumber,
         JoiningDate: student.created_at.split("T")[0],
         HomeAddress: student.StudentHomeAddress
-      }));
+    }));
 
-    //   const [selectedRows, setSelectedRows] = useState([]);
-    //
-    //   const handleEvent = React.useCallback(
-    //     (params) => {
-    //       const selectedIndex = selectedRows.indexOf(params.row.ID);
-    //       let newSelectedRows = [];
-    
-    //       if (selectedIndex === -1) {
-    //         // Add the row ID to selectedRows
-    //         newSelectedRows = [...selectedRows, params.row.ID];
-    //       } else {
-    //         // Remove the row ID from selectedRows
-    //         newSelectedRows = selectedRows.filter((ID) => ID !== params.row.ID);
-    //       }
-    
-    //       setSelectedRows(newSelectedRows);
-    //     },
-    //     [selectedRows],
-    //   );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    const apiRef = useGridApiRef();
     const [selectedRows, setSelectedRows] = useState([]);
-
+    
     return (
         <div>
             <div className='headingNavbar d-flex justify-content-center'>
@@ -260,10 +177,10 @@ export default function StudentAttendance() {
                     <div className="inputDiv">
                         <p>Class</p>
                         <select className='input' name='ClassRank' onChange={handleChange}>
-                            {Classes.data && Classes.data.map(Class => (
-                                <option key={Class.id} value={Class.ClassRank}>{Class.ClassRank}</option>
-                            ))}
-                        </select>
+  {Classes.data && Array.from(new Set(Classes.data.map(Class => Class.ClassRank))).map(rank => (
+    <option key={rank} value={rank}>{rank}</option>
+  ))}
+</select>
                     </div>
                     <div className="inputDiv">
                         <p>Name</p>
@@ -288,10 +205,16 @@ export default function StudentAttendance() {
           columns={columns}
           pageSize={5}
           checkboxSelection
-          onRowSelectionModelChange={(newSelection) => {
+          initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+        onRowSelectionModelChange={(newSelection)=>{
             setSelectedRows(newSelection);
-          }}
-        />  
+        }}
+        />
       </div>
     </div>
     </div>
