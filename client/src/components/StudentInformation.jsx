@@ -163,7 +163,7 @@ export default function StudentInformation() {
       }
     
       const Edit = (id) => {
-        navigate(`/CreateStudent/${id}`);
+        navigate(`/addstudent/${id}`);
       };
 
 

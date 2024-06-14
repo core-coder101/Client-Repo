@@ -188,7 +188,6 @@ export default function CreateStudent() {
                     userName: "",
                     email: "",
                     subjects: [],
-                    subjects: [],
                     StudentDOB: "",
                     StudentGender: "Male",
                     StudentCNIC: "",
@@ -305,7 +304,7 @@ export default function CreateStudent() {
             setFormData((prev) => {
                 return {
                     ...prev,
-                    StudentClassID: ClassData[0].id
+                    StudentClassID: JSON.stringify(ClassData[0].id)
             }});
         }
     }, [ClassData]);
@@ -330,11 +329,11 @@ export default function CreateStudent() {
                     email: StudentData[0].users.email || "",
                     subjects: subjects,
                     StudentDOB: StudentData[0].StudentDOB || "",
-                    StudentGender: "Male",
+                    StudentGender: StudentData[0].StudentGender || "Male",
                     StudentCNIC: StudentData[0].StudentCNIC || "",
                     StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
                     StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
-                    StudentReligion: "Islam",
+                    StudentReligion: StudentData[0].StudentReligion || "Islam",
                     StudentMonthlyFee: StudentData[0].StudentMonthlyFee || "",
                     FatherName: StudentData[0].parents.FatherName || "",
                     MotherName: StudentData[0].parents.MotherName || "",
@@ -603,7 +602,7 @@ export default function CreateStudent() {
                         >
                             <option value='Islam'>Islam</option>
                             <option value='Christianity'>Christianity</option>
-                            <option value='Irreligion'>Irreligion</option>
+                            <option value='Atheist'>Atheist</option>
                             <option value='Hinduism'>Hinduism</option>
                             <option value='Buddhism'>Buddhism</option>
                         </select>

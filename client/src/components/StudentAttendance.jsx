@@ -12,21 +12,13 @@ import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
 import Popup from "react-animated-popup"
+import { DataGridPro, useGridApiRef } from '@mui/x-data-grid-pro';
 import { DataGrid } from '@mui/x-data-grid';
+import CustomFooter from './CustomFooter';
 
 
 
 export default function StudentAttendance() {
-
-
-
-
-
-    
-
-
-
-    const [visible, setVisible] = useState(false)
 
     const navigate = useNavigate();
     
@@ -208,26 +200,44 @@ export default function StudentAttendance() {
         HomeAddress: student.StudentHomeAddress
       }));
 
-      const [selectedRows, setSelectedRows] = useState([]);
-
-      const handleEvent = React.useCallback(
-        (params) => {
-          const selectedIndex = selectedRows.indexOf(params.row.ID);
-          let newSelectedRows = [];
+    //   const [selectedRows, setSelectedRows] = useState([]);
+    //
+    //   const handleEvent = React.useCallback(
+    //     (params) => {
+    //       const selectedIndex = selectedRows.indexOf(params.row.ID);
+    //       let newSelectedRows = [];
     
-          if (selectedIndex === -1) {
-            // Add the row ID to selectedRows
-            newSelectedRows = [...selectedRows, params.row.ID];
-          } else {
-            // Remove the row ID from selectedRows
-            newSelectedRows = selectedRows.filter((ID) => ID !== params.row.ID);
-          }
+    //       if (selectedIndex === -1) {
+    //         // Add the row ID to selectedRows
+    //         newSelectedRows = [...selectedRows, params.row.ID];
+    //       } else {
+    //         // Remove the row ID from selectedRows
+    //         newSelectedRows = selectedRows.filter((ID) => ID !== params.row.ID);
+    //       }
     
-          setSelectedRows(newSelectedRows);
-        },
-        [selectedRows],
-      );
+    //       setSelectedRows(newSelectedRows);
+    //     },
+    //     [selectedRows],
+    //   );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const apiRef = useGridApiRef();
+    const [selectedRows, setSelectedRows] = useState([]);
 
     return (
         <div>
@@ -278,8 +288,10 @@ export default function StudentAttendance() {
           columns={columns}
           pageSize={5}
           checkboxSelection
-          onRowClick={handleEvent}
-        />
+          onRowSelectionModelChange={(newSelection) => {
+            setSelectedRows(newSelection);
+          }}
+        />  
       </div>
     </div>
     </div>

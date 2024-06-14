@@ -283,7 +283,7 @@ useEffect(() => {
             TeacherCNIC: TeacherData.TeacherCNIC || "",
             TeacherPhoneNumber: TeacherData.TeacherPhoneNumber || "",
             TeacherHomeAddress: TeacherData.TeacherHomeAddress || "",
-            TeacherReligion: "Islam",
+            TeacherReligion: TeacherData.TeacherReligion,
             TeacherSalary: TeacherData.TeacherSalary || "",
         });
     }
