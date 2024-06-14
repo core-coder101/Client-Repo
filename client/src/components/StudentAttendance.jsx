@@ -12,10 +12,19 @@ import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
 import Popup from "react-animated-popup"
+import { DataGrid } from '@mui/x-data-grid';
 
 
 
 export default function StudentAttendance() {
+
+
+
+
+
+    
+
+
 
     const [visible, setVisible] = useState(false)
 
@@ -158,6 +167,68 @@ export default function StudentAttendance() {
       };
 
 
+
+
+      // Columns configuration
+      const columns = [
+        { field: 'id', headerName: 'Sr no.', width: 75 },
+        { field: 'StudentName', headerName: 'Student Name', width: 140 },
+        { field: 'FatherName', headerName: 'Father Name', width: 140 },
+        {
+          field: 'age',
+          headerName: 'Student DOB',
+          width: 120,
+        },
+        {
+          field: 'PhoneNumber',
+          headerName: 'Phone Number',
+          width: 160,
+        },
+        {
+          field: 'JoiningDate',
+          headerName: 'Joining Date',
+          width: 160,
+        },
+        {
+          field: 'HomeAddress',
+          headerName: 'Home Address',
+          width: 250,
+        },
+      ];
+    
+      // Prepare rows data
+      const rows = StudentInformation.map((student, index) => ({
+        ID:student.id,
+        id: index + 1,
+        StudentName: student.users.name,
+        FatherName: student.parents.FatherName,
+        age: student.StudentDOB,
+        PhoneNumber: student.StudentPhoneNumber,
+        JoiningDate: student.created_at.split("T")[0],
+        HomeAddress: student.StudentHomeAddress
+      }));
+
+      const [selectedRows, setSelectedRows] = useState([]);
+
+      const handleEvent = React.useCallback(
+        (params) => {
+          const selectedIndex = selectedRows.indexOf(params.row.ID);
+          let newSelectedRows = [];
+    
+          if (selectedIndex === -1) {
+            // Add the row ID to selectedRows
+            newSelectedRows = [...selectedRows, params.row.ID];
+          } else {
+            // Remove the row ID from selectedRows
+            newSelectedRows = selectedRows.filter((ID) => ID !== params.row.ID);
+          }
+    
+          setSelectedRows(newSelectedRows);
+        },
+        [selectedRows],
+      );
+
+
     return (
         <div>
             <div className='headingNavbar d-flex justify-content-center'>
@@ -200,96 +271,17 @@ export default function StudentAttendance() {
                     </div>
                 </div>
             </form>
-            <div className='tableDiv'>
-                <div className="card-body">
-                    <table id="example1" className="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Roll no.</th>
-                                <th>Photo</th>
-                                <th>Name</th>
-                                <th>Parent Name</th>
-                                <th>Class</th>
-                                <th>Class Name</th>
-                                <th>Campus</th>
-                                <th>Parent Phone</th>
-                                <th>ID Card</th>
-                                <th>Reset Password</th>
-                                <th>Profile</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
-                                <tr key={student.id}>
-                                    <td>{student.id}</td>
-                                    <td>
-                                        <div style={{width: "40px", height: "40px"}} className="profile-container ms-auto me-auto mb-3">
-                                            <img src={student.users.images[0] ? `data:image/png;base64,${student.users.images[0].data}` : defaultImg} alt="Profile Icon" className="profile-icon" />
-                                        </div>
-                                    </td>
-                                    <td>{student.users.name}</td>
-                                    <td>{student.parents.FatherName}</td>
-                                    <td>{ApiSearchData.ClassRank}</td>
-                                    <td>{ApiSearchData.ClassName}</td>
-                                    <td>{ApiSearchData.campus}</td>
-                                    <td>{student.parents.GuardiansPhoneNumber}</td>
-                                    <td>
-                                        <div className="filterDataDiv generateID innerButtonDiv">
-                                            <p>Generate ID</p>
-                                            <button><TiDocumentText color='white' style={{ width: "18px", height: "18px" }} /></button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="filterDataDiv resetPassword innerButtonDiv">
-                                            <p>Reset Password</p>
-                                            <button><FaKey color='white' style={{ width: "18px", height: "18px" }} /></button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="filterDataDiv viewProfile innerButtonDiv">
-                                            <p>View Profile</p>
-                                            <button><IoPerson color='white' style={{ width: "18px", height: "18px" }} /></button>
-                                        </div>
-                                        
-                                    </td>
-                                    <td>
-                                    <div className="dropdown">
-                                        <button
-                                            className="DeleteBtn dropdown-toggle customButton"
-                                            type="button"
-                                            id={`dropdownMenuButton-${student.id}`}
-                                            data-toggle="dropdown"
-                                            aria-haspopup="true"
-                                            aria-expanded={isOpen[student.id]}
-                                            onClick={() => toggleDropdown(student.id)}
-                                        >
-
-                                        Actions
-                                        
-                                        </button>
-                                        <div className={` customDropDown dropdown-menu${isOpen[student.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${student.id}`}>
-                                            <a className="dropdown-item" onClick={()=>{Edit(student.users.id)}}>Edit</a>
-                                            <a className="dropdown-item" onClick={()=>{Delete(student.id)}}>Delete</a>
-                                            <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
-                                        </div>
-                                    </div>
-                                    </td>
-                                </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan="12" className="text-center">No Student Information Available</td>
-                                </tr>
-                            )}
-                            {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
-                                <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                                    <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
-                                </div>
-                            </Popup> : null}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div className='tableDiv'>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          checkboxSelection
+          onRowClick={handleEvent}
+        />
+      </div>
+    </div>
+    </div>
     );
 }
