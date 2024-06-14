@@ -50,7 +50,14 @@ export default function CreateTeacher() {
 
 
     const [errorMessage, setErrorMessage] = useState(null);
-
+    const [popup, setPopup] = useState(false)
+    useEffect(()=>{
+        if(errorMessage){
+        setPopup(true)
+        } else {
+        setPopup(false)
+        }
+    }, [errorMessage])
 
 
     const [open, setOpen] = useState(false)
@@ -72,7 +79,7 @@ export default function CreateTeacher() {
                 }
             );
             if(response.data.success == true){
-                setErrorMessage({success:true, message:"New Teacher created successfully"})
+                setErrorMessage("New Teacher created successfully")
                 setFormData({
                     name: "",
                     userName: "",
@@ -87,10 +94,10 @@ export default function CreateTeacher() {
                 });
               }
               else{
-                setErrorMessage(response.data);
+                setErrorMessage(response.data.message);
               }
         } catch (error) {
-            setErrorMessage({ success: false, message: "Failed to create teacher" });
+            setErrorMessage("Failed to create teacher");
         }
     };
 
@@ -110,7 +117,7 @@ export default function CreateTeacher() {
                 }
             );
             if(response.data.success == true){
-                setErrorMessage({success:true, message:"Teacher Updated successfully"})
+                setErrorMessage("Teacher Updated successfully")
                 setFormData({
                     name: "",
                     userName: "",
@@ -125,10 +132,10 @@ export default function CreateTeacher() {
                 });
               }
               else{
-                setErrorMessage(response.data);
+                setErrorMessage(response.data.message);
               }
         } catch (error) {
-            setErrorMessage({ success: false, message: "Failed to Update Teacher" });
+            setErrorMessage("Failed to Update Teacher");
         }
     };
 
@@ -238,10 +245,10 @@ export default function CreateTeacher() {
         SetTeacherData(response.data.data);
       }
       else{
-        setErrorMessage(response.data);
+        setErrorMessage(response.data.message);
       }
   } catch (error) {
-      setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
+      setErrorMessage("Failed to Load Edit Class");
   }
   }
   
@@ -486,11 +493,11 @@ function scrollToImg(){
                             required
                         />
                     </div>
-                    {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage(null)} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                    <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
                             <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                                <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+                                <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
                             </div>
-                        </Popup> : null}
+                        </Popup>
                     <div>
                         <button className='btn btn-primary w-100' type='submit'>
                             Submit

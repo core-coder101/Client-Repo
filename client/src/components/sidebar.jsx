@@ -12,6 +12,7 @@ import { IoAddOutline } from "react-icons/io5";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { PiStudentFill } from "react-icons/pi";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 
 function Sidebar({setSidebarOpen, sidebarOpen}) {
@@ -86,6 +87,11 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
         title: 'Students Information',
         path: '/studentsinformation',
         icon: <IoInformationCircleOutline style={{width: "20px", height: "20px"}} />
+      },
+      {
+        title: 'Students Attendance',
+        path: '/studentattendance',
+        icon: <IoIosCheckmarkCircleOutline style={{width: "20px", height: "20px"}} />
       },
     ]
   }

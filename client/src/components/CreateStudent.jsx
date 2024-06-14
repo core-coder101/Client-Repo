@@ -60,7 +60,15 @@ export default function CreateStudent() {
 
 
     const [ClassData , SetClassData] = useState("");
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [popup, setPopup] = useState(false)
+    useEffect(()=>{
+        if(errorMessage){
+        setPopup(true)
+        } else {
+        setPopup(false)
+        }
+    }, [errorMessage])
 
     const [open, setOpen] = useState(false)
     const [imgClass, setImgClass] = useState("")
@@ -88,11 +96,11 @@ export default function CreateStudent() {
             }));
           }
           else{
-            setErrorMessage(response.data);
+            setErrorMessage(response.data.message);
           }
       } catch (error) {
           console.error(error);
-          setErrorMessage({ success: false, message: "Failed to Load Classes" });
+          setErrorMessage("Failed to Load Classes")
       }}
 
 
@@ -139,10 +147,10 @@ export default function CreateStudent() {
             SetStudentData(response.data.data);
           }
           else{
-            setErrorMessage(response.data);
+            setErrorMessage(response.data.message);
           }
       } catch (error) {
-          setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
+          setErrorMessage("Failed to Load Edit Class")
       }
       }
       
@@ -169,7 +177,7 @@ export default function CreateStudent() {
                 }
             );
             if(response.data.success == true){
-                setErrorMessage({success:true, message: "New Student created successfully"});
+                setErrorMessage("New Student created successfully")
                 setFormData({
                     name: "",
                     userName: "",
@@ -194,10 +202,10 @@ export default function CreateStudent() {
                 });
               }
               else{
-                setErrorMessage(response.data);
+                setErrorMessage(response.data.message);
               }
         } catch (error) {
-            setErrorMessage({ success: false, message: "Failed to create Student" });
+            setErrorMessage("Failed to create Student")
         }
     };
 
@@ -219,7 +227,7 @@ export default function CreateStudent() {
                 }
             );
             if(response.data.success == true){
-                setErrorMessage({success:true, message: "Student Updated successfully"});
+                setErrorMessage("Student Updated successfully")
                 setFormData({
                     name: "",
                     userName: "",
@@ -243,10 +251,10 @@ export default function CreateStudent() {
                 });
               }
               else{
-                setErrorMessage(response.data);
+                setErrorMessage(response.data.message);
               }
         } catch (error) {
-            setErrorMessage({ success: false, message: "Failed to Update Student" });
+            setErrorMessage("Failed to Update Student")
         }
     };
 
@@ -671,11 +679,11 @@ export default function CreateStudent() {
                             required
                         />
                     </div>
-                    {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage(null)} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                    <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
                         <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                            <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+                            <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
                         </div>
-                    </Popup> : null}
+                    </Popup>
                 
                 
                     <div className='d-flex flex-column '>

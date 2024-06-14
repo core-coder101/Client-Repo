@@ -11,6 +11,7 @@ import CreateStudent from './CreateStudent.jsx';
 import StudentInformation from './StudentInformation.jsx';
 import EditStudent from "./EditStudent.jsx";
 import TeachersInformation from "./TeachersInformation.jsx"
+import StudentAttendance from "./StudentAttendance.jsx";
 
 export const router = createBrowserRouter([
     {
@@ -56,5 +57,9 @@ export const router = createBrowserRouter([
     {
       path: "/teachersinformation",
       element: <PrivateRoute element={<Template element={<TeachersInformation />} />} />
+    },
+    {
+      path: "/studentattendance",
+      element: <PrivateRoute element={<Template element={<StudentAttendance />} />} />
     }
 ])

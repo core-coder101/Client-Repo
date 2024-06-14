@@ -17,8 +17,16 @@ export default function ManageClasses() {
         `Bearer ${user.token}`;
     }
 
-  const [Classes , SetClasses] = useState('');
-  const [errorMessage , setErrorMessage] = useState('');
+  const [Classes , SetClasses] = useState([]);
+  const [errorMessage , setErrorMessage] = useState(null);
+  const [popup, setPopup] = useState(false)
+  useEffect(()=>{
+      if(errorMessage){
+      setPopup(true)
+      } else {
+      setPopup(false)
+      }
+  }, [errorMessage])
 
 
   const GetClasses = async () =>{
@@ -33,10 +41,10 @@ export default function ManageClasses() {
               },
           }
       );
-      SetClasses(response.data);
+      SetClasses(response.data.data);
   } catch (error) {
       console.error(error);
-      setErrorMessage({ success: false, message: "Failed to Load Classes" });
+      setErrorMessage("Failed to Load Classes")
   }}
 
 
@@ -51,7 +59,7 @@ export default function ManageClasses() {
   const Delete = async(id) => {
     try {
       const response = await axios.post(
-          'http://127.0.0.1:8000/api/Delete',{ID:id}
+          'http://127.0.0.1:8000/api/DeleteClass',{ID:id}
           ,{
               headers: {
                   'X-CSRF-TOKEN': CSRFToken,
@@ -60,11 +68,15 @@ export default function ManageClasses() {
               },
           }
       );
-      SetClasses(response.data);
-      setErrorMessage(response.data)
+      SetClasses((prev)=>{
+        return(prev.filter((Class) =>{
+          return !(Class.id == id)
+        }))
+      })
+      setErrorMessage(response.data.message)
   } catch (error) {
       console.error(error);
-      setErrorMessage({ success: false, message: "Failed to Delete Class" });
+      setErrorMessage("Failed to Delete Class");
   }
   }
 
@@ -99,8 +111,7 @@ export default function ManageClasses() {
             </tr>
           </thead>
           <tbody>
-            {!Classes ? <Preloader /> : null}
-            {Classes && Classes.data.map((Class) => {
+            {Classes && Classes.length > 0 && Classes.map((Class) => {
               console.log(Class);
                 return (
               <tr>
@@ -117,11 +128,11 @@ export default function ManageClasses() {
           </tbody>
         </table>
       </div>
-        {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+        <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
             <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+                <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
             </div>
-        </Popup> : null}
+        </Popup>
       </div>
     </div>
   )

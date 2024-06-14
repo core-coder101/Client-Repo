@@ -12,11 +12,10 @@ import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
 import Popup from "react-animated-popup"
-import Preloader from './Preloader';
 
 
 
-export default function StudentInformation() {
+export default function StudentAttendance() {
 
     const [visible, setVisible] = useState(false)
 
@@ -39,14 +38,6 @@ export default function StudentInformation() {
 
     const [Classes, SetClasses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    const [popup, setPopup] = useState(false)
-    useEffect(()=>{
-        if(errorMessage){
-        setPopup(true)
-        } else {
-        setPopup(false)
-        }
-    }, [errorMessage])
 
     const [ApiSearchData, SetApiSearchData] = useState({
         campus: "Main Campus",
@@ -74,7 +65,7 @@ export default function StudentInformation() {
             })
         } catch (error) {
             console.error(error);
-            setErrorMessage("Failed to Load Classes")
+            setErrorMessage({ success: false, message: "Failed to Load Classes" });
         }
     }
 
@@ -97,7 +88,7 @@ export default function StudentInformation() {
             SetStudentInformation(response.data.data || []);
         } catch (error) {
             console.error(error);
-            setErrorMessage("Failed to Get Student Info")
+            setErrorMessage({ success: false, message: "Failed to Get Student Info" });
         }
     }
 
@@ -158,7 +149,7 @@ export default function StudentInformation() {
 
       } catch (error) {
           console.error(error);
-          setErrorMessage("Failed to Delete Student")
+          setErrorMessage({ success: false, message: "Failed to Delete Student" });
       }
       }
     
@@ -290,11 +281,11 @@ export default function StudentInformation() {
                                     <td colSpan="12" className="text-center">No Student Information Available</td>
                                 </tr>
                             )}
-                            <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}}  style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                            {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
                                 <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
                                     <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
                                 </div>
-                            </Popup>
+                            </Popup> : null}
                         </tbody>
                     </table>
                 </div>

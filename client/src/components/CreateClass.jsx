@@ -14,6 +14,14 @@ export default function CreateClass(){
   const [teachers, setteachers] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [popup, setPopup] = useState(false)
+  useEffect(()=>{
+    if(errorMessage){
+      setPopup(true)
+    } else {
+      setPopup(false)
+    }
+  }, [errorMessage])
 
   const [formData, setFormData] = useState({
     ClassName:  "",
@@ -51,10 +59,10 @@ export default function CreateClass(){
     }));
     }
     else{
-      setErrorMessage(response.data);
+      setErrorMessage(response.data.message);
     }
 } catch (error) {
-    setErrorMessage({ success: false, message: "Failed to Load Teachers" });
+    setErrorMessage("Failed to Load Teachers")
 }}
 
 
@@ -86,10 +94,10 @@ const GetClassData = async () =>{
       });
     }
     else{
-      setErrorMessage(response.data);
+      setErrorMessage(response.data.message);
     }
 } catch (error) {
-    setErrorMessage({ success: false, message: "Failed to Load Edit Class" });
+    setErrorMessage("Failed to Load Edit Class")
 }
 }
 
@@ -125,21 +133,23 @@ const CreateClass = async (formData) => {
       );
       if(response.data.success == true){
         setResult(response.data);
-        setErrorMessage({success: true, message: "Successfully Created a new Class"})
-        setFormData({
-          ClassName:  "",
-          ClassRank:  "",
-          ClassFloor: "",
-          ClassTeacherID: "",
-          ClassID : ""
+        setErrorMessage("Successfully Created a new Class")
+        setFormData((prev) => {
+          return {
+            ...prev,
+            ClassName:  "",
+            ClassRank:  "",
+            ClassFloor: "",
+            ClassID : ""
+          }
         });
       }
       else{
-        setErrorMessage(response.data);
+        setErrorMessage(response.data.message)
       }
   } catch (error) {
       console.error(error);
-      setErrorMessage({ success: false, message: "Failed to create Class" });
+      setErrorMessage("Failed to create Class")
   }
 }
 else{
@@ -157,7 +167,7 @@ else{
     );
     if(response.data.success == true){
       setResult(response.data);
-      setErrorMessage({success: true, message: "Successfully Updated selected Class"})
+      setErrorMessage("Successfully Updated selected Class")
       setFormData({
         ClassName:  "",
         ClassRank:  "",
@@ -167,10 +177,10 @@ else{
       });
     }
     else{
-      setErrorMessage(response.data);
+      setErrorMessage(response.data.message);
     }
 } catch (error) {
-    setErrorMessage({ success: false, message: "Failed to Update Class" });
+    setErrorMessage("Failed to Update Class" )
 }
 }
 };
@@ -224,11 +234,11 @@ const handleSubmit = (e) => {
         })}
         </select>
         </div>
-          {errorMessage ? <Popup visible={true} onClose={() => setErrorMessage("")} style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+          <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
               <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                  <h5 style={{color: "white", margin: "0"}}>{errorMessage.message}</h5>
+                  <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
               </div>
-          </Popup> : null}
+          </Popup>
         <div>
             <button className='btn btn-primary w-100' type='submit'>Submit</button>
         </div>
