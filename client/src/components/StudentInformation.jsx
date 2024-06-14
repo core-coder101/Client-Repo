@@ -172,7 +172,7 @@ export default function StudentInformation() {
             <div className='headingNavbar d-flex justify-content-center'>
                 <div className='d-flex'>
                     <FaRegArrowAltCircleLeft onClick={() => { navigate("/") }} className='arrow' />
-                    <h4>Dashboard \ Admit a new Student</h4>
+                    <h4>Dashboard \ Students Information</h4>
                 </div>
                 <div className='ms-auto me-4'></div>
             </div>

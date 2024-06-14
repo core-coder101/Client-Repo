@@ -60,15 +60,15 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
 
     subNav: [
       {
-        title: 'Manage Classes',
-        path: '/manageclasses',
-        icon: <SiGoogleclassroom />
-      },
-      {
         title: 'Create Class',
         path: '/createclass',
         icon: <IoAddOutline style={{width: "20px", height: "20px"}} />
-      }
+        },
+        {
+          title: 'Manage Classes',
+          path: '/manageclasses',
+          icon: <SiGoogleclassroom />
+        },
     ]
   }
   const studentsData = {

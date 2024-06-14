@@ -144,13 +144,18 @@ export default function CreateStudent() {
           );
           console.log(response.data);
           if(response.data.success == true){
+            if( !(response.data.data.length > 0) ){
+                setErrorMessage("Student not found")
+                navigate("/addstudent")
+            } else {
             SetStudentData(response.data.data);
+            }
           }
           else{
             setErrorMessage(response.data.message);
           }
       } catch (error) {
-          setErrorMessage("Failed to Load Edit Class")
+          setErrorMessage("Failed to Load Edit Student")
       }
       }
       
@@ -231,6 +236,7 @@ export default function CreateStudent() {
                 setFormData({
                     name: "",
                     userName: "",
+                    image: "",
                     email: "",
                     subjects: [],
                     StudentDOB: "",
@@ -275,6 +281,15 @@ export default function CreateStudent() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(!formData.image){
+            setOpen(true)
+            setImgClass("imgHover")
+            scrollToImg()
+            setTimeout(()=>{
+                setOpen(false)
+                setImgClass("")
+            }, 1000)
+        }
         if (StudentData && StudentData.length > 0 && StudentData[0].users) {
             UpdateStudent(formData);
         }
@@ -285,7 +300,15 @@ export default function CreateStudent() {
 
 
 
-
+    useEffect(() => {
+        if (ClassData && ClassData.length > 0) {            
+            setFormData((prev) => {
+                return {
+                    ...prev,
+                    StudentClassID: ClassData[0].id
+            }});
+        }
+    }, [ClassData]);
 
 
 
@@ -298,28 +321,29 @@ export default function CreateStudent() {
             for (let subject of StudentData[0].users.subjects) {
                 subjects.push(subject.SubjectName);
             }
-            setFormData({
-                ID : ID,
-                name: StudentData[0].users.name || "",
-                userName: StudentData[0].users.userName || "",
-                email: StudentData[0].users.email || "",
-                subjects: subjects,
-                StudentDOB: StudentData[0].StudentDOB || "",
-                StudentGender: "Male",
-                StudentCNIC: StudentData[0].StudentCNIC || "",
-                StudentClassID: "",
-                StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
-                StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
-                StudentReligion: "Islam",
-                StudentMonthlyFee: StudentData[0].StudentMonthlyFee || "",
-                FatherName: StudentData[0].parents.FatherName || "",
-                MotherName: StudentData[0].parents.MotherName || "",
-                GuardiansCNIC: StudentData[0].parents.GuardiansCNIC || "",
-                GuardiansPhoneNumber: StudentData[0].parents.GuardiansPhoneNumber || "",
-                GuardiansPhoneNumber2: StudentData[0].parents.GuardiansPhoneNumber2 || "",
-                HomeAddress: StudentData[0].parents.HomeAddress || "",
-                GuardiansEmail: StudentData[0].parents.GuardiansEmail || "",
-            });
+            setFormData((prev) => {
+                return {
+                    ...prev,
+                    ID : ID,
+                    name: StudentData[0].users.name || "",
+                    userName: StudentData[0].users.userName || "",
+                    email: StudentData[0].users.email || "",
+                    subjects: subjects,
+                    StudentDOB: StudentData[0].StudentDOB || "",
+                    StudentGender: "Male",
+                    StudentCNIC: StudentData[0].StudentCNIC || "",
+                    StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
+                    StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
+                    StudentReligion: "Islam",
+                    StudentMonthlyFee: StudentData[0].StudentMonthlyFee || "",
+                    FatherName: StudentData[0].parents.FatherName || "",
+                    MotherName: StudentData[0].parents.MotherName || "",
+                    GuardiansCNIC: StudentData[0].parents.GuardiansCNIC || "",
+                    GuardiansPhoneNumber: StudentData[0].parents.GuardiansPhoneNumber || "",
+                    GuardiansPhoneNumber2: StudentData[0].parents.GuardiansPhoneNumber2 || "",
+                    HomeAddress: StudentData[0].parents.HomeAddress || "",
+                    GuardiansEmail: StudentData[0].parents.GuardiansEmail || "",
+            }});
         }
     }, [StudentData]);
     
@@ -425,7 +449,7 @@ export default function CreateStudent() {
                             />
                         </div>
                     </Tooltip>
-                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} required />
+                    <input id='studentImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
                     <div className='d-flex flex-column mt-4'>
                         <input
                             className='Forminput'

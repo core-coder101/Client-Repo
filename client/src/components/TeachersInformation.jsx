@@ -141,7 +141,7 @@ const toggleDropdown = (id) => {
             <div className='headingNavbar d-flex justify-content-center'>
                 <div className='d-flex'>
                     <FaRegArrowAltCircleLeft onClick={() => { navigate("/") }} className='arrow' />
-                    <h4>Dashboard \ Teacher Information</h4>
+                    <h4>Dashboard \ Teachers Information</h4>
                 </div>
                 <div className='ms-auto me-4'></div>
             </div>

@@ -118,18 +118,7 @@ export default function CreateTeacher() {
             );
             if(response.data.success == true){
                 setErrorMessage("Teacher Updated successfully")
-                setFormData({
-                    name: "",
-                    userName: "",
-                    email: "",
-                    subjects: [],
-                    TeacherDOB: "",
-                    TeacherCNIC: "",
-                    TeacherPhoneNumber: "",
-                    TeacherHomeAddress: "",
-                    TeacherReligion: "Islam",
-                    TeacherSalary: "",
-                });
+                navigate(-1)
               }
               else{
                 setErrorMessage(response.data.message);
@@ -169,6 +158,15 @@ export default function CreateTeacher() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(!formData.image){
+            setOpen(true)
+            setImgClass("imgHover")
+            scrollToImg()
+            setTimeout(()=>{
+                setOpen(false)
+                setImgClass("")
+            }, 1000)
+        }
         if (TeacherData  && TeacherData.users) {
             UpdateTeacher(formData);
         }
@@ -242,13 +240,15 @@ export default function CreateTeacher() {
       );
       console.log(response.data);
       if(response.data.success == true){
-        SetTeacherData(response.data.data);
+        SetTeacherData(response.data.data,)
       }
       else{
         setErrorMessage(response.data.message);
       }
   } catch (error) {
-      setErrorMessage("Failed to Load Edit Class");
+        console.error(error)
+        setErrorMessage("Failed to Load Edit Teacher");
+        navigate("/addteacher")
   }
   }
   
@@ -274,6 +274,7 @@ useEffect(() => {
 
         setFormData({
             ID : ID,
+            image: `data:image/png;base64,${TeacherData.users.images[0].data}` || "",
             name: TeacherData.users.name || "",
             userName: TeacherData.users.userName || "",
             email: TeacherData.users.email || "",
@@ -293,19 +294,19 @@ useEffect(() => {
 
 
 
-  function handleInvalid(e){
-    if(formData.image){
-        return
+    function handleInvalid(e){
+        if(formData.image){
+            return
+        }
+        e.preventDefault()
+        setOpen(true)
+        setImgClass("imgHover")
+        scrollToImg()
+        setTimeout(()=>{
+            setOpen(false)
+            setImgClass("")
+        }, 1000)
     }
-    e.preventDefault()
-    setOpen(true)
-    setImgClass("imgHover")
-    scrollToImg()
-    setTimeout(()=>{
-        setOpen(false)
-        setImgClass("")
-    }, 1000)
-}
 
 
 function scrollToImg(){
@@ -354,7 +355,7 @@ function scrollToImg(){
                         </div>
                     </Tooltip>
  
-                    <input id='teacherImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} required />
+                    <input id='teacherImageInput' className='imageInput d-none' name='image' type='file' onChange={handleFileChange} />
                     <div className='d-flex flex-column'>
                         <input
                             className='Forminput'

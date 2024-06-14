@@ -95,6 +95,7 @@ const GetClassData = async () =>{
     }
     else{
       setErrorMessage(response.data.message);
+      navigate("/createclass")
     }
 } catch (error) {
     setErrorMessage("Failed to Load Edit Class")
