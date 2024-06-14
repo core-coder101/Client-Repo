@@ -341,7 +341,7 @@ function scrollToImg(){
                         <img 
                             src={
                                 formData.image ? formData.image :
-                                TeacherData && TeacherData.users && TeacherData.users.images  && TeacherData.users.images[0].data
+                                TeacherData && TeacherData.users && TeacherData.users.images  && TeacherData.users.images > 0
                                 ? `data:image/png;base64,${TeacherData.users.images[0].data}`
                                 : formData.image
                                     ? formData.image

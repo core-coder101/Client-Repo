@@ -52,23 +52,18 @@ const toggleDropdown = (id) => {
                 }
             );
             SetClasses(response.data);
-            SetApiSearchData(prev => {
-                return {...prev,
-                    ClassRank: response.data.data[0].ClassRank,
-                    ClassName: response.data.data[0].ClassName
-                }
-            })
         } catch (error) {
             console.error(error);
             setErrorMessage({ success: false, message: "Failed to Load Classes" });
         }
     }
 
-    const [StudentInformation, SetStudentInformation] = useState([]);
-    const GetStudentInformation = async () => {
+    const [TeacherInformation, SetTeacherInformation] = useState([]);
+
+    const GetTeacherInformation = async () => {
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8000/api/GetStudentInformation', {
+                'http://127.0.0.1:8000/api/GetTeacherInformation', {
                     campus: ApiSearchData.campus,
                     ClassRank: ApiSearchData.ClassRank,
                     ClassName: ApiSearchData.ClassName
@@ -80,7 +75,7 @@ const toggleDropdown = (id) => {
                     },
                 }
             );
-            SetStudentInformation(response.data.data || []);
+            SetTeacherInformation(response.data.data || []);
         } catch (error) {
             console.error(error);
             setErrorMessage({ success: false, message: "Failed to Get Student Info" });
@@ -92,9 +87,7 @@ const toggleDropdown = (id) => {
     }, []);
 
     useEffect(() => {
-        if (ApiSearchData.ClassRank && ApiSearchData.ClassName) {
-            GetStudentInformation();
-        }
+            GetTeacherInformation();
     }, [ApiSearchData]);
 
     const handleChange = (e) => {
@@ -122,7 +115,7 @@ const toggleDropdown = (id) => {
       const Delete = async(id) => {
         try {
           const response = await axios.post(
-              'http://127.0.0.1:8000/api/DeleteStudent',{ID:id}
+              'http://127.0.0.1:8000/api/DeleteTeacher',{ID:id}
               ,{
                   headers: {
                       'X-CSRF-TOKEN': CSRFToken,
@@ -139,7 +132,7 @@ const toggleDropdown = (id) => {
       }
     
       const Edit = (id) => {
-        navigate(`/CreateStudent/${id}`);
+        navigate(`/addteacher/${id}`);
       };
 
 
@@ -148,7 +141,7 @@ const toggleDropdown = (id) => {
             <div className='headingNavbar d-flex justify-content-center'>
                 <div className='d-flex'>
                     <FaRegArrowAltCircleLeft onClick={() => { navigate("/") }} className='arrow' />
-                    <h4>Dashboard \ Admit a new Student</h4>
+                    <h4>Dashboard \ Teacher Information</h4>
                 </div>
                 <div className='ms-auto me-4'></div>
             </div>
@@ -164,6 +157,7 @@ const toggleDropdown = (id) => {
                     <div className="inputDiv">
                         <p>Class</p>
                         <select className='input' name='ClassRank' onChange={handleChange}>
+                        <option></option>
                             {Classes.data && Classes.data.map(Class => (
                                 <option key={Class.id} value={Class.ClassRank}>{Class.ClassRank}</option>
                             ))}
@@ -172,6 +166,7 @@ const toggleDropdown = (id) => {
                     <div className="inputDiv">
                         <p>Name</p>
                         <select className='input' name='ClassName' value={ApiSearchData.ClassName} onChange={handleChange}>
+                        <option></option>
                             {Classes.data && Classes.data.map((Class, index) => (
                                 ApiSearchData.ClassRank == Class.ClassRank && (
                                     <option key={Class.id} value={Class.ClassName}>{Class.ClassName}</option>
@@ -181,7 +176,7 @@ const toggleDropdown = (id) => {
                     </div>
                     <div className="filterDataDiv">
                         <p>Filter Data</p>
-                        <button type='button' onClick={GetStudentInformation}><CiSearch color='white' /></button>
+                        <button type='button' onClick={GetTeacherInformation}><CiSearch color='white' /></button>
                     </div>
                 </div>
             </form>
@@ -193,7 +188,7 @@ const toggleDropdown = (id) => {
                                 <th>Roll no.</th>
                                 <th>Photo</th>
                                 <th>Name</th>
-                                <th>Parent Name</th>
+                                <th>Phone Number</th>
                                 <th>Class</th>
                                 <th>Class Name</th>
                                 <th>Campus</th>
@@ -205,20 +200,37 @@ const toggleDropdown = (id) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
-                                <tr key={student.id}>
-                                    <td>{student.id}</td>
+                            {TeacherInformation && TeacherInformation.length > 0 ? TeacherInformation.map((teacher, index) => (
+                                <tr key={teacher.id}>
+                                    <td>{teacher.id}</td>
                                     <td>
                                         <div style={{width: "40px", height: "40px"}} className="profile-container ms-auto me-auto mb-3">
-                                            <img src={student.users.images[0] ? `data:image/png;base64,${student.users.images[0].data}` : defaultImg} alt="Profile Icon" className="profile-icon" />
+                                            <img src={teacher.users.images[0] ? `data:image/png;base64,${teacher.users.images[0].data}` : defaultImg} alt="Profile Icon" className="profile-icon" />
                                         </div>
                                     </td>
-                                    <td>{student.users.name}</td>
-                                    <td>{student.parents.FatherName}</td>
-                                    <td>{ApiSearchData.ClassRank}</td>
-                                    <td>{ApiSearchData.ClassName}</td>
+                                    <td>{teacher.users.name}</td>
+                                    <td>{teacher.TeacherPhoneNumber}</td>
+                                    <td>{teacher.classes.length > 0 ? 
+                                        teacher.classes.map((Class)=>{
+                                        return ( 
+                                            <>
+                                        {Class.ClassRank} <br /> 
+                                        </>
+                                        ) 
+                                    }) : "" }
+                                    </td>
+                                    <td>
+                                    {teacher.classes.length > 0 ? 
+                                        teacher.classes.map((Class)=>{
+                                        return ( 
+                                            <>
+                                        {Class.ClassName} <br /> 
+                                        </>
+                                        ) 
+                                    }) : "" }
+                                    </td>
                                     <td>{ApiSearchData.campus}</td>
-                                    <td>{student.parents.GuardiansPhoneNumber}</td>
+                                    <td>{teacher.TeacherSalary}</td>
                                     <td>
                                         <div className="filterDataDiv generateID innerButtonDiv">
                                             <p>Generate ID</p>
@@ -242,17 +254,17 @@ const toggleDropdown = (id) => {
             <button
               className="DeleteBtn dropdown-toggle customButton"
               type="button"
-              id={`dropdownMenuButton-${student.id}`} // Unique ID for each dropdown
+              id={`dropdownMenuButton-${teacher.id}`} // Unique ID for each dropdown
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded={isOpen[student.id]}
-              onClick={() => toggleDropdown(student.id)} // Pass the student ID to toggleDropdown
+              aria-expanded={isOpen[teacher.id]}
+              onClick={() => toggleDropdown(teacher.id)} // Pass the student ID to toggleDropdown
             >
               Actions
             </button>
-            <div className={` customDropDown dropdown-menu${isOpen[student.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${student.id}`}>
-              <a className="dropdown-item" onClick={()=>{Edit(student.id)}}>Edit</a>
-              <a className="dropdown-item" onClick={()=>{Delete(student.id)}}>Delete</a>
+            <div className={` customDropDown dropdown-menu${isOpen[teacher.id] ? ' show' : ''}`} style={{right:"0"}} aria-labelledby={`dropdownMenuButton-${teacher.id}`}>
+              <a className="dropdown-item" onClick={()=>{Edit(teacher.users.id)}}>Edit</a>
+              <a className="dropdown-item" onClick={()=>{Delete(teacher.id)}}>Delete</a>
               <a className="dropdown-item" onClick={()=>{}}>Deactivate Student</a>
             </div>
           </div>
