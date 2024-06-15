@@ -1,19 +1,14 @@
-import React, { useState, useEffect , useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import "../css/Teacher.css";
 import "../css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
 import "../css/studentInformation/all.min.css";
-import { FaKey } from "react-icons/fa6";
-import { TiDocumentText } from "react-icons/ti";
-import { IoPerson } from "react-icons/io5";
 import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
-import defaultImg from "../img/default.png"
-import Popup from "react-animated-popup"
-import { DataGridPro, useGridApiRef } from '@mui/x-data-grid-pro';
 import { DataGrid } from '@mui/x-data-grid';
+import "../css/StudentAttendance.css"
 import CustomFooter from './CustomFooter';
 
 
@@ -155,9 +150,9 @@ export default function StudentAttendance() {
     }));
 
     const [selectedRows, setSelectedRows] = useState([]);
-    
+
     return (
-        <div>
+        <div className='studentAttendanceMainDiv'>
             <div className='headingNavbar d-flex justify-content-center'>
                 <div className='d-flex'>
                     <FaRegArrowAltCircleLeft onClick={() => { navigate("/") }} className='arrow' />
@@ -193,13 +188,14 @@ export default function StudentAttendance() {
                         </select>
                     </div>
                     <div className="filterDataDiv">
-                        <p>Filter Data</p>
+                        <p>Save Changes</p>
                         <button type='button' onClick={GetStudentInformation}><CiSearch color='white' /></button>
                     </div>
                 </div>
             </form>
-    <div className='tableDiv'>
-      <div style={{ height: 400, width: '100%' }}>
+    <div className='tableDiv attendacnceDiv'>
+      <div style={{ height: 400, width: '100%' , display:"flex", flexDirection: "column"   }}>
+      
         <DataGrid
           rows={rows}
           columns={columns}
@@ -208,13 +204,17 @@ export default function StudentAttendance() {
           initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
-          },
+          }
         }}
         pageSizeOptions={[5, 10]}
         onRowSelectionModelChange={(newSelection)=>{
             setSelectedRows(newSelection);
         }}
+        slots={{
+            footer: CustomFooter
+        }}
         />
+        <button className='attendanceSaveChanges ms-auto me-auto my-4'>Mark Attendance</button>
       </div>
     </div>
     </div>

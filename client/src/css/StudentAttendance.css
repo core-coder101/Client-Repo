@@ -1,0 +1,21 @@
+.attendanceSaveChanges{
+    width: 25%;
+    border: none;
+    background-color: #352cdda8;
+    color: white;
+    border-radius: 0.5rem;
+    align-self: center;
+    padding: 5px 0px;
+    align-self: left;
+}
+
+/* .studentAttendanceMainDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} */
+
+.attendacnceDiv{
+    box-shadow: rgba(0, 0, 0, 0.122) 0px 0px 5px 5px;
+}
