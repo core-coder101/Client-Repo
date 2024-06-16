@@ -13,16 +13,29 @@ import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
 import Popup from "react-animated-popup"
 import Preloader from './Preloader';
+import { Tooltip } from '@mui/material';
 
 
 
 export default function StudentInformation() {
 
-    const [visible, setVisible] = useState(false)
-
     const navigate = useNavigate();
+
+    // moved all state definitions to the top (hope it doesn't break anything when merging)
     
     const [isOpen, setIsOpen] = useState({});
+    const [Classes, SetClasses] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [popup, setPopup] = useState(false)
+    const [StudentInformation, SetStudentInformation] = useState([]);
+    const [filteredStudentsInfo, setFilteredStudentsInfo] = useState([])
+    const [search, setSearch] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [ApiSearchData, SetApiSearchData] = useState({
+        campus: "Main Campus",
+        ClassRank: "",
+        ClassName: ""
+        });
 
     const toggleDropdown = (id) => {
     setIsOpen(prevState => ({
@@ -36,23 +49,6 @@ export default function StudentInformation() {
     if (user.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
     }
-
-    const [Classes, SetClasses] = useState([]);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [popup, setPopup] = useState(false)
-    useEffect(()=>{
-        if(errorMessage){
-        setPopup(true)
-        } else {
-        setPopup(false)
-        }
-    }, [errorMessage])
-
-    const [ApiSearchData, SetApiSearchData] = useState({
-        campus: "Main Campus",
-        ClassRank: "",
-        ClassName: ""
-    });
 
     const GetClasses = async () => {
         try {
@@ -75,11 +71,13 @@ export default function StudentInformation() {
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to Load Classes")
+            setPopup(true)
         }
     }
 
-    const [StudentInformation, SetStudentInformation] = useState([]);
     const GetStudentInformation = async () => {
+        setErrorMessage("Loading Students' Information")
+        setLoading(true)
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/GetStudentInformation', {
@@ -98,6 +96,9 @@ export default function StudentInformation() {
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to Get Student Info")
+            setPopup(true)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -147,6 +148,7 @@ export default function StudentInformation() {
 
           if(response.data.success == true){
             setErrorMessage(response.data.message)
+            setPopup(true)
             SetStudentInformation((prev)=>{
                 return prev.filter((student) => {
                     return !(student.id === id)
@@ -154,17 +156,33 @@ export default function StudentInformation() {
             })
           } else{
             setErrorMessage(response.data.message)
+            setPopup(true)
           }
 
       } catch (error) {
           console.error(error);
           setErrorMessage("Failed to Delete Student")
+          setPopup(true)
       }
       }
     
       const Edit = (id) => {
         navigate(`/addstudent/${id}`);
       };
+
+      useEffect(() => {
+        const results = StudentInformation.filter(student =>
+            JSON.stringify(student.id).toLowerCase().includes(search.toLowerCase()) ||
+            student.users.name.toLowerCase().includes(search.toLowerCase()) || 
+            student.StudentPhoneNumber.toLowerCase().includes(search.toLowerCase()) ||
+            student.StudentHomeAddress.toLowerCase().includes(search.toLowerCase()) ||
+            student.StudentReligion.toLowerCase().includes(search.toLowerCase()) ||
+            student.StudentCNIC.toLowerCase().includes(search.toLowerCase()) ||
+            student.parents.FatherName.toLowerCase().includes(search.toLowerCase()) ||
+            student.parents.GuardiansPhoneNumber.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredStudentsInfo(results);
+    }, [search, StudentInformation]);
 
 
     return (
@@ -204,8 +222,12 @@ export default function StudentInformation() {
                         </select>
                     </div>
                     <div className="filterDataDiv">
-                        <p>Filter Data</p>
-                        <button type='button' onClick={GetStudentInformation}><CiSearch color='white' /></button>
+                        <Tooltip title="Search on this page" arrow>
+                            <input type='text' className='searchInput' value={search} onChange={(e)=>{setSearch(e.target.value)}} placeholder='Search Student' ></input>
+                        </Tooltip>
+                        <Tooltip title="Search the Database" arrow>
+                            <button type='button'><CiSearch color='white' /></button>
+                        </Tooltip>
                     </div>
                 </div>
             </form>
@@ -229,7 +251,7 @@ export default function StudentInformation() {
                             </tr>
                         </thead>
                         <tbody>
-                            {StudentInformation && StudentInformation.length > 0 ? StudentInformation.map((student, index) => (
+                            {filteredStudentsInfo && filteredStudentsInfo.length > 0 ? filteredStudentsInfo.map((student, index) => (
                                 <tr key={student.id}>
                                     <td>{student.id}</td>
                                     <td>
@@ -293,6 +315,11 @@ export default function StudentInformation() {
                             <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}}  style={{backgroundColor: "#11101de9", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
                                 <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
                                     <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+                                </div>
+                            </Popup>
+                            <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                                <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                                    <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
                                 </div>
                             </Popup>
                         </tbody>

@@ -11,11 +11,27 @@ import { IoPerson } from "react-icons/io5";
 import axios from 'axios';
 import { useAuth } from './context/AuthProvider';
 import defaultImg from "../img/default.png"
+import Popup from 'react-animated-popup';
+import { Tooltip } from '@mui/material';
 
-export default function StudentInformation() {
+export default function TeachersInformation() {
     const navigate = useNavigate();
+
+    // please define all states at the top -_-
     
     const [isOpen, setIsOpen] = useState({});
+    const [Classes, SetClasses] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [popup, setPopup] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [TeacherInformation, SetTeacherInformation] = useState([]);
+    const [search, setSearch] = useState("")
+    const [filteredTeacherInfo, setFilteredTeacherInfo] = useState([])
+    const [ApiSearchData, SetApiSearchData] = useState({
+        campus: "Main Campus",
+        ClassRank: "",
+        ClassName: ""
+    });
 
 const toggleDropdown = (id) => {
   setIsOpen(prevState => ({
@@ -29,16 +45,6 @@ const toggleDropdown = (id) => {
     if (user.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
     }
-
-    const [Classes, SetClasses] = useState([]);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [SuccessMessage, setSuccessMessage] = useState('');
-
-    const [ApiSearchData, SetApiSearchData] = useState({
-        campus: "Main Campus",
-        ClassRank: "",
-        ClassName: ""
-    });
 
     const GetClasses = async () => {
         try {
@@ -54,13 +60,14 @@ const toggleDropdown = (id) => {
             SetClasses(response.data);
         } catch (error) {
             console.error(error);
-            setErrorMessage({ success: false, message: "Failed to Load Classes" });
+            setErrorMessage("Failed to Load Classes")
+            setPopup(true)
         }
     }
 
-    const [TeacherInformation, SetTeacherInformation] = useState([]);
-
     const GetTeacherInformation = async () => {
+        setErrorMessage("Loading Teachers' data")
+        setLoading(true)
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/GetTeacherInformation', {
@@ -78,7 +85,10 @@ const toggleDropdown = (id) => {
             SetTeacherInformation(response.data.data || []);
         } catch (error) {
             console.error(error);
-            setErrorMessage({ success: false, message: "Failed to Get Student Info" });
+            setErrorMessage("Failed to Get Teacher's Info")
+            setPopup(true)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -87,6 +97,14 @@ const toggleDropdown = (id) => {
     }, []);
 
     useEffect(() => {
+        if(ApiSearchData.ClassRank === "" && ApiSearchData.ClassName !== ""){
+            SetApiSearchData(prev => {
+                return {
+                    ...prev,
+                    ClassName: "",
+                }
+            })
+        }
             GetTeacherInformation();
     }, [ApiSearchData]);
 
@@ -107,7 +125,6 @@ const toggleDropdown = (id) => {
           }
         }
         setErrorMessage("");
-        setSuccessMessage("");
       };
       
 
@@ -127,7 +144,8 @@ const toggleDropdown = (id) => {
           
       } catch (error) {
           console.error(error);
-          setErrorMessage({ success: false, message: "Failed to Delete Student" });
+          setErrorMessage("Failed to Delete Student")
+          setPopup(true)
       }
       }
     
@@ -135,6 +153,17 @@ const toggleDropdown = (id) => {
         navigate(`/addteacher/${id}`);
       };
 
+      useEffect(() => {
+        const results = TeacherInformation.filter(teacher =>
+            JSON.stringify(teacher.id).toLowerCase().includes(search.toLowerCase()) ||
+            teacher.users.name.toLowerCase().includes(search.toLowerCase()) || 
+            teacher.TeacherPhoneNumber.toLowerCase().includes(search.toLowerCase()) ||
+            teacher.TeacherHomeAddress.toLowerCase().includes(search.toLowerCase()) ||
+            teacher.TeacherReligion.toLowerCase().includes(search.toLowerCase()) ||
+            teacher.TeacherCNIC.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredTeacherInfo(results);
+    }, [search, TeacherInformation]);
 
     return (
         <div>
@@ -157,16 +186,16 @@ const toggleDropdown = (id) => {
                     <div className="inputDiv">
                         <p>Class</p>
                         <select className='input' name='ClassRank' onChange={handleChange}>
-                        <option></option>
-  {Classes.data && Array.from(new Set(Classes.data.map(Class => Class.ClassRank))).map(rank => (
-    <option key={rank} value={rank}>{rank}</option>
-  ))}
-</select>
+                            <option value=""></option>
+                            {Classes.data && Array.from(new Set(Classes.data.map(Class => Class.ClassRank))).map(rank => (
+                                <option key={rank} value={rank}>{rank}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="inputDiv">
                         <p>Name</p>
                         <select className='input' name='ClassName' value={ApiSearchData.ClassName} onChange={handleChange}>
-                        <option></option>
+                        <option value=""></option>
                             {Classes.data && Classes.data.map((Class, index) => (
                                 ApiSearchData.ClassRank == Class.ClassRank && (
                                     <option key={Class.id} value={Class.ClassName}>{Class.ClassName}</option>
@@ -175,8 +204,12 @@ const toggleDropdown = (id) => {
                         </select>
                     </div>
                     <div className="filterDataDiv">
-                        <p>Filter Data</p>
-                        <button type='button' onClick={GetTeacherInformation}><CiSearch color='white' /></button>
+                        <Tooltip title="Search on this page" arrow>
+                            <input type='text' className='searchInput' value={search} onChange={(e)=>{setSearch(e.target.value)}} placeholder='Search Student' ></input>
+                        </Tooltip>
+                        <Tooltip title="Search the Database" arrow>
+                            <button type='button'><CiSearch color='white' /></button>
+                        </Tooltip>
                     </div>
                 </div>
             </form>
@@ -200,7 +233,7 @@ const toggleDropdown = (id) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {TeacherInformation && TeacherInformation.length > 0 ? TeacherInformation.map((teacher, index) => (
+                            {filteredTeacherInfo && filteredTeacherInfo.length > 0 ? filteredTeacherInfo.map((teacher, index) => (
                                 <tr key={teacher.id}>
                                     <td>{teacher.id}</td>
                                     <td>
@@ -277,6 +310,16 @@ const toggleDropdown = (id) => {
                             )}
                         </tbody>
                     </table>
+                    <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                            <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+                        </div>
+                    </Popup>
+                    <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                            <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
+                        </div>
+                    </Popup>
                 </div>
             </div>
         </div>
