@@ -10,6 +10,8 @@ import { useAuth } from './context/AuthProvider';
 import { DataGrid } from '@mui/x-data-grid';
 import "../css/StudentAttendance.css"
 import CustomFooter from './CustomFooter';
+import Preloader from "./Preloader"
+import { Tooltip } from '@mui/material';
 
 
 
@@ -17,7 +19,8 @@ export default function StudentAttendance() {
 
     const navigate = useNavigate();
     
-    const [isOpen, setIsOpen] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [filteredRows, setFilteredRows] = useState([]);
 
     const { CSRFToken, user } = useAuth();
 
@@ -27,6 +30,8 @@ export default function StudentAttendance() {
 
     const [Classes, SetClasses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [StudentInformation, SetStudentInformation] = useState(null);
+    const [search, setSearch] = useState("")
 
     const [ApiSearchData, SetApiSearchData] = useState({
         campus: "Main Campus",
@@ -58,7 +63,6 @@ export default function StudentAttendance() {
         }
     }
 
-    const [StudentInformation, SetStudentInformation] = useState([]);
     const GetStudentInformation = async () => {
         try {
             const response = await axios.post(
@@ -80,6 +84,14 @@ export default function StudentAttendance() {
             setErrorMessage({ success: false, message: "Failed to Get Student Info" });
         }
     }
+
+    useEffect(()=>{
+        if(!StudentInformation){
+            setLoading(true)
+        } else{
+            setLoading(false)
+        }
+    }, [StudentInformation])
 
     useEffect(() => {
         GetClasses();
@@ -114,7 +126,7 @@ export default function StudentAttendance() {
       const columns = [
         { field: 'ID', headerName: 'Sr no.', width: 75 },
         { field: 'StudentName', headerName: 'Student Name', width: 140 },
-        { field: 'FatherName', headerName: 'Father Name', width: 140 },
+        { field: 'FatherName', headerName: 'Father Name', width: 140, },
         {
           field: 'age',
           headerName: 'Student DOB',
@@ -136,20 +148,33 @@ export default function StudentAttendance() {
           width: 250,
         },
       ];
-    
-
-    const rows = StudentInformation.map((student, index) => ({
-        id:student.id,
-        ID: index + 1,
-        StudentName: student.users.name,
-        FatherName: student.parents.FatherName,
-        age: student.StudentDOB,
-        PhoneNumber: student.StudentPhoneNumber,
-        JoiningDate: student.created_at.split("T")[0],
-        HomeAddress: student.StudentHomeAddress
-    }));
-
+      
+      let [rows, setRows] = useState([])
+      useEffect(()=>{
+      if(StudentInformation && StudentInformation.length > 0){
+          let mapped = StudentInformation.map((student, index) => ({
+              id:student.id,
+              ID: index + 1,
+              StudentName: student.users.name,
+              FatherName: student.parents.FatherName,
+              age: student.StudentDOB,
+              PhoneNumber: student.StudentPhoneNumber,
+              JoiningDate: student.created_at.split("T")[0],
+              HomeAddress: student.StudentHomeAddress
+          }));
+          setRows(mapped)
+          setFilteredRows(mapped)
+      }})
     const [selectedRows, setSelectedRows] = useState([]);
+
+    useEffect(() => {
+        const results = rows.filter(student =>
+            student.StudentName.toLowerCase().includes(search.toLowerCase()) || 
+            student.FatherName.toLowerCase().includes(search.toLowerCase()) ||
+            student.PhoneNumber.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredRows(results);
+    }, [search, rows]);
 
     return (
         <div className='studentAttendanceMainDiv'>
@@ -172,10 +197,10 @@ export default function StudentAttendance() {
                     <div className="inputDiv">
                         <p>Class</p>
                         <select className='input' name='ClassRank' onChange={handleChange}>
-  {Classes.data && Array.from(new Set(Classes.data.map(Class => Class.ClassRank))).map(rank => (
-    <option key={rank} value={rank}>{rank}</option>
-  ))}
-</select>
+                            {Classes.data && Array.from(new Set(Classes.data.map(Class => Class.ClassRank))).map(rank => (
+                                <option key={rank} value={rank}>{rank}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="inputDiv">
                         <p>Name</p>
@@ -188,8 +213,12 @@ export default function StudentAttendance() {
                         </select>
                     </div>
                     <div className="filterDataDiv">
-                        <p>Save Changes</p>
-                        <button type='button' onClick={GetStudentInformation}><CiSearch color='white' /></button>
+                        <Tooltip title="Search on this page" arrow>
+                            <input type='text' className='searchInput' value={search} onChange={(e)=>{setSearch(e.target.value)}} placeholder='Search Student' ></input>
+                        </Tooltip>
+                        <Tooltip title="Search the Database" arrow>
+                            <button type='button' onClick={GetStudentInformation}><CiSearch color='white' /></button>
+                        </Tooltip>
                     </div>
                 </div>
             </form>
@@ -197,10 +226,11 @@ export default function StudentAttendance() {
       <div style={{ height: 400, width: '100%' , display:"flex", flexDirection: "column"   }}>
       
         <DataGrid
-          rows={rows}
+          rows={filteredRows}
           columns={columns}
           pageSize={5}
           checkboxSelection
+          loading={loading}
           initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
@@ -211,10 +241,10 @@ export default function StudentAttendance() {
             setSelectedRows(newSelection);
         }}
         slots={{
-            footer: CustomFooter
+            footer: CustomFooter,
+            loadingOverlay: Preloader
         }}
         />
-        <button className='attendanceSaveChanges ms-auto me-auto my-4'>Mark Attendance</button>
       </div>
     </div>
     </div>

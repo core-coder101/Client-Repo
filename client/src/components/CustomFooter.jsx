@@ -1,13 +1,14 @@
 import { Button } from '@mui/material'
-import { GridFooterContainer } from '@mui/x-data-grid'
+import { GridFooter, GridFooterContainer } from '@mui/x-data-grid'
 import React from 'react'
 
 export default function CustomFooter() {
   return (
     <GridFooterContainer>
-            <Button variant="contained" color="primary" onClick={() => alert('Button clicked!')}>
-                Submit
-            </Button>
-        </GridFooterContainer>
+      <Button className='my-3 ms-3' variant="contained" color="primary" style={{borderTop: "none"}}>
+          Submit
+      </Button>
+      <GridFooter />      
+    </GridFooterContainer>
   )
 }

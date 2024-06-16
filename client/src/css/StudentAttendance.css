@@ -19,3 +19,21 @@
 .attendacnceDiv{
     box-shadow: rgba(0, 0, 0, 0.122) 0px 0px 5px 5px;
 }
+.searchInput {
+    padding: 10px 15px;
+    border: none;
+    height: 100%;
+    outline: none;
+    background-color: transparent;
+    -webkit-text-fill-color: rgb(255, 255, 255) !important;
+    color: rgb(255, 255, 255);
+}
+.searchInput:-webkit-autofill,
+.searchInput:-webkit-autofill:hover,
+.searchInput:-webkit-autofill:focus,
+.searchInput:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+}
+.MuiDataGrid-scrollbar::-webkit-scrollbar-thumb{
+    background: rgb(123, 112, 112) !important;
+}
