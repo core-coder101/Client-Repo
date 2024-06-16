@@ -49,23 +49,28 @@ export default function CreateTeacher() {
     });
 
 
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
     const [popup, setPopup] = useState(false)
-    useEffect(()=>{
-        if(errorMessage){
-        setPopup(true)
-        } else {
-        setPopup(false)
-        }
-    }, [errorMessage])
+    // useEffect(()=>{
+    //     if(errorMessage){
+    //     setPopup(true)
+    //     } else {
+    //     setPopup(false)
+    //     }
+    // }, [errorMessage])
 
 
     const [open, setOpen] = useState(false)
     const [imgClass, setImgClass] = useState("")
 
     const topRef = useRef(null)
+    const emailRef = useRef(null)
+
+    const [loading, setLoading] = useState(false)
 
     const createTeacher = async (formData) => {
+        setErrorMessage("Adding new teacher. . .")
+        setLoading(true)
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/CreateTeacher',
@@ -80,6 +85,7 @@ export default function CreateTeacher() {
             );
             if(response.data.success == true){
                 setErrorMessage("New Teacher created successfully")
+                setPopup(true)
                 setFormData({
                     name: "",
                     userName: "",
@@ -95,15 +101,28 @@ export default function CreateTeacher() {
               }
               else{
                 setErrorMessage(response.data.message);
+                setPopup(true)
               }
         } catch (error) {
-            setErrorMessage("Failed to create teacher");
+            // console.log(error.response.data.message);
+            if(error.response.data.message.includes("users_email_unique")){
+                setErrorMessage("Email must be unique")
+                setPopup(true)
+                scrollToElement(emailRef)
+            } else{
+                setErrorMessage("Failed to create teacher");
+                setPopup(true)
+            }
+        } finally {
+            setLoading(false)
         }
     };
 
 
 
     const UpdateTeacher = async (formData) => {
+        setErrorMessage("Updating Changes. . .")
+        setLoading(true)
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/UpdateTeacher',
@@ -118,13 +137,23 @@ export default function CreateTeacher() {
             );
             if(response.data.success == true){
                 setErrorMessage("Teacher Updated successfully")
-                navigate(-1)
+                setPopup(true)
+                setTimeout(()=>{
+                    setPopup(false)
+                },800)
+                setTimeout(()=>{
+                    navigate(-1)
+                },1400)
               }
               else{
                 setErrorMessage(response.data.message);
+                setPopup(true)
               }
         } catch (error) {
             setErrorMessage("Failed to Update Teacher");
+            setPopup(true)
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -161,13 +190,12 @@ export default function CreateTeacher() {
         if(!formData.image){
             setOpen(true)
             setImgClass("imgHover")
-            scrollToImg()
+            scrollToElement(emailRef)
             setTimeout(()=>{
                 setOpen(false)
                 setImgClass("")
             }, 1000)
-        }
-        if (TeacherData  && TeacherData.users) {
+        } else if (TeacherData  && TeacherData.users){
             UpdateTeacher(formData);
         }
         else{
@@ -227,6 +255,8 @@ export default function CreateTeacher() {
   const [TeacherData , SetTeacherData] = useState();
 
   const GetTeacherData = async () =>{
+    setErrorMessage("Loading teacher. . .")
+    setLoading(true)
     try {
       const response = await axios.get(
           `http://127.0.0.1:8000/api/GetTeacherData?ID=${ID}`
@@ -244,11 +274,15 @@ export default function CreateTeacher() {
       }
       else{
         setErrorMessage(response.data.message);
+        setPopup(true)
       }
   } catch (error) {
         console.error(error)
         setErrorMessage("Failed to Load Edit Teacher");
+        setPopup(true)
         navigate("/addteacher")
+  } finally{
+    setLoading(false)
   }
   }
   
@@ -301,7 +335,7 @@ useEffect(() => {
         e.preventDefault()
         setOpen(true)
         setImgClass("imgHover")
-        scrollToImg()
+        scrollToElement(topRef)
         setTimeout(()=>{
             setOpen(false)
             setImgClass("")
@@ -309,9 +343,9 @@ useEffect(() => {
     }
 
 
-function scrollToImg(){
-    if(topRef.current){
-        topRef.current.scrollIntoView({behavior: 'smooth'})
+function scrollToElement(ref){
+    if(ref.current){
+        ref.current.scrollIntoView({behavior: 'smooth'})
     }
 }
 
@@ -323,7 +357,7 @@ function scrollToImg(){
                 <div className='headingNavbar d-flex justify-content-center'>
                     <div className='d-flex'>
                         <FaRegArrowAltCircleLeft onClick={()=>{navigate("/")}} className='arrow' />
-                        <h4 ref={topRef} >Dashboard \ Admit a new teacher</h4>
+                        <h4 tabIndex="-1" ref={topRef} >Dashboard \ Admit a new teacher</h4>
                     </div>
                     <div className='ms-auto me-4'></div>
                 </div>
@@ -385,6 +419,7 @@ function scrollToImg(){
                             value={formData.email}
                             onChange={handleChange}
                             required
+                            ref={emailRef}
                         />
                     </div>
                     <InputLabel className='mb-1 mt-2' id="demo-multiple-chip-label">Subjects</InputLabel>
@@ -410,6 +445,7 @@ function scrollToImg(){
                                 </Box>
                             )}
                             MenuProps={MenuProps}
+                            required
                             >
                             {names.map((name) => (
                                 <MenuItem
@@ -494,11 +530,16 @@ function scrollToImg(){
                             required
                         />
                     </div>
-                    <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
-                            <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                                <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
-                            </div>
-                        </Popup>
+                    <Popup visible={popup} animationDuration={400} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                            <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+                        </div>
+                    </Popup>
+                    <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                            <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
+                        </div>
+                    </Popup>
                     <div>
                         <button className='btn btn-primary w-100' type='submit'>
                             Submit

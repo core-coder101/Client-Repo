@@ -165,7 +165,7 @@ export default function StudentAttendance() {
           setRows(mapped)
           setFilteredRows(mapped)
       }})
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);   
 
     useEffect(() => {
         const results = rows.filter(student =>

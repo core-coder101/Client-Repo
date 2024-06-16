@@ -52,6 +52,10 @@ export default function CreateClass(){
         }
     );
     if(response.data.success == true){
+      if(!response.data.data.length > 0){
+        setErrorMessage("Please add a teacher first")
+        return
+      }
       setteachers(response.data.data);
       setFormData((prev) => ({
         ...prev,
