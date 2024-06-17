@@ -37,3 +37,6 @@
 .MuiDataGrid-scrollbar::-webkit-scrollbar-thumb{
     background: rgb(123, 112, 112) !important;
 }
+.dataGrid{
+    transition: all ease !important;
+}
