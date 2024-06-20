@@ -116,7 +116,7 @@ export default function StudentAttendance() {
                 ...ApiSearchData,
                 selectedRows: selectedRows,
             }
-            const response = await axios.post("/api/studentattendance", dataToSend, {
+            const response = await axios.post("http://127.0.0.1:8000/api/studentattendance", dataToSend, {
                 headers: {
                     'X-CSRF-TOKEN': CSRFToken,
                     'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ export default function StudentAttendance() {
       useEffect(()=>{
       if(StudentInformation && StudentInformation.length > 0){
           let mapped = StudentInformation.map((student, index) => ({
-              id:student.id,
+              id:student.users.id,
               ID: index + 1,
               StudentName: student.users.name,
               FatherName: student.parents.FatherName,
