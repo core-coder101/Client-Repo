@@ -205,7 +205,7 @@ const toggleDropdown = (id) => {
                     </div>
                     <div className="filterDataDiv">
                         <Tooltip title="Search on this page" arrow>
-                            <input type='text' className='searchInput' value={search} onChange={(e)=>{setSearch(e.target.value)}} placeholder='Search Student' ></input>
+                            <input type='text' className='searchInput' value={search} onChange={(e)=>{setSearch(e.target.value)}} placeholder='Search Teacher' ></input>
                         </Tooltip>
                         <Tooltip title="Search the Database" arrow>
                             <button type='button'><CiSearch color='white' /></button>
