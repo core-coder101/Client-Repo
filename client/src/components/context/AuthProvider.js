@@ -33,10 +33,15 @@ export const  AuthProvider = ({ children }) => {
         if(!CSRFToken){
           axios.get('http://127.0.0.1:8000/api/csrf-token')
               .then(response => {
-                  setCSRFToken(response.data.csrfToken);
+                if(response.data.csrfToken){
+                    setCSRFToken(response.data.csrfToken);
+                } else{
+                    logout()
+                }
               })
               .catch(error => {
                   console.error('Error fetching CSRF token:', error);
+                  logout()
               });
             }
       }, [CSRFToken]);

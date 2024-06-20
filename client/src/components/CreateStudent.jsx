@@ -22,20 +22,27 @@ import Popup from 'react-animated-popup';
 export default function CreateStudent() {
 
     const { ID } = useParams();
-
-
+    
+    
     smoothscroll.polyfill()
-
+    
     const { CSRFToken, user } = useAuth();
-
+    
     const navigate = useNavigate()
-
+    
     if (user.token) {
         axios.defaults.headers.common['Authorization'] =
         `Bearer ${user.token}`;
-    }
-
-    const [formData, setFormData] = useState({
+        }
+        
+        const [open, setOpen] = useState(false)
+        const [imgClass, setImgClass] = useState("")
+        const [ClassData , SetClassData] = useState("");
+        const [errorMessage, setErrorMessage] = useState("");
+        const [popup, setPopup] = useState(false)
+        const [StudentData , SetStudentData] = useState();
+        const [loading, setLoading] = useState(false)
+        const [formData, setFormData] = useState({
         image: null,
         name: "",
         userName: "",
@@ -57,21 +64,6 @@ export default function CreateStudent() {
         HomeAddress:"",
         GuardiansEmail:""
     });
-
-
-    const [ClassData , SetClassData] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [popup, setPopup] = useState(false)
-    useEffect(()=>{
-        if(errorMessage){
-        setPopup(true)
-        } else {
-        setPopup(false)
-        }
-    }, [errorMessage])
-
-    const [open, setOpen] = useState(false)
-    const [imgClass, setImgClass] = useState("")
 
     const topRef = useRef(null)
 
@@ -97,10 +89,12 @@ export default function CreateStudent() {
           }
           else{
             setErrorMessage(response.data.message);
+            setPopup(true)
           }
       } catch (error) {
           console.error(error);
           setErrorMessage("Failed to Load Classes")
+          setPopup(true)
       }}
 
 
@@ -128,9 +122,10 @@ export default function CreateStudent() {
 
 
 
-      const [StudentData , SetStudentData] = useState();
 
       const GetStudentData = async () =>{
+        setErrorMessage("Loading student data. . .")
+        setLoading(true)
         try {
           const response = await axios.get(
               `http://127.0.0.1:8000/api/GetStudentData?ID=${ID}`
@@ -146,6 +141,7 @@ export default function CreateStudent() {
           if(response.data.success == true){
             if( !(response.data.data.length > 0) ){
                 setErrorMessage("Student not found")
+                setPopup(true)
                 navigate("/addstudent")
             } else {
             SetStudentData(response.data.data);
@@ -153,9 +149,13 @@ export default function CreateStudent() {
           }
           else{
             setErrorMessage(response.data.message);
+            setPopup(true)
           }
       } catch (error) {
           setErrorMessage("Failed to Load Edit Student")
+          setPopup(true)
+      } finally{
+        setLoading(false)
       }
       }
       
@@ -183,11 +183,11 @@ export default function CreateStudent() {
             );
             if(response.data.success == true){
                 setErrorMessage("New Student created successfully")
+                setPopup(true)
                 setFormData({
                     name: "",
                     userName: "",
                     email: "",
-                    subjects: [],
                     subjects: [],
                     StudentDOB: "",
                     StudentGender: "Male",
@@ -208,9 +208,11 @@ export default function CreateStudent() {
               }
               else{
                 setErrorMessage(response.data.message);
+                setPopup(true)
               }
         } catch (error) {
             setErrorMessage("Failed to create Student")
+            setPopup(true)
         }
     };
 
@@ -219,6 +221,8 @@ export default function CreateStudent() {
 
 
     const UpdateStudent = async (formData) => {
+        setErrorMessage("Updating student information. . .")
+        setLoading(true)
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/UpdateStudent',
@@ -233,6 +237,7 @@ export default function CreateStudent() {
             );
             if(response.data.success == true){
                 setErrorMessage("Student Updated successfully")
+                setPopup(true)
                 setFormData({
                     name: "",
                     userName: "",
@@ -258,9 +263,13 @@ export default function CreateStudent() {
               }
               else{
                 setErrorMessage(response.data.message);
+                setPopup(true)
               }
         } catch (error) {
             setErrorMessage("Failed to Update Student")
+            setPopup(true)
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -289,6 +298,7 @@ export default function CreateStudent() {
                 setOpen(false)
                 setImgClass("")
             }, 1000)
+            return
         }
         if (StudentData && StudentData.length > 0 && StudentData[0].users) {
             UpdateStudent(formData);
@@ -305,7 +315,7 @@ export default function CreateStudent() {
             setFormData((prev) => {
                 return {
                     ...prev,
-                    StudentClassID: ClassData[0].id
+                    StudentClassID: JSON.stringify(ClassData[0].id)
             }});
         }
     }, [ClassData]);
@@ -330,11 +340,11 @@ export default function CreateStudent() {
                     email: StudentData[0].users.email || "",
                     subjects: subjects,
                     StudentDOB: StudentData[0].StudentDOB || "",
-                    StudentGender: "Male",
+                    StudentGender: StudentData[0].StudentGender || "Male",
                     StudentCNIC: StudentData[0].StudentCNIC || "",
                     StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
                     StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
-                    StudentReligion: "Islam",
+                    StudentReligion: StudentData[0].StudentReligion || "Islam",
                     StudentMonthlyFee: StudentData[0].StudentMonthlyFee || "",
                     FatherName: StudentData[0].parents.FatherName || "",
                     MotherName: StudentData[0].parents.MotherName || "",
@@ -603,7 +613,7 @@ export default function CreateStudent() {
                         >
                             <option value='Islam'>Islam</option>
                             <option value='Christianity'>Christianity</option>
-                            <option value='Irreligion'>Irreligion</option>
+                            <option value='Atheist'>Atheist</option>
                             <option value='Hinduism'>Hinduism</option>
                             <option value='Buddhism'>Buddhism</option>
                         </select>
@@ -703,9 +713,14 @@ export default function CreateStudent() {
                             required
                         />
                     </div>
-                    <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+                    <Popup visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
                         <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
                             <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+                        </div>
+                    </Popup>
+                    <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
+                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                            <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
                         </div>
                     </Popup>
                 

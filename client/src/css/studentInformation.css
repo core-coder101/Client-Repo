@@ -111,6 +111,9 @@ th, td{
 .innerButtonDiv{
     height: 25px;
 }
+.innerButtonDiv:hover{
+    cursor: pointer;
+}
 .DeleteBtn{
     background-color: #930000;
     color: white;

@@ -15,13 +15,7 @@ export default function CreateClass(){
 
   const [errorMessage, setErrorMessage] = useState("");
   const [popup, setPopup] = useState(false)
-  useEffect(()=>{
-    if(errorMessage){
-      setPopup(true)
-    } else {
-      setPopup(false)
-    }
-  }, [errorMessage])
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     ClassName:  "",
@@ -40,6 +34,8 @@ export default function CreateClass(){
     }
 
   const GetTeachers = async () =>{
+    setErrorMessage("Loading teacher's data. . .")
+    setLoading(true)
   try {
     const response = await axios.get(
         'http://127.0.0.1:8000/api/GetTeacher'
@@ -52,6 +48,11 @@ export default function CreateClass(){
         }
     );
     if(response.data.success == true){
+      if(!response.data.data.length > 0){
+        setErrorMessage("Please add a teacher first")
+        setPopup(true)
+        return
+      }
       setteachers(response.data.data);
       setFormData((prev) => ({
         ...prev,
@@ -60,10 +61,21 @@ export default function CreateClass(){
     }
     else{
       setErrorMessage(response.data.message);
+      setPopup(true)
     }
 } catch (error) {
-    setErrorMessage("Failed to Load Teachers")
-}}
+  console.error(error);
+      if(error.response.data.message.includes("[2002]")){
+        setErrorMessage("Database down at the moment. . . ")
+        setPopup(true)
+      } else{
+        setErrorMessage("Failed to Load Teachers")
+        setPopup(true)
+      }
+} finally{
+  setLoading(false)
+}
+}
 
 
 
@@ -71,6 +83,8 @@ export default function CreateClass(){
 const [ClassData , SetClassData] = useState();
 
 const GetClassData = async () =>{
+  setErrorMessage("Loading Class data. . . ")
+  setLoading(true)
   try {
     const response = await axios.get(
         `http://127.0.0.1:8000/api/GetClassData?ID=${ID}`
@@ -95,10 +109,20 @@ const GetClassData = async () =>{
     }
     else{
       setErrorMessage(response.data.message);
+      setPopup(true)
       navigate("/createclass")
     }
 } catch (error) {
     setErrorMessage("Failed to Load Edit Class")
+    setPopup(true)
+    setTimeout(() => {
+      setPopup(false)
+    }, 800);
+    setTimeout(() => {
+      navigate("/createclass")
+    }, 1500)
+} finally{
+  setLoading(false)
 }
 }
 
@@ -135,6 +159,7 @@ const CreateClass = async (formData) => {
       if(response.data.success == true){
         setResult(response.data);
         setErrorMessage("Successfully Created a new Class")
+        setPopup(true)
         setFormData((prev) => {
           return {
             ...prev,
@@ -147,13 +172,17 @@ const CreateClass = async (formData) => {
       }
       else{
         setErrorMessage(response.data.message)
+        setPopup(true)
       }
   } catch (error) {
       console.error(error);
       setErrorMessage("Failed to create Class")
+      setPopup(true)
   }
 }
 else{
+  setErrorMessage("Updating Class. . .")
+  setLoading(true)
   try {
     const response = await axios.post(
         'http://127.0.0.1:8000/api/UpdateClass',
@@ -168,7 +197,14 @@ else{
     );
     if(response.data.success == true){
       setResult(response.data);
-      setErrorMessage("Successfully Updated selected Class")
+      setErrorMessage("Successfully Updated Class")
+      setPopup(true)
+      setTimeout(()=>{
+          setPopup(false)
+      },1000)
+      setTimeout(()=>{
+          navigate(-1)
+      },1500)
       setFormData({
         ClassName:  "",
         ClassRank:  "",
@@ -179,9 +215,13 @@ else{
     }
     else{
       setErrorMessage(response.data.message);
+      setPopup(true)
     }
 } catch (error) {
-    setErrorMessage("Failed to Update Class" )
+    setErrorMessage("Failed to Update Class")
+    setPopup(true)
+} finally {
+  setLoading(false)
 }
 }
 };
@@ -235,9 +275,14 @@ const handleSubmit = (e) => {
         })}
         </select>
         </div>
-          <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+          <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
               <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
                   <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+              </div>
+          </Popup>
+          <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
+              <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                  <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
               </div>
           </Popup>
         <div>

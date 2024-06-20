@@ -20,16 +20,12 @@ export default function ManageClasses() {
   const [Classes , SetClasses] = useState([]);
   const [errorMessage , setErrorMessage] = useState(null);
   const [popup, setPopup] = useState(false)
-  useEffect(()=>{
-      if(errorMessage){
-      setPopup(true)
-      } else {
-      setPopup(false)
-      }
-  }, [errorMessage])
+  const [loading, setLoading] = useState(false)
 
 
   const GetClasses = async () =>{
+    setErrorMessage("Loading Classes. . . ")
+    setLoading(true)
     try {
       const response = await axios.get(
           'http://127.0.0.1:8000/api/GetClasses'
@@ -41,11 +37,22 @@ export default function ManageClasses() {
               },
           }
       );
-      SetClasses(response.data.data);
+      if(response && response.data.success == true){
+        SetClasses(response.data.data);
+      }
   } catch (error) {
       console.error(error);
-      setErrorMessage("Failed to Load Classes")
-  }}
+      if(error.response.data.message.includes("[2002]")){
+        setErrorMessage("Database down at the moment. . . ")
+        setPopup(true)
+      } else{
+        setErrorMessage("Failed to Load Classes")
+        setPopup(true)
+      }
+  } finally {
+    setLoading(false)
+  }
+}
 
 
   useEffect(()=>{
@@ -74,9 +81,11 @@ export default function ManageClasses() {
         }))
       })
       setErrorMessage(response.data.message)
+      setPopup(true)
   } catch (error) {
       console.error(error);
       setErrorMessage("Failed to Delete Class");
+      setPopup(true)
   }
   }
 
@@ -128,9 +137,14 @@ export default function ManageClasses() {
           </tbody>
         </table>
       </div>
-        <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px"}}>
+        <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
             <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
                 <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
+            </div>
+        </Popup>
+        <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
+            <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
+                <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
             </div>
         </Popup>
       </div>

@@ -49,7 +49,11 @@ const SubMenu = ({ item, sidebarOpen,  }) => {
     }
   }, [sidebarOpen])
 
-  const showSubnav = () => setSubnav(!subnav);
+  const showSubnav = () =>{
+    if(sidebarOpen){
+      setSubnav(!subnav);
+    }
+  }
 
   return (
     <>
