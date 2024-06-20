@@ -84,7 +84,7 @@ export default function ManageClasses() {
     navigate(`/createclass/${id}`);
   };
   const Details = (id) =>{
-    
+    navigate(`/ClassDetails/${id}`);
   }
 
 

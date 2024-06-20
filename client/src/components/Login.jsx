@@ -38,19 +38,19 @@ export default function Login() {
         <div className='Login'>
             <div className='blur'>
                 <div className='Main'>
-                    <h1 className='protest-revolution-regular mt-5 mb-5' style={{whiteSpace: "nowrap"}} >Hustler's University</h1>
+                    <h1 className='protest-revolution-regular mt-5 mb-5' style={{whiteSpace: "nowrap" , color:"white"}} >Hustler's University</h1>
                     <form onSubmit={handleSubmit}>
                         <input name='email' type='email' placeholder='Email' onChange={handleChange} value={formData.email} required />
                         <input name='password' type='password' placeholder='Password' onChange={handleChange} value={formData.password} required />
                         <div className='rememberMe'>
                             <input name='rememberMe' type='checkbox' defaultChecked />
-                            <p>Remember me?</p>
+                            <p style={{color:"white"}}>Remember me?</p>
                         </div>
                         {errorMessage ? <div className='errorDiv'>
-                            <p>{errorMessage}</p>
+                            <p style={{color:"white"}}>{errorMessage}</p>
                         </div> : null}
                         <button type='submit'>Login</button>
-                        <p className='mb-5'>Forgot password? <button className='admin' onClick={() => { }}>Forgot Password</button></p>
+                        <p style={{color:"white"}} className='mb-5'>Forgot password? <button className='admin' onClick={() => { }}>Forgot Password</button></p>
                     </form>
                 </div>
             </div>
