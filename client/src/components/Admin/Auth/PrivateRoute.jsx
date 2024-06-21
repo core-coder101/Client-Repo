@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { setUser } from "../../../redux/slices/authSlice";
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function PrivateRoute() {
   const { user } = useSelector((state) => state.auth);

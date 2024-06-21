@@ -17,11 +17,9 @@ export default function MyRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/">
-          <Route element={<PublicRoute />}>
+          <Route path="/" element={<PublicRoute />}>
             <Route path="login" element={<Login />} />
           </Route>
-        </Route>
         <Route path="/" element={<Template />}>
           <Route element={<PrivateRoute />}>
             <Route index element={<Dashboard />} />

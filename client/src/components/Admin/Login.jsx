@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import "../../assets/css/Login.css";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  login,
-} from "../../features/auth/authActions";
+import { login } from "../../redux/slices/authSlice";
+
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -21,7 +20,7 @@ export default function Login() {
       [name]: value,
     }));
   }
-  function handleSubmit(e) {
+  const handleSubmit=(e) =>{
     e.preventDefault();
     dispatch(login(formData));
   }
