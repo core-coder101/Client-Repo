@@ -7,7 +7,6 @@ const AuthContext = createContext();
 export const  AuthProvider = ({ children }) => {
 
 
-
     const [CSRFToken, setCSRFToken] = useState('');
     const [result, setResult] = useState("")
     const [user, setUser] = useState(()=>{
@@ -26,7 +25,6 @@ export const  AuthProvider = ({ children }) => {
     }, [result])
 
 
-    
 
 
     useEffect(() => {

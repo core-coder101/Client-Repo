@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useState} from 'react'
 import "../css/dashboard.css"
 import { FaArrowCircleRight } from "react-icons/fa";
 import { FaRegCreditCard } from "react-icons/fa";
@@ -8,7 +8,6 @@ import { FaChartPie } from "react-icons/fa";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { VscGraphLine } from "react-icons/vsc";
 import Graph from './Graph';
-
 
 
 
@@ -70,6 +69,7 @@ export default function Dashboard() {
           </div>
         </div>
         <Graph />
+        
     </div>
   )
 }
