@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
 import Navbar from './Navbar.jsx'
 import Sidebar from './sidebar.jsx'
+import { Outlet } from 'react-router-dom'
 
-export default function Template({ element }) {
+export default function Template() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     let sidebarClass = ""
     if(sidebarOpen){sidebarClass = "sidebarOpen"} else {sidebarClass = ""}
@@ -13,7 +14,7 @@ export default function Template({ element }) {
             <div className={'main ' + sidebarClass}>
                 <Navbar />
                 <div className='contentArea'>
-                    {element}
+                    <Outlet />
                 </div>
             </div>
         </div>

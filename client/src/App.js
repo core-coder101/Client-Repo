@@ -1,53 +1,38 @@
-import React, { useEffect, useState } from 'react'
-import "./App.css"
-import { Outlet, RouterProvider } from 'react-router-dom'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { router } from './components/Admin/Router.jsx';
-import { useSelector } from 'react-redux';
-import Sidebar from './components/Admin/sidebar.jsx';
-import Navbar from './components/Admin/Navbar.jsx';
-import Dashboard from './components/Admin/Dashboard.jsx';
-import PrivateRoute from './components/Auth/PrivateRoute.jsx';
-import Login from './components/Admin/Login.jsx';
-import Template from './components/Admin/Template.jsx';
-import PublicRoute from './components/Auth/PublicRoute.jsx';
+import React, { useEffect } from "react";
+import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import MyRoutes from "./components/Admin/MyRoutes";
+import { logout, setCSRFToken } from "./redux/slices/authSlice";
+import axios from "axios";
 
 export default function App() {
-  const { result } = useSelector((state) => state.auth)
-    useEffect(()=>{
-      console.log(result);
-  }, [result])
+  const { CSRFToken } = useSelector((state) => state.auth);
 
-  function Layout(){
+  const dispatch = useDispatch();
 
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    let sidebarClass = ""
-    if(sidebarOpen){sidebarClass = "sidebarOpen"} else {sidebarClass = ""}
+  const fetchCSRFToken = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/csrf-token");
+      if (response.data.csrfToken) {
+        dispatch(setCSRFToken(response.data.csrfToken));
+      } else {
+        dispatch(logout());
+      }
+    } catch (error) {
+      console.error("Error fetching CSRF token:", error);
+      dispatch(logout());
+    }
+  };
 
-    return(
-      <div>
-          <Sidebar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
-          <div className={'main ' + sidebarClass}>
-              <Navbar />
-              <div className='contentArea'>
-                  <Outlet />
-              </div>
-          </div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    if (!CSRFToken) {
+      fetchCSRFToken();
+    }
+  }, [CSRFToken]);
+
   return (
     <div>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route element={<PrivateRoute />}>
-              <Route index path="/" element={<Dashboard />} />
-            </Route>
-          </Route>
-          <Route path="/login" element={<PublicRoute element={<Login />} />} />
-        </Routes>
-      </Router>
+      <MyRoutes />
     </div>
-  )
+  );
 }

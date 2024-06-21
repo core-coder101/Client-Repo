@@ -5,23 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCSRFToken,
   login,
-  setFromLocalStorage,
 } from "../../features/auth/authActions";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const { loading, error, csrfToken, result } = useSelector(
+  const { loading, error } = useSelector(
     (state) => state.auth
   );
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!csrfToken) {
-      dispatch(fetchCSRFToken());
-    }
-  }, [csrfToken, dispatch]);
 
   function handleChange(e) {
     let { name, value } = e.target;

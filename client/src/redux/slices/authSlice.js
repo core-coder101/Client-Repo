@@ -1,16 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || null,
-  CSRFToken: '',
-  result: '',
+  CSRFToken: "",
+  result: "",
   loading: false,
   error: null,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setCSRFToken: (state, action) => {
@@ -23,7 +23,7 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.loading = false;
       state.user = action.payload;
-      localStorage.setItem('user', JSON.stringify(action.payload));
+      localStorage.setItem("user", JSON.stringify(action.payload));
       state.loading = false;
     },
     loginFailure: (state, action) => {
@@ -32,19 +32,19 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      state.CSRFToken = '';
-      state.result = '';
+      state.CSRFToken = "";
+      state.result = "";
       localStorage.clear();
-      delete axios.defaults.headers.common['Authorization'];
+      delete axios.defaults.headers.common["Authorization"];
     },
     setResult: (state, action) => {
       state.result = action.payload;
     },
     setUser: (state, action) => {
       state.loading = false;
-      state.user = action.payload
+      state.user = action.payload;
       state.loading = false;
-    }
+    },
   },
 });
 
