@@ -12,6 +12,7 @@ import StudentInformation from './StudentInformation.jsx';
 import TeachersInformation from "./TeachersInformation.jsx"
 import StudentAttendance from "./StudentAttendance.jsx";
 import ClassDetails from "./ClassDetails.jsx";
+import StudentDashboard from "./StudentDashboard.jsx";
 
 export const router = createBrowserRouter([
     {
@@ -66,5 +67,9 @@ export const router = createBrowserRouter([
     {
       path: "/ClassDetails/:ID",
       element: <PrivateRoute element={<Template element={<ClassDetails />} />} />
-    }
+    },
+    {
+      path: "/studentdashboard",
+      element: <PrivateRoute element={<Template element={<StudentDashboard />} />} />
+    },
 ])
