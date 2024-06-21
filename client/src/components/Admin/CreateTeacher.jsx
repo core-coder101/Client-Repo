@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../../assets/css/Teacher.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { useAuth } from '../context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import defaultImg from "../../assets/img/default.png"

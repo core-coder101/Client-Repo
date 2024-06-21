@@ -6,7 +6,6 @@ import "../../assets/css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
 import "../../assets/css/studentInformation/all.min.css";
 import axios from "axios";
-import { useAuth } from "../context/AuthProvider";
 import { DataGrid } from "@mui/x-data-grid";
 import "../../assets/css/StudentAttendance.css";
 import CustomFooter from "./CustomFooter";

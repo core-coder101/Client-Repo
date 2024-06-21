@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../assets/css/Login.css";
-import { useAuth } from "../context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchCSRFToken,
   login,
 } from "../../features/auth/authActions";
 

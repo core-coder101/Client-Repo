@@ -9,7 +9,6 @@ import { FaKey } from "react-icons/fa6";
 import { TiDocumentText } from "react-icons/ti";
 import { IoPerson } from "react-icons/io5";
 import axios from "axios";
-import { useAuth } from "../context/AuthProvider";
 import defaultImg from "../../assets/img/default.png";
 import Popup from "react-animated-popup";
 import Preloader from "./Preloader";

@@ -4,7 +4,6 @@ import { IoSearch } from "react-icons/io5";
 import { FaHome } from "react-icons/fa";
 import Select from "react-dropdown-select";
 import { IoExitOutline } from "react-icons/io5";
-import { useAuth } from "../context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
 
