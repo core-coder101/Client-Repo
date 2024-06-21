@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../assets/css/Sidebar.css";
 import { BsPersonFill } from "react-icons/bs";
-import { useAuth } from "../context/AuthProvider";
 import { TbHexagonLetterHFilled } from "react-icons/tb";
 import SubMenu from "./SubMenu";
 import { RiArrowDropDownLine } from "react-icons/ri";
