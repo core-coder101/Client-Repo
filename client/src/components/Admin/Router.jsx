@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login from './Login.jsx'
-import PublicRoute from './Auth/PublicRoute.jsx'
+import PublicRoute from '../Auth/PublicRoute.jsx'
 import Template from './Template.jsx'
-import PrivateRoute from './Auth/PrivateRoute.jsx';
+import PrivateRoute from '../Auth/PrivateRoute.jsx';
 import ManageClasses from './ManageClasses.jsx';
 import CreateClass from './CreateClass.jsx';
 import CreateTeacher from './CreateTeacher.jsx';

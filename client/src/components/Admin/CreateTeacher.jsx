@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "../css/Teacher.css";
+import "../../assets/css/Teacher.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { useAuth } from './context/AuthProvider';
+import { useAuth } from '../context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import defaultImg from "../img/default.png"
+import defaultImg from "../../assets/img/default.png"
 import { Tooltip } from "@mui/material"
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
 import Popup from 'react-animated-popup';
+import { useSelector } from 'react-redux';
 
 
 export default function CreateTeacher() {    
@@ -25,7 +24,7 @@ export default function CreateTeacher() {
 
     smoothscroll.polyfill()
 
-    const { CSRFToken, user } = useAuth();
+    const { CSRFToken, user } = useSelector((state) => state.auth)
 
     const navigate = useNavigate()
 

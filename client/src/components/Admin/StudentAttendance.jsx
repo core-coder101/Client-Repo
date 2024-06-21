@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import "../css/Teacher.css";
-import "../css/studentInformation.css";
+import "../../assets/css/Teacher.css";
+import "../../assets/css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
-import "../css/studentInformation/all.min.css";
+import "../../assets/css/studentInformation/all.min.css";
 import axios from 'axios';
-import { useAuth } from './context/AuthProvider';
-import { DataGrid, GridCellModes } from '@mui/x-data-grid';
-import "../css/StudentAttendance.css"
+import { useAuth } from '../context/AuthProvider';
+import { DataGrid } from '@mui/x-data-grid';
+import "../../assets/css/StudentAttendance.css"
 import CustomFooter from './CustomFooter';
-import Preloader from "./Preloader"
 import { Tooltip } from '@mui/material';
 import Popup from 'react-animated-popup';
+import { useSelector } from 'react-redux';
 
 
 
@@ -28,7 +28,7 @@ export default function StudentAttendance() {
     const [StudentInformation, SetStudentInformation] = useState(null);
     const [search, setSearch] = useState("")
 
-    const { CSRFToken, user } = useAuth();
+    const { CSRFToken, user } = useSelector((state) => state.auth)
 
     if (user.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
@@ -116,7 +116,7 @@ export default function StudentAttendance() {
                 ...ApiSearchData,
                 selectedRows: selectedRows,
             }
-            const response = await axios.post("/api/studentattendance", dataToSend, {
+            const response = await axios.post("http://127.0.0.1:8000/api/studentattendace", dataToSend, {
                 headers: {
                     'X-CSRF-TOKEN': CSRFToken,
                     'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export default function StudentAttendance() {
         },
       ];
       
-      let [rows, setRows] = useState([])
+      const [rows, setRows] = useState([])
       useEffect(()=>{
       if(StudentInformation && StudentInformation.length > 0){
           let mapped = StudentInformation.map((student, index) => ({

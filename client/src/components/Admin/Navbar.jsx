@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import "../css/Navbar.css"
+import "../../assets/css/Navbar.css"
 import { IoSearch } from "react-icons/io5";
 import { FaHome } from "react-icons/fa";
 import Select from "react-dropdown-select";
 import { IoExitOutline } from "react-icons/io5";
-import { useAuth } from './context/AuthProvider';
+import { useAuth } from '../context/AuthProvider';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../features/auth/authSlice.js';
 
 
 export default function Navbar() {
 
-  const { logout } = useAuth()
+  const dispatch = useDispatch()
 
   const [selectedValue, setSelectedValue] = useState([{
     label: 'Main Campus',
@@ -50,7 +52,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className='rightItems'>
-            <div className='logout' onClick={()=>{logout()}}>
+            <div className='logout' onClick={()=>{dispatch(logout())}}>
               <p>Logout</p>
               <IoExitOutline color='white' />
             </div>

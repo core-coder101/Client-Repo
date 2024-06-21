@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import "../css/Teacher.css";
-import "../css/studentInformation.css";
+import "../../assets/css/Teacher.css";
+import "../../assets/css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
-import "../css/studentInformation/all.min.css";
+import "../../assets/css/studentInformation/all.min.css";
 import { FaKey } from "react-icons/fa6";
 import { TiDocumentText } from "react-icons/ti";
 import { IoPerson } from "react-icons/io5";
 import axios from 'axios';
-import { useAuth } from './context/AuthProvider';
-import defaultImg from "../img/default.png"
+import { useAuth } from '../context/AuthProvider';
+import defaultImg from "../../assets/img/default.png"
 import Popup from 'react-animated-popup';
 import { Tooltip } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 export default function TeachersInformation() {
     const navigate = useNavigate();
@@ -40,7 +41,7 @@ const toggleDropdown = (id) => {
   }));
 };
 
-    const { CSRFToken, user } = useAuth();
+    const { CSRFToken, user } = useSelector((state)=> state.auth)
 
     if (user.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;

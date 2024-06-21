@@ -1,15 +1,23 @@
-import React from 'react'
-import { useAuth } from '../context/AuthProvider'
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { setUser } from '../../features/auth/authSlice';
 
 
-export default function PrivateRoute({element}) {
 
-  const  { user }= useAuth();
+export default function PrivateRoute() {
+
+  const dispatch = useDispatch()
+
   const navigate = useNavigate()
-  
-  
-  return (
-    user ? element : <Navigate to="/login" />
-  )
+
+  const { user } = useSelector((state)=>state.auth)
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
+  return user ? <Outlet /> : null;
 }

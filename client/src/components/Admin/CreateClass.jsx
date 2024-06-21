@@ -1,16 +1,17 @@
 import React , {useEffect , useState} from 'react'
-import "../css/class.css"
+import "../../assets/css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { useAuth } from './context/AuthProvider';
+import { useAuth } from '../context/AuthProvider';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import Popup from 'react-animated-popup';
+import { useSelector } from 'react-redux';
 
 export default function CreateClass(){
   
   const { ID } = useParams();
-  const { CSRFToken, user } = useAuth();
+  const { CSRFToken, user } = useSelector((state)=> state.auth)
   const [teachers, setteachers] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState("");

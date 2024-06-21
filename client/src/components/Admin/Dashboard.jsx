@@ -1,5 +1,5 @@
 import React from 'react'
-import "../css/dashboard.css"
+import "../../assets/css/dashboard.css"
 import { FaArrowCircleRight } from "react-icons/fa";
 import { FaRegCreditCard } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";

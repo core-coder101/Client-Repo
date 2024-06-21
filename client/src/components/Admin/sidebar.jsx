@@ -1,7 +1,7 @@
 import React, { useEffect,useRef, useState } from 'react';
-import '../css/Sidebar.css';
+import '../../assets/css/Sidebar.css';
 import { BsPersonFill } from "react-icons/bs";
-import { useAuth } from './context/AuthProvider';
+import { useAuth } from '../context/AuthProvider';
 import { TbHexagonLetterHFilled } from "react-icons/tb";
 import SubMenu from './SubMenu';
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -13,11 +13,14 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { PiStudentFill } from "react-icons/pi";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../features/auth/authSlice';
 
 
 function Sidebar({setSidebarOpen, sidebarOpen}) {
 
-  const { user, logout } = useAuth()
+  const { user } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
 
     const [scrollbarVisibility, setScrollbarVisibility] = useState("scrollbarDisappear")
 
@@ -139,15 +142,14 @@ function Sidebar({setSidebarOpen, sidebarOpen}) {
               <div className="profile-details">
                 <BsPersonFill color='white' style={{width: "30px", height: "30px", marginRight: "10px"}} />
                 <div className="name_job">
-                  <div className="name">{user.Name}</div>
-                  <div className="job">{user.Role}</div>
+                  <div className="name">{user ? user.Name : ""}</div>
+                  <div className="job">{user ? user.Role : ""}</div>
                 </div>
               </div>
-              <i className="bx bx-log-out" id="log_out" onClick={()=>{logout()}} />
+              <i className="bx bx-log-out" id="log_out" onClick={()=>{dispatch(logout)}} />
             </li>
           </ul>
         </div>
-
       </div>
     </>
   );

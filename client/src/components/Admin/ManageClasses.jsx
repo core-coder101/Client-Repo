@@ -1,21 +1,22 @@
 import React , {useEffect,useState} from 'react'
-import "../css/table.less"
-import "../css/class.css"
+import "../../assets/css/table.less"
+import "../../assets/css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { useAuth } from './context/AuthProvider';
+import { useAuth } from '../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Preloader from './Preloader';
 import Popup from 'react-animated-popup';
+import { useSelector } from 'react-redux';
 
 export default function ManageClasses() {
 
-  const { CSRFToken, user } = useAuth();
+  const { CSRFToken, user } = useSelector((state) => state.auth)
 
-    if (user.token) {
-        axios.defaults.headers.common['Authorization'] =
-        `Bearer ${user.token}`;
-    }
+    // if (user.token) {
+    //     axios.defaults.headers.common['Authorization'] =
+    //     `Bearer ${user.token}`;
+    // }
 
   const [Classes , SetClasses] = useState([]);
   const [errorMessage , setErrorMessage] = useState(null);
