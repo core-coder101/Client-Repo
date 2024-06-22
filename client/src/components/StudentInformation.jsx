@@ -75,16 +75,20 @@ export default function StudentInformation() {
                 }
             );
             SetClasses(response.data);
-            SetApiSearchData(prev => {
-                return {...prev,
-                    ClassRank: response.data.data[0].ClassRank,
-                    ClassName: response.data.data[0].ClassName
-                }
-            })
+            if(response.data && response.data.data.length > 0){
+                SetApiSearchData(prev => {
+                    return {...prev,
+                        ClassRank: response.data.data[0].ClassRank,
+                        ClassName: response.data.data[0].ClassName
+                    }
+                })
+            }
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to Load Classes")
             setPopup(true)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -359,7 +363,7 @@ export default function StudentInformation() {
                                 <div ref={pngElementRef} className='studentIdCardDiv' style={{backgroundColor: "white", display: "flex", flexDirection: "column", alignItems: "center", borderRadius: "1rem", padding: "15px 20px", boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px", whiteSpace: "nowrap", width: "300px", height: "460px"}}>
                                     <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
                                         <h4 style={{margin: "0", padding: "0"}}>{popupInput.users.name}</h4>
-                                        <ReactBarcode style={{backgroundColor: "transparent"}} value={ApiSearchData.campus.slice(0, 1) + '-' + JSON.stringify(popupInput.id)} options={{format: "code128"}} displayValue={false} renderer='image' />
+                                        <ReactBarcode style={{backgroundColor: "transparent"}} value={ApiSearchData.campus.slice(0, 1) + '-' + JSON.stringify(popupInput.users.id)} options={{format: "code128"}} displayValue={false} renderer='image' />
                                         <div style={{display: "flex", flexDirection: "column", width: "100%"}}>
                                             <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Class: </span>{converter.toWords(ApiSearchData.ClassRank)}</h6>
                                             <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Campus: </span>{ApiSearchData.campus}</h6>

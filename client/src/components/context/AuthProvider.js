@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 export const  AuthProvider = ({ children }) => {
 
-
+    const [loading, setLoading] = useState(true)
     const [CSRFToken, setCSRFToken] = useState('');
     const [result, setResult] = useState("")
     const [user, setUser] = useState(()=>{
@@ -27,22 +27,24 @@ export const  AuthProvider = ({ children }) => {
 
 
 
+    const isFetching = useRef(false); // Ref to track fetching status
+
     useEffect(() => {
-        if(!CSRFToken){
-          axios.get('http://127.0.0.1:8000/api/csrf-token')
-              .then(response => {
-                if(response.data.csrfToken){
-                    setCSRFToken(response.data.csrfToken);
-                } else{
-                    logout()
-                }
-              })
-              .catch(error => {
-                  console.error('Error fetching CSRF token:', error);
+      if(!CSRFToken){
+        axios.get('http://127.0.0.1:8000/api/csrf-token')
+            .then(response => {
+              if(response.data.csrfToken){
+                  setCSRFToken(response.data.csrfToken);
+              } else{
                   logout()
-              });
-            }
-      }, [CSRFToken]);
+              }
+            })
+            .catch(error => {
+                console.error('Error fetching CSRF token:', error);
+                logout()
+            });
+          }
+    }, [CSRFToken]);
 
 
 
@@ -74,7 +76,7 @@ export const  AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{  user, setUser,login, logout, CSRFToken, setCSRFToken, result, setResult }}>
+    <AuthContext.Provider value={{  user, setUser,login, logout, CSRFToken, setCSRFToken, result, setResult, loading }}>
       {children}
     </AuthContext.Provider>
   )

@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './components/Router.jsx';
 
 export default function App() {
-  const {result} = useAuth()
+  const {result, CSRFToken, loading} = useAuth()
     useEffect(()=>{
       console.log(result);
   }, [result])

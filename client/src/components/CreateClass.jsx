@@ -144,6 +144,8 @@ const [result, setResult] = useState(null);
 
 const CreateClass = async (formData) => {
   if(formData.ClassID == ""){
+    setErrorMessage("Creating new class. . .")
+    setLoading(true)
   try {
       const response = await axios.post(
           'http://127.0.0.1:8000/api/CreateClass',
@@ -178,6 +180,8 @@ const CreateClass = async (formData) => {
       console.error(error);
       setErrorMessage("Failed to create Class")
       setPopup(true)
+  } finally {
+    setLoading(false)
   }
 }
 else{
@@ -268,7 +272,7 @@ const handleSubmit = (e) => {
         <div className='d-flex flex-column mt-3'>
         <label className='label'>Name of the Teacher</label>
         <select id="cars" className='Forminput mb-3' name="ClassTeacherID" value={formData.ClassTeacherID} onChange={handleChange} required>
-        {ClassData && ClassData.data.id ? 
+        {ClassData && ClassData.data.id && ClassData.data.teachers ? 
           <option value={ClassData.data.teachers.id} >{ClassData.data.teachers.users.name}</option> : ""}
         {teachers && Object.values(teachers).length > 0 && Object.values(teachers).map((teacher, index) => {
             return <option value={teacher.id} >{teacher.users.name}</option>;

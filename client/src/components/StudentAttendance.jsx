@@ -53,12 +53,14 @@ export default function StudentAttendance() {
                 }
             );
             SetClasses(response.data);
-            SetApiSearchData(prev => {
-                return {...prev,
-                    ClassRank: response.data.data[0].ClassRank,
-                    ClassName: response.data.data[0].ClassName
-                }
-            })
+            if(response.data && response.data.data.length > 0){
+                SetApiSearchData(prev => {
+                    return {...prev,
+                        ClassRank: response.data.data[0].ClassRank,
+                        ClassName: response.data.data[0].ClassName
+                    }
+                })
+            }
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to Load Classes")
