@@ -15,24 +15,40 @@ import axios from "axios";
 //   }
 // };
 
-export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async () => {
+export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rejectWithValue }) => {
   try {
     const { data } = await axios.get("http://127.0.0.1:8000/api/csrf-token");
-    return data;
+    if(data.csrfToken){
+      return data
+    } else{
+      rejectWithValue(data.message || "Failed to fetch CSRF Token")
+    }
   } catch (error) {
-    throw error;
+    return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
 
-export const login = createAsyncThunk("login", async (action) => {
+export const login = createAsyncThunk("login", async (action, { getState, rejectWithValue }) => {
   try {
+    const state = getState()
     const { data } = await axios.post(
       "http://127.0.0.1:8000/api/login",
-      action.payload
+      action,
+      {
+        headers: {
+          "X-CSRF-TOKEN": state.csrfToken,
+          "Content-Type": "application/json",
+          "API-TOKEN": "IT is to secret you cannot break it :)",
+        },
+      }
     );
-    return data;
+    if(data.success == true){
+      return data;
+    } else {
+      return rejectWithValue(data.message || "An unexpected error occurred")
+    }
   } catch (error) {
-    throw error;
+    return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
 
@@ -78,32 +94,35 @@ const authSlice = createSlice({
     setUser: (state, action) => {
       state.loading = false;
       state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload))
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCSRFToken.pending, (state) => {
-        // state.keywodsSuggetionStatus = true;
+        state.loading = true
+        state.error = null
       })
       .addCase(fetchCSRFToken.fulfilled, (state, action) => {
-        // state.keywodsSuggetionStatus = false;
         state.CSRFToken = action.payload.csrfToken;
+        state.loading = false
       })
       .addCase(fetchCSRFToken.rejected, (state, action) => {
-        // state.keywodsSuggetionStatus = false;
+        state.error = action
+        state.loading = false
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.loading = true;
-        state.user = action.payload
+        state.user = action.payload.data
+        localStorage.setItem("user", JSON.stringify(action.payload.data))
         state.loading = false
       })
       .addCase(login.rejected, (state, action) => {
+        state.error = action.payload
         state.loading = false;
-        state.error = action.error.message
       })
   },
 });

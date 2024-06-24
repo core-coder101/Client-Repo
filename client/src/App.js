@@ -9,7 +9,9 @@ export default function App() {
   const { CSRFToken } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    if(!CSRFToken){
     dispatch(fetchCSRFToken());
+  }
     // if (!CSRFToken) {
     //   fetchCSRFToken();
     // }
