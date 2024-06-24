@@ -59,6 +59,8 @@ export default function ManageClasses() {
 
 
   const Delete = async(id) => {
+    setErrorMessage("Deleting Class")
+    setLoading(true)
     try {
       const response = await axios.post(
           'http://127.0.0.1:8000/api/DeleteClass',{ID:id}
@@ -81,6 +83,8 @@ export default function ManageClasses() {
       console.error(error);
       setErrorMessage("Failed to Delete Class");
       setPopup(true)
+  } finally {
+    setLoading(false)
   }
   }
 
@@ -88,7 +92,7 @@ export default function ManageClasses() {
     navigate(`/createclass/${id}`);
   };
   const Details = (id) =>{
-    
+    navigate(`/ClassDetails/${id}`);
   }
 
 
