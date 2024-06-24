@@ -1,20 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// export const fetchCSRFToken = async (dispatch) => {
-//   try {
-//     const response = await axios.get("http://127.0.0.1:8000/api/csrf-token");
-//     if (response.data.csrfToken) {
-//       dispatch(setCSRFToken(response.data.csrfToken));
-//     } else {
-//       dispatch(logout());
-//     }
-//   } catch (error) {
-//     console.error("Error fetching CSRF token:", error);
-//     dispatch(logout());
-//   }
-// };
-
 export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rejectWithValue }) => {
   try {
     const { data } = await axios.get("http://127.0.0.1:8000/api/csrf-token");
@@ -64,23 +50,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCSRFToken: (state, action) => {
-      state.CSRFToken = action.payload;
-    },
-    loginStart: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    loginSuccess: (state, action) => {
-      state.loading = false;
-      state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
-      state.loading = false;
-    },
-    loginFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
     logout: (state) => {
       state.user = null;
       state.CSRFToken = "";
@@ -88,8 +57,8 @@ const authSlice = createSlice({
       localStorage.clear();
       delete axios.defaults.headers.common["Authorization"];
     },
-    setResult: (state, action) => {
-      state.result = action.payload;
+    setError: (state, action) => {
+      state.error = action.payload
     },
     setUser: (state, action) => {
       state.loading = false;
@@ -127,42 +96,10 @@ const authSlice = createSlice({
   },
 });
 
-// export const login = async (formData, dispatch, getState) => {
-//   const state = getState().auth;
-
-//   dispatch(loginStart());
-//   try {
-//     const response = await axios.post(
-//       "http://127.0.0.1:8000/api/login",
-//       formData,
-//       {
-//         headers: {
-//           "X-CSRF-TOKEN": state.csrfToken,
-//           "Content-Type": "application/json",
-//           "API-TOKEN": "IT is to secret you cannot break it :)",
-//         },
-//       }
-//     );
-//     if (response.data.success) {
-//       dispatch(loginSuccess(response.data.data));
-//       dispatch(setResult(response.data));
-//     } else {
-//       dispatch(loginFailure("Login failed"));
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     dispatch(loginFailure(error.toString()));
-//   }
-// };
-
 export const {
-  setCSRFToken,
-  loginStart,
-  loginSuccess,
-  loginFailure,
   logout,
-  setResult,
   setUser,
+  setError,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import "../css/Teacher.css";
-import "../css/studentInformation.css";
+import "../../assets/css/Teacher.css";
+import "../../assets/css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
-import "../css/studentInformation/all.min.css";
+import "../../assets/css/studentInformation/all.min.css";
 import axios from 'axios';
-import { useAuth } from './context/AuthProvider';
-import defaultImg from "../img/default.png"
+import defaultImg from "../../assets/img/default.png"
 import Popup from "react-animated-popup"
 import { DataGrid } from '@mui/x-data-grid';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
-export default function StudentAttendance() {
+export default function ClassDetails() {
 
     const { ID } = useParams();
 
+    const { CSRFToken, user } = useSelector((state) => state.auth);
+
     const navigate = useNavigate();
 
-    const { CSRFToken, user } = useAuth();
 
     if (user.token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;

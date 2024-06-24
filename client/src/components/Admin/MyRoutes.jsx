@@ -12,6 +12,8 @@ import CreateStudent from "./CreateStudent.jsx";
 import StudentInformation from "./StudentInformation.jsx";
 import TeachersInformation from "./TeachersInformation.jsx";
 import StudentAttendance from "./StudentAttendance.jsx";
+import ClassDetails from "./ClassDetails.jsx";
+import UploadLecture from "./UploadLecture.jsx";
 
 export default function MyRoutes() {
   return (
@@ -24,7 +26,7 @@ export default function MyRoutes() {
           <Route element={<PrivateRoute />}>
             <Route index element={<Dashboard />} />
             <Route path="manageclasses" element={<ManageClasses />} />
-            <Route path="classdetails/:ID" element={<CreateClass />} />
+            <Route path="classdetails/:ID" element={<ClassDetails />} />
             <Route path="createclass" element={<CreateClass />} />
             <Route path="createclass/:ID" element={<CreateClass />} />
             <Route path="addstudent" element={<CreateStudent />} />
@@ -41,6 +43,7 @@ export default function MyRoutes() {
             />
             <Route path="studentattendance" element={<StudentAttendance />} />
             <Route path="addteacher" element={<StudentAttendance />} />
+            <Route path="uploadlecture" element={<UploadLecture />} />
           </Route>
         </Route>
       </Routes>
