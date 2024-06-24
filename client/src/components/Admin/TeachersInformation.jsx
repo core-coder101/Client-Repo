@@ -9,13 +9,14 @@ import { FaKey, FaLocationDot } from "react-icons/fa6";
 import { TiDocumentText } from "react-icons/ti";
 import { IoMail, IoPerson } from "react-icons/io5";
 import axios from "axios";
-import defaultImg from "../img/default.png";
+import defaultImg from "../../assets/img/default.png";
 import Popup from "react-animated-popup";
 import { Button, Tooltip } from "@mui/material";
 import { toPng } from "html-to-image";
 import { ReactBarcode } from "react-jsbarcode";
 import converter from 'number-to-words'
 import { BsFillTelephoneFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 export default function TeachersInformation() {
   const navigate = useNavigate();
