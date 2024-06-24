@@ -70,18 +70,22 @@ export default function StudentInformation() {
           "API-TOKEN": "IT is to secret you cannot break it :)",
         },
       });
-      SetClasses(response.data);
-      SetApiSearchData((prev) => {
-        return {
-          ...prev,
-          ClassRank: response.data.data[0].ClassRank,
-          ClassName: response.data.data[0].ClassName,
-        };
-      });
+      if (response.data && response.data.data.length > 0) {
+        SetClasses(response.data);
+        SetApiSearchData((prev) => {
+          return {
+            ...prev,
+            ClassRank: response.data.data[0].ClassRank,
+            ClassName: response.data.data[0].ClassName,
+          };
+        });
+      }
     } catch (error) {
       console.error(error);
       setErrorMessage("Failed to Load Classes");
       setPopup(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -499,7 +503,7 @@ export default function StudentInformation() {
                         value={
                           ApiSearchData.campus.slice(0, 1) +
                           "-" +
-                          JSON.stringify(popupInput.id)
+                          JSON.stringify(popupInput.users.id)
                         }
                         options={{ format: "code128" }}
                         displayValue={false}

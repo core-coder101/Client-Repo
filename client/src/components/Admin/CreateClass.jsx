@@ -129,6 +129,8 @@ export default function CreateClass() {
 
   const CreateClass = async (formData) => {
     if (formData.ClassID == "") {
+      setErrorMessage("Creating new class. . .")
+      setLoading(true)
       try {
         const response = await axios.post(
           "http://127.0.0.1:8000/api/CreateClass",
@@ -162,6 +164,8 @@ export default function CreateClass() {
         console.error(error);
         setErrorMessage("Failed to create Class");
         setPopup(true);
+      } finally {
+        setLoading(false)
       }
     } else {
       setErrorMessage("Updating Class. . .");
@@ -287,7 +291,7 @@ export default function CreateClass() {
               onChange={handleChange}
               required
             >
-              {ClassData && ClassData.data.id ? (
+              {ClassData && ClassData.data.id && ClassData.data.teachers ? (
                 <option value={ClassData.data.teachers.id}>
                   {ClassData.data.teachers.users.name}
                 </option>

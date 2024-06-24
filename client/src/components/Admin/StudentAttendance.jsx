@@ -45,14 +45,16 @@ export default function StudentAttendance() {
           "API-TOKEN": "IT is to secret you cannot break it :)",
         },
       });
-      SetClasses(response.data);
-      SetApiSearchData((prev) => {
-        return {
-          ...prev,
-          ClassRank: response.data.data[0].ClassRank,
-          ClassName: response.data.data[0].ClassName,
-        };
-      });
+      if(response.data && response.data.data.length > 0){
+        SetClasses(response.data);
+        SetApiSearchData((prev) => {
+          return {
+            ...prev,
+            ClassRank: response.data.data[0].ClassRank,
+            ClassName: response.data.data[0].ClassName,
+          };
+          })
+      }
     } catch (error) {
       console.error(error);
       setErrorMessage("Failed to Load Classes");
@@ -115,7 +117,7 @@ export default function StudentAttendance() {
         selectedRows: selectedRows,
       };
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/studentattendace",
+        "http://127.0.0.1:8000/api/studentattendance",
         dataToSend,
         {
           headers: {
@@ -178,7 +180,7 @@ export default function StudentAttendance() {
   useEffect(() => {
     if (StudentInformation && StudentInformation.length > 0) {
       let mapped = StudentInformation.map((student, index) => ({
-        id: student.id,
+        id: student.users.id,
         ID: index + 1,
         StudentName: student.users.name,
         FatherName: student.parents.FatherName,
