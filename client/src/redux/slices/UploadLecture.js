@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
-import { useSelector } from "react-redux";
 
 export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, rejectWithValue }) => {
   const state = getState()

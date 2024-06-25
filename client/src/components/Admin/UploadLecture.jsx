@@ -6,13 +6,15 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdUpload } from "react-icons/md";
-import { setError, setPopup } from "../../redux/slices/ClassesSlice";
+import { setError, setPopup } from "../../redux/slices/UploadLecture";
 import { Tooltip } from "@mui/material";
-import { GetClasses } from "../../redux/slices/ClassesSlice";
+import { GetClasses } from "../../redux/slices/UploadLecture";
 
 export default function UploadLecture() {
   const navigate = useNavigate();
-  const { popup , classesData , loading, error } = useSelector((state) => state.classes);
+  const { popup, classesData, loading, error } = useSelector(
+    (state) => state.classes
+  );
   const dispatch = useDispatch();
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -23,7 +25,7 @@ export default function UploadLecture() {
     title: "",
     description: "",
     lectureClassRank: "",
-  })
+  });
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -32,8 +34,8 @@ export default function UploadLecture() {
       setPreviewUrl(URL.createObjectURL(file));
     } else {
       dispatch(setError("Please upload a valid video file."));
-      dispatch(setPopup(true))
-      setSelectedFile(null)
+      dispatch(setPopup(true));
+      setSelectedFile(null);
     }
   };
 
@@ -56,33 +58,31 @@ export default function UploadLecture() {
     document.getElementById("videoLectureInput").click();
   };
 
-
-  useEffect(()=>{
-    dispatch(GetClasses())
-  }, [])
+  useEffect(() => {
+    dispatch(GetClasses());
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     formData((prev) => {
       return {
         ...prev,
         [name]: value,
-      }
-    })
-  }
+      };
+    });
+  };
 
-  useEffect(()=>{
-        // this should only ren when there is no ID param in the api
-    if(classesData && classesData.length > 0){
-      setFormData(prev => {
+  useEffect(() => {
+    // this should only ren when there is no ID param in the api
+    if (classesData && classesData.length > 0) {
+      setFormData((prev) => {
         return {
           ...prev,
-          lectureClassRank: classesData[0].id
-        }
-      })
+          lectureClassRank: classesData[0].id,
+        };
+      });
     }
-  }, [classesData])
-
+  }, [classesData]);
 
   return (
     <div className="uploadLectureMain">
@@ -148,21 +148,21 @@ export default function UploadLecture() {
             required
           >
             {classesData &&
-                Array.from(
-                  new Set(classesData.map((Class) => Class.ClassRank))
-                ).map((rank) => (
-                  <option key={rank} value={rank}>
-                    {rank}
-                  </option>
-                ))}
+              Array.from(
+                new Set(classesData.map((Class) => Class.ClassRank))
+              ).map((rank) => (
+                <option key={rank} value={rank}>
+                  {rank}
+                </option>
+              ))}
           </select>
           <Popup
             animationDuration={400}
             visible={popup}
             onClose={() => {
-              dispatch(setPopup(false))
+              dispatch(setPopup(false));
               setTimeout(() => {
-                dispatch(setError(null))
+                dispatch(setError(null));
               }, 400);
             }}
             style={{

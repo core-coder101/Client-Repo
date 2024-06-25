@@ -5,16 +5,17 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Popup from "react-animated-popup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { GetClassDataById, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/CreateClass";
 
 export default function CreateClass() {
   const { ID } = useParams();
-  const { CSRFToken, user } = useSelector((state) => state.auth);
+  const { CSRFToken } = useSelector((state) => state.auth);
+  const { loading, error, popup, classData } = useSelector((state) => state.createClass);
   const [teachers, setteachers] = useState(null);
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [popup, setPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // useless now. . .
+  const [loading1, setLoading] = useState(false); // useless now. . .
 
   const [formData, setFormData] = useState({
     ClassName: "",
@@ -25,10 +26,7 @@ export default function CreateClass() {
   });
 
   const navigate = useNavigate();
-
-  if (user.token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
-  }
+  const dispatch = useDispatch()
 
   const GetTeachers = async () => {
     setErrorMessage("Loading teacher's data. . .");
@@ -70,147 +68,31 @@ export default function CreateClass() {
     }
   };
 
-  const [ClassData, SetClassData] = useState();
-
-  const GetClassData = async () => {
-    setErrorMessage("Loading Class data. . . ");
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/GetClassData?ID=${ID}`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      console.log(response.data);
-      if (response.data.success == true) {
-        SetClassData(response.data);
-        setFormData({
-          ClassName: response.data.data.ClassName,
-          ClassRank: response.data.data.ClassRank,
-          ClassFloor: response.data.data.ClassFloor,
-          ClassTeacherID: response.data.data.ClassTeacherID,
-          ClassID: response.data.data.id,
-        });
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-        navigate("/createclass");
-      }
-    } catch (error) {
-      setErrorMessage("Failed to Load Edit Class");
-      setPopup(true);
-      setTimeout(() => {
-        setPopup(false);
-      }, 800);
-      setTimeout(() => {
-        navigate("/createclass");
-      }, 1500);
-    } finally {
-      setLoading(false);
+  useEffect(()=>{
+    if(ID && classData.data){
+      setFormData({
+          ClassName: classData.data.ClassName,
+          ClassRank: classData.data.ClassRank,
+          ClassFloor: classData.data.ClassFloor,
+          ClassTeacherID: classData.data.ClassTeacherID,
+          ClassID: classData.data.id,
+        })
     }
-  };
+  }, [classData])
 
   useEffect(() => {
     if (ID) {
-      GetClassData();
+      dispatch(GetClassDataById(ID))
+      .unwrap().catch((error)=>{
+        console.log(error);
+        navigate("/createclass")
+      })
     }
   }, []);
 
   useEffect(() => {
     GetTeachers();
   }, []);
-
-  const [result, setResult] = useState(null);
-
-  const CreateClass = async (formData) => {
-    if (formData.ClassID == "") {
-      setErrorMessage("Creating new class. . .")
-      setLoading(true)
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/api/CreateClass",
-          formData,
-          {
-            headers: {
-              "X-CSRF-TOKEN": CSRFToken,
-              "Content-Type": "application/json",
-              "API-TOKEN": "IT is to secret you cannot break it :)",
-            },
-          }
-        );
-        if (response.data.success == true) {
-          setResult(response.data);
-          setErrorMessage("Successfully Created a new Class");
-          setPopup(true);
-          setFormData((prev) => {
-            return {
-              ...prev,
-              ClassName: "",
-              ClassRank: "",
-              ClassFloor: "",
-              ClassID: "",
-            };
-          });
-        } else {
-          setErrorMessage(response.data.message);
-          setPopup(true);
-        }
-      } catch (error) {
-        console.error(error);
-        setErrorMessage("Failed to create Class");
-        setPopup(true);
-      } finally {
-        setLoading(false)
-      }
-    } else {
-      setErrorMessage("Updating Class. . .");
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/api/UpdateClass",
-          formData,
-          {
-            headers: {
-              "X-CSRF-TOKEN": CSRFToken,
-              "Content-Type": "application/json",
-              "API-TOKEN": "IT is to secret you cannot break it :)",
-            },
-          }
-        );
-        if (response.data.success == true) {
-          setResult(response.data);
-          setErrorMessage("Successfully Updated Class");
-          setPopup(true);
-          setTimeout(() => {
-            setPopup(false);
-          }, 1000);
-          setTimeout(() => {
-            navigate(-1);
-          }, 1500);
-          setFormData({
-            ClassName: "",
-            ClassRank: "",
-            ClassFloor: "",
-            ClassTeacherID: "",
-            ClassID: "",
-          });
-        } else {
-          setErrorMessage(response.data.message);
-          setPopup(true);
-        }
-      } catch (error) {
-        setErrorMessage("Failed to Update Class");
-        setPopup(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -223,7 +105,35 @@ export default function CreateClass() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    CreateClass(formData);
+    if (formData.ClassID == ""){
+      createClass(formData).unwrap(() => {
+        setFormData((prev) => {
+          return {
+            ...prev,
+            ClassName: "",
+            ClassRank: "",
+            ClassFloor: "",
+            ClassID: "",
+          };
+        });
+      })
+    } else {
+      UpdateClass(formData).unwrap(()=>{
+        setTimeout(() => {
+            dispatch(setPopup(false))
+          }, 1000);
+          setTimeout(() => {
+            navigate(-1);
+          }, 1500);
+          setFormData({
+            ClassName: "",
+            ClassRank: "",
+            ClassFloor: "",
+            ClassTeacherID: "",
+            ClassID: "",
+          });
+      })
+    }
   };
 
   return (
@@ -252,7 +162,7 @@ export default function CreateClass() {
               name="ClassName"
               value={formData.ClassName}
               onChange={handleChange}
-              defaultValue={ClassData ? ClassData.data.ClassName : ""}
+              defaultValue={classData ? classData.data?.ClassName : ""}
               required
             ></input>
           </div>
@@ -265,7 +175,7 @@ export default function CreateClass() {
               name="ClassRank"
               value={formData.ClassRank}
               onChange={handleChange}
-              defaultValue={ClassData ? ClassData.data.ClassRank : ""}
+              defaultValue={classData ? classData.data?.ClassRank : ""}
               required
             ></input>
           </div>
@@ -277,7 +187,7 @@ export default function CreateClass() {
               name="ClassFloor"
               value={formData.ClassFloor}
               onChange={handleChange}
-              defaultValue={ClassData ? ClassData.data.ClassFloor : ""}
+              defaultValue={classData ? classData.data?.ClassFloor : ""}
               required
             ></input>
           </div>
@@ -291,9 +201,9 @@ export default function CreateClass() {
               onChange={handleChange}
               required
             >
-              {ClassData && ClassData.data.id && ClassData.data.teachers ? (
-                <option value={ClassData.data.teachers.id}>
-                  {ClassData.data.teachers.users.name}
+              {classData && classData.data?.id && classData.data.teachers ? (
+                <option value={classData.data.teachers.id}>
+                  {classData.data.teachers.users.name}
                 </option>
               ) : (
                 ""
@@ -311,9 +221,9 @@ export default function CreateClass() {
             animationDuration={400}
             visible={popup}
             onClose={() => {
-              setPopup(false);
+              dispatch(setPopup(false))
               setTimeout(() => {
-                setErrorMessage("");
+                dispatch(setError(null))
               }, 400);
             }}
             style={{
@@ -326,7 +236,7 @@ export default function CreateClass() {
               className="d-flex justify-content-center align-items-center"
               style={{ width: "max-content", height: "100%", padding: "0" }}
             >
-              <h5 style={{ color: "white", margin: "0" }}>{errorMessage}</h5>
+              <h5 style={{ color: "white", margin: "0" }}>{error}</h5>
             </div>
           </Popup>
           <Popup
@@ -343,7 +253,7 @@ export default function CreateClass() {
               style={{ width: "max-content", height: "100%", padding: "0" }}
             >
               <h5
-                dangerouslySetInnerHTML={{ __html: errorMessage }}
+                dangerouslySetInnerHTML={{ __html: error }}
                 style={{ color: "white", margin: "0" }}
               ></h5>
             </div>
