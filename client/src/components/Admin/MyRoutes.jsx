@@ -30,7 +30,7 @@ export default function MyRoutes() {
             <Route path="createclass" element={<CreateClass />} />
             <Route path="createclass/:ID" element={<CreateClass />} />
             <Route path="addstudent" element={<CreateStudent />} />
-            <Route path="addtudent/:ID" element={<CreateStudent />} />
+            <Route path="addstudent/:ID" element={<CreateStudent />} />
             <Route
               path="studentsinformation"
               element={<StudentInformation />}

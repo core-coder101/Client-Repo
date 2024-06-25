@@ -306,13 +306,15 @@ export default function CreateStudent() {
   };
 
   useEffect(() => {
-    if (ClassData && ClassData.length > 0) {
-      setFormData((prev) => {
-        return {
-          ...prev,
-          StudentClassID: JSON.stringify(ClassData[0].id),
-        };
-      });
+    if(!ID){
+      if (ClassData && ClassData.length > 0) {
+        setFormData((prev) => {
+          return {
+            ...prev,
+            StudentClassID: JSON.stringify(ClassData[0].id),
+          };
+        });
+      }
     }
   }, [ClassData]);
 
@@ -335,6 +337,7 @@ export default function CreateStudent() {
           subjects: subjects,
           StudentDOB: StudentData[0].StudentDOB || "",
           StudentGender: StudentData[0].StudentGender || "Male",
+          StudentClassID: StudentData[0].StudentClassID || "",
           StudentCNIC: StudentData[0].StudentCNIC || "",
           StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
           StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
