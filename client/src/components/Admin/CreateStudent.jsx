@@ -3,8 +3,8 @@ import "../../assets/css/Teacher.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import defaultImg from "../../assets/img/default.png"
-import { Tooltip } from "@mui/material"
+import defaultImg from "../../assets/img/default.png";
+import { Tooltip } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';

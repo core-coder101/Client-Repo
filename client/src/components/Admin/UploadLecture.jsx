@@ -9,6 +9,15 @@ import { MdUpload } from "react-icons/md";
 import { setError, setPopup } from "../../redux/slices/UploadLecture";
 import { Tooltip } from "@mui/material";
 import { GetClasses } from "../../redux/slices/UploadLecture";
+import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+
+
 
 export default function UploadLecture() {
   const navigate = useNavigate();
@@ -19,13 +28,24 @@ export default function UploadLecture() {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [PlaylistPopup, setPlaylistPopup] = useState(false);
+  const [Playlist, setPlaylist] = useState(false);
   const [clickable, setClickable] = useState("clickable");
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     lectureClassRank: "",
-  });
+    subjects: []
+  })
+
+  const [playlistData, setplaylistData] = useState({
+    title: "",
+    description: "",
+    PlaylistClassRank: "",
+    subjects: []
+  })
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -68,9 +88,53 @@ export default function UploadLecture() {
       return {
         ...prev,
         [name]: value,
+      }
+    })
+  }
+
+
+
+  
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  const names = [
+    "Maths",
+    "General Science",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Computer Science",
+    "Pakistan Studies",
+    "Urdu",
+    "English",
+    "Islamiat",
+  ];
+
+  const handleSelectChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setplaylistData((prev) => {
+      return {
+        ...prev,
+        // On autofill we get a stringified value.
+        subjects: typeof value === "string" ? value.split(",") : value,
       };
     });
   };
+
+
+
+
 
   useEffect(() => {
     // this should only ren when there is no ID param in the api
@@ -125,24 +189,20 @@ export default function UploadLecture() {
             accept="video/*"
             onChange={handleFileChange}
           />
-          <label htmlFor="title">Title</label>
-          <input
-            className="videoDetails"
-            name="title"
-            placeholder="Give your Lecture a title"
-            type="text"
-          />
-          <label htmlFor="description">Description</label>
-          <input
-            className="videoDetails"
-            name="description"
-            placeholder="Give your Lecture a description"
-            type="text"
-          />
-          <label htmlFor="lectureClassRank">Lecture Class Rank</label>
+<div class="mb-3">
+  <label for="exampleFormControlInput1" class="form-label">Title </label>
+  <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title of your video" />
+</div>
+          <div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+  <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3"></textarea>
+</div>
+{Playlist ? <> <label htmlFor="PlayList ">PlayList</label>
+          <div className="d-flex m-0 p-0 g-5 mb-4">
+          <div class="flex-grow-1">
           <select
-            className="lectureClassRank"
-            name="lectureClassRank"
+            className="lectureClassRank PlayList"
+            name="PlayList"
             onChange={handleChange}
             value={formData.StudentClassID}
             required
@@ -156,6 +216,206 @@ export default function UploadLecture() {
                 </option>
               ))}
           </select>
+          </div>
+          <div className="mt-1 ms-3 p-0">
+            <button type="button" className="btn btn-info" onClick={()=>{setPlaylistPopup(true)}}>Add new Playlist</button>
+          </div>
+          </div> </> : <button className="btn ms-0 " onClick={()=>{setPlaylist(true)}} type="button">
+<p className="ml-1" style={{color:"blueviolet"}}>Add Video to Playlist .. ..</p>
+</button> }
+
+         
+
+          <Popup
+            animationDuration={400}
+            visible={PlaylistPopup}
+            onClose={() => {
+              setPlaylistPopup(false)
+              setTimeout(() => {
+                dispatch(setError(null))
+              }, 400);
+            }}
+            style={{
+              backgroundColor: "rgba(207, 204, 204)",
+              boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
+              padding: "30px 20px",
+            }}
+          >
+            <div
+              className=""
+              style={{ Width: "100%", height: "100%", padding: "0" }}
+            >
+              <h3 style={{ color: "Black", margin: "0" , padding:"0px 40px 0px 40px" }} >Add a new playlist</h3>
+              <div >
+              <div class="mb-3 mt-4">
+  <label for="exampleFormControlInput1" class="form-label">Title </label>
+  <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title of your video" />
+</div>
+          <div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+  <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3"></textarea>
+</div>
+<label htmlFor="lectureClassRank">Lecture Class Rank</label>
+<div className="d-flex ">
+          <select
+            className="lectureClassRank flex-grow-1 Playlist mb-3"
+            name="lectureClassRank"
+            onChange={handleChange}
+            value={playlistData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
+</div>
+<InputLabel className="mb-1 mt-2" style={{color:"Black"}} id="demo-multiple-chip-label">
+              Subjects
+            </InputLabel>
+            <Tooltip
+              title="Select the student's subjects"
+              arrow
+              placement="bottom"
+              size="lg"
+              variant="solid"
+            >
+            <div className="d-flex">
+              <Select
+              style={{color:"Black" , backgroundColor:"white"}}
+                className="flex-grow-1 Playlist"
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                multiple
+                value={formData.subjects}
+                onChange={handleSelectChange}
+                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+                required
+              >
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+              </div>
+            </Tooltip>
+              </div>
+              <div>
+              <button className="btn btn-info mt-3" style={{width:"100%"}}>Submit</button>
+              </div>
+            </div>
+          </Popup>
+
+
+
+          <Popup
+            animationDuration={400}
+            visible={PlaylistPopup}
+            onClose={() => {
+              dispatch(setPopup(false))
+              setTimeout(() => {
+                dispatch(setError(null))
+              }, 400);
+            }}
+            style={{
+              backgroundColor: "rgba(207, 204, 204)",
+              boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
+              padding: "30px 20px",
+            }}
+          >
+            <div
+              className=""
+              style={{ Width: "100%", height: "100%", padding: "0" }}
+            >
+              <h3 style={{ color: "Black", margin: "0" , padding:"0px 40px 0px 40px" }} >Add a new playlist</h3>
+              <div >
+              <div class="mb-3 mt-4">
+  <label for="exampleFormControlInput1" class="form-label">Title </label>
+  <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title of your video" />
+</div>
+          <div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+  <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3"></textarea>
+</div>
+<label htmlFor="lectureClassRank">Lecture Class Rank</label>
+<div className="d-flex ">
+          <select
+            className="lectureClassRank flex-grow-1 Playlist mb-3"
+            name="lectureClassRank"
+            onChange={handleChange}
+            value={playlistData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
+</div>
+<InputLabel className="mb-1 mt-2" style={{color:"Black"}} id="demo-multiple-chip-label">
+              Subjects
+            </InputLabel>
+            <Tooltip
+              title="Select the student's subjects"
+              arrow
+              placement="bottom"
+              size="lg"
+              variant="solid"
+            >
+            <div className="d-flex">
+              <Select
+              style={{color:"Black" , backgroundColor:"white"}}
+                className="flex-grow-1 Playlist"
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                multiple
+                value={formData.subjects}
+                onChange={handleSelectChange}
+                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+                required
+              >
+                {names.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+              </div>
+            </Tooltip>
+              </div>
+              <div>
+              <button className="btn btn-info mt-3" style={{width:"100%"}}>Submit</button>
+              </div>
+            </div>
+          </Popup>
+
+
+
           <Popup
             animationDuration={400}
             visible={popup}
