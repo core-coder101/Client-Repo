@@ -212,7 +212,57 @@ const handlePlaylistData = (e) => {
   <label for="exampleFormControlTextarea1" class="form-label">Description</label>
   <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3"></textarea>
 </div>
-{Playlist ? <> <label htmlFor="PlayList ">PlayList</label>
+
+
+
+{Playlist ? <> 
+<hr></hr>
+<button id="mybutton" className="btn ms-0 " style={{outline:"none"}} onClick={()=>{setPlaylist(false)}} type="button">
+<p className="ml-1" style={{color:"blueviolet"}}>Hide Playlist Section .. ..</p>
+</button>
+<br></br>
+<div className="d-flex mb-3">
+<div className="flex-grow-1 me-1">
+  <label htmlFor="PlayList ">Class Rank</label>
+          <select
+            className="lectureClassRank PlayList"
+            name="PlayList"
+            onChange={handleChange}
+            value={formData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
+          </div>
+<div className="flex-grow-1 ms-1">
+          <label htmlFor="PlayList ">Subject</label>
+          <select
+            className="lectureClassRank PlayList"
+            name="PlayList"
+            onChange={handleChange}
+            value={formData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
+          </div>
+</div>
+
+<label htmlFor="PlayList ">PlayList</label>
           <div className="d-flex m-0 p-0 g-5 mb-4">
           <div class="flex-grow-1">
           <select
@@ -235,11 +285,9 @@ const handlePlaylistData = (e) => {
           <div className="mt-1 ms-3 p-0">
             <button type="button" className="btn btn-info" onClick={()=>{setPlaylistPopup(true)}}>Add new Playlist</button>
           </div>
-          </div> </> : <button className="btn ms-0 " onClick={()=>{setPlaylist(true)}} type="button">
+          </div> </> : <button id="mybutton" className="btn ms-0" style={{outline:"none"}} onClick={()=>{setPlaylist(true)}} type="button">
 <p className="ml-1" style={{color:"blueviolet"}}>Add Video to Playlist .. ..</p>
 </button> }
-
-         
 
           <Popup
             animationDuration={400}
@@ -306,104 +354,8 @@ const handlePlaylistData = (e) => {
                 labelId="demo-multiple-chip-label"
                 id="demo-multiple-chip"
                 multiple
-                value={playlistData.subjects}
-                onChange={handlePlaylistData}
-                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-                required
-              >
-                {names.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
-              </div>
-            </Tooltip>
-              </div>
-              <div>
-              <button className="btn btn-info mt-3" style={{width:"100%"}}>Submit</button>
-              </div>
-            </div>
-          </Popup>
-
-
-
-          <Popup
-            animationDuration={400}
-            visible={PlaylistPopup}
-            onClose={() => {
-              setPlaylistPopup(false)
-            }}
-            style={{
-              backgroundColor: "rgba(207, 204, 204)",
-              boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
-              padding: "30px 20px", position: "relative"
-            }}
-          >
-            <div className="closeBtn" onClick={()=>setPlaylistPopup(false)}>
-              <IoClose style={{width: "40px", height: "40px"}} />
-            </div>
-            <div
-              className=""
-              style={{ Width: "100%", height: "100%", padding: "0" }}
-            >
-              <h3 style={{ color: "Black", margin: "0" , padding:"0px 40px 0px 40px" }} >Add a new playlist</h3>
-              <div >
-              <div class="mb-3 mt-4">
-  <label for="exampleFormControlInput1" class="form-label">Title </label>
-  <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title of your video" onChange={(e)=>{handlePlaylistData(e)}} value={playlistData.title} />
-</div>
-          <div class="mb-3">
-  <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-  <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3" onChange={(e)=>{handlePlaylistData(e)}} value={playlistData.description}></textarea>
-</div>
-<label htmlFor="lectureClassRank">Lecture Class Rank</label>
-<div className="d-flex ">
-          <select
-            className="lectureClassRank flex-grow-1 Playlist mb-3"
-            name="lectureClassRank"
-            onChange={handleChange}
-            required
-            value={formData.lectureClassRank}
-          >
-            {classesData &&
-                Array.from(
-                  new Set(classesData.map((Class) => Class.ClassRank))
-                ).map((rank) => (
-                  <option key={rank} value={rank}>
-                    {rank}
-                  </option>
-                ))}
-          </select>
-</div>
-<InputLabel className="mb-1 mt-2" style={{color:"Black"}} id="demo-multiple-chip-label">
-              Subjects
-            </InputLabel>
-            <Tooltip
-              title="Select the student's subjects"
-              arrow
-              placement="bottom"
-              size="lg"
-              variant="solid"
-            >
-            <div className="d-flex">
-              <Select
-              style={{color:"Black" , backgroundColor:"white"}}
-              name="subjects"
-                className="flex-grow-1 Playlist"
-                labelId="demo-multiple-chip-label"
-                id="demo-multiple-chip"
-                multiple
-                onChange={(e)=>{handlePlaylistData(e)}}
-                value={playlistData.subjects}
+                value={formData.subjects}
+                onChange={handleSelectChange}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>

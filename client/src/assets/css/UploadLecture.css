@@ -46,6 +46,11 @@
 .PlayList{
     width: 100%;
 }
+#mybutton:active {
+    border: none;
+    outline: none !important;
+}
+
 .closeBtn{
     position: absolute;
     right: 3px;
