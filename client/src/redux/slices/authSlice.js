@@ -38,12 +38,17 @@ export const login = createAsyncThunk("login", async (action, { getState, reject
   }
 });
 
+const userFromLocalStorage = JSON.parse(localStorage.getItem("user"))
 const initialState = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user: userFromLocalStorage || null,
   CSRFToken: "",
   result: "",
   loading: false,
   error: null,
+}
+
+if(userFromLocalStorage && userFromLocalStorage.token){
+  axios.defaults.headers.common['Authorization'] = `Bearer ${userFromLocalStorage.token}`;
 }
 
 const authSlice = createSlice({
@@ -87,6 +92,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.data
         localStorage.setItem("user", JSON.stringify(action.payload.data))
+        axios.defaults.headers.common["Authorization"] = action.payload.data.token
         state.loading = false
       })
       .addCase(login.rejected, (state, action) => {

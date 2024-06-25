@@ -6,19 +6,24 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdUpload } from "react-icons/md";
-import { setError } from "../../redux/slices/authSlice";
+import { setError, setPopup } from "../../redux/slices/ClassesSlice";
 import { Tooltip } from "@mui/material";
+import { GetClasses } from "../../redux/slices/ClassesSlice";
 
 export default function UploadLecture() {
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { popup , classesData , loading, error } = useSelector((state) => state.classes);
   const dispatch = useDispatch();
 
-  const [popup, setPopup] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [clickable, setClickable] = useState("clickable");
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    lectureClassRank: "",
+  })
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -27,8 +32,8 @@ export default function UploadLecture() {
       setPreviewUrl(URL.createObjectURL(file));
     } else {
       dispatch(setError("Please upload a valid video file."));
-      setPopup(true);
-      setSelectedFile(null);
+      dispatch(setPopup(true))
+      setSelectedFile(null)
     }
   };
 
@@ -50,6 +55,34 @@ export default function UploadLecture() {
   const handleClick = () => {
     document.getElementById("videoLectureInput").click();
   };
+
+
+  useEffect(()=>{
+    dispatch(GetClasses())
+  }, [])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    formData((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      }
+    })
+  }
+
+  useEffect(()=>{
+        // this should only ren when there is no ID param in the api
+    if(classesData && classesData.length > 0){
+      setFormData(prev => {
+        return {
+          ...prev,
+          lectureClassRank: classesData[0].id
+        }
+      })
+    }
+  }, [classesData])
+
 
   return (
     <div className="uploadLectureMain">
@@ -99,20 +132,37 @@ export default function UploadLecture() {
             placeholder="Give your Lecture a title"
             type="text"
           />
-          <label htmlFor="title">Description</label>
+          <label htmlFor="description">Description</label>
           <input
             className="videoDetails"
             name="description"
             placeholder="Give your Lecture a description"
             type="text"
           />
+          <label htmlFor="lectureClassRank">Lecture Class Rank</label>
+          <select
+            className="lectureClassRank"
+            name="lectureClassRank"
+            onChange={handleChange}
+            value={formData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
           <Popup
             animationDuration={400}
             visible={popup}
             onClose={() => {
-              setPopup(false);
+              dispatch(setPopup(false))
               setTimeout(() => {
-                setError(null);
+                dispatch(setError(null))
               }, 400);
             }}
             style={{
