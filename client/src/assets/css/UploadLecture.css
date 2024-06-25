@@ -46,3 +46,7 @@
 .PlayList{
     width: 100%;
 }
+#mybutton:active {
+    border: none;
+    outline: none !important;
+}

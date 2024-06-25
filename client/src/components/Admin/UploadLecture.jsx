@@ -197,7 +197,57 @@ export default function UploadLecture() {
   <label for="exampleFormControlTextarea1" class="form-label">Description</label>
   <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3"></textarea>
 </div>
-{Playlist ? <> <label htmlFor="PlayList ">PlayList</label>
+
+
+
+{Playlist ? <> 
+<hr></hr>
+<button id="mybutton" className="btn ms-0 " style={{outline:"none"}} onClick={()=>{setPlaylist(false)}} type="button">
+<p className="ml-1" style={{color:"blueviolet"}}>Hide Playlist Section .. ..</p>
+</button>
+<br></br>
+<div className="d-flex mb-3">
+<div className="flex-grow-1 me-1">
+  <label htmlFor="PlayList ">Class Rank</label>
+          <select
+            className="lectureClassRank PlayList"
+            name="PlayList"
+            onChange={handleChange}
+            value={formData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
+          </div>
+<div className="flex-grow-1 ms-1">
+          <label htmlFor="PlayList ">Subject</label>
+          <select
+            className="lectureClassRank PlayList"
+            name="PlayList"
+            onChange={handleChange}
+            value={formData.StudentClassID}
+            required
+          >
+            {classesData &&
+                Array.from(
+                  new Set(classesData.map((Class) => Class.ClassRank))
+                ).map((rank) => (
+                  <option key={rank} value={rank}>
+                    {rank}
+                  </option>
+                ))}
+          </select>
+          </div>
+</div>
+
+<label htmlFor="PlayList ">PlayList</label>
           <div className="d-flex m-0 p-0 g-5 mb-4">
           <div class="flex-grow-1">
           <select
@@ -220,11 +270,9 @@ export default function UploadLecture() {
           <div className="mt-1 ms-3 p-0">
             <button type="button" className="btn btn-info" onClick={()=>{setPlaylistPopup(true)}}>Add new Playlist</button>
           </div>
-          </div> </> : <button className="btn ms-0 " onClick={()=>{setPlaylist(true)}} type="button">
+          </div> </> : <button id="mybutton" className="btn ms-0" style={{outline:"none"}} onClick={()=>{setPlaylist(true)}} type="button">
 <p className="ml-1" style={{color:"blueviolet"}}>Add Video to Playlist .. ..</p>
 </button> }
-
-         
 
           <Popup
             animationDuration={400}
@@ -291,7 +339,7 @@ export default function UploadLecture() {
                 labelId="demo-multiple-chip-label"
                 id="demo-multiple-chip"
                 multiple
-                value={formData.subjects}
+                value={playlistData.subjects}
                 onChange={handleSelectChange}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
