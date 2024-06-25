@@ -17,10 +17,6 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
         return rejectWithValue("Please create a class first")
         } else {
           return (data.data)
-          // setFormData((prev) => ({
-          //   ...prev,
-          //   StudentClassID: JSON.stringify(data.data[0].id),
-          // }));
         }
       } else {
         return rejectWithValue(data.message || "Failed to get classes' data")
@@ -29,7 +25,31 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
       console.error(error);
       return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
     }
-  })
+})
+
+export const createPlaylist = createAsyncThunk("createPlaylist", async (playlistData, { getState, rejectWithValue }) => {
+  const state = getState()
+  const CSRFToken = state.auth.CSRFToken
+    try {
+      const { data } = await axios.post("http://127.0.0.1:8000/api/createplaylist", 
+        createPlaylist,
+        {
+        headers: {
+          "X-CSRF-TOKEN": CSRFToken,
+          "Content-Type": "application/json",
+          "API-TOKEN": "IT is to secret you cannot break it :)",
+        },
+      });
+      if (data.success == true) {
+        return
+      } else {
+        return rejectWithValue(data.message || "Failed to get classes' data")
+      }
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
+    }
+})
 
   const initialState = {
     classesData: [],
@@ -61,6 +81,20 @@ const ClassSlice = createSlice({
           state.loading = false
         })
         .addCase(GetClasses.rejected, (state, action) => {
+          state.error = action.payload || "An Unknown Error"
+          state.loading = false
+          state.popup = true
+        })
+        .addCase(createPlaylist.pending, (state) => {
+          state.error = "Creating new playlist"
+          state.loading = true
+        })
+        .addCase(createPlaylist.fulfilled, (state) => {
+          state.loading = false
+          state.error = "Playlist created successfully"
+          state.popup = true
+        })
+        .addCase(createPlaylist.rejected, (state, action) => {
           state.error = action.payload || "An Unknown Error"
           state.loading = false
           state.popup = true

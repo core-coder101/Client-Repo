@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import { IoClose } from "react-icons/io5";
 
 
 
@@ -36,7 +37,7 @@ export default function UploadLecture() {
     title: "",
     description: "",
     lectureClassRank: "",
-    subjects: []
+    subjects: [],
   })
 
   const [playlistData, setplaylistData] = useState({
@@ -46,6 +47,16 @@ export default function UploadLecture() {
     subjects: []
   })
 
+
+
+const handlePlaylistData = (e) => {
+  const { name, value } = e.target
+  setplaylistData((prev) => {
+    return {
+      ...prev,
+      [name]: value,
+    }
+  })}
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -120,9 +131,7 @@ export default function UploadLecture() {
   ];
 
   const handleSelectChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+    const value = event.target.value
     setplaylistData((prev) => {
       return {
         ...prev,
@@ -145,6 +154,12 @@ export default function UploadLecture() {
           lectureClassRank: classesData[0].id,
         };
       });
+      setplaylistData((prev)=>{
+        return {
+          ...prev,
+          PlaylistClassRank: classesData[0].id
+        }
+      })
     }
   }, [classesData]);
 
@@ -187,7 +202,7 @@ export default function UploadLecture() {
             name="video"
             type="file"
             accept="video/*"
-            onChange={handleFileChange}
+            onChange={(e)=>{handleFileChange(e)}}
           />
 <div class="mb-3">
   <label for="exampleFormControlInput1" class="form-label">Title </label>
@@ -291,8 +306,8 @@ export default function UploadLecture() {
                 labelId="demo-multiple-chip-label"
                 id="demo-multiple-chip"
                 multiple
-                value={formData.subjects}
-                onChange={handleSelectChange}
+                value={playlistData.subjects}
+                onChange={handlePlaylistData}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -325,17 +340,17 @@ export default function UploadLecture() {
             animationDuration={400}
             visible={PlaylistPopup}
             onClose={() => {
-              dispatch(setPopup(false))
-              setTimeout(() => {
-                dispatch(setError(null))
-              }, 400);
+              setPlaylistPopup(false)
             }}
             style={{
               backgroundColor: "rgba(207, 204, 204)",
               boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
-              padding: "30px 20px",
+              padding: "30px 20px", position: "relative"
             }}
           >
+            <div className="closeBtn" onClick={()=>setPlaylistPopup(false)}>
+              <IoClose style={{width: "40px", height: "40px"}} />
+            </div>
             <div
               className=""
               style={{ Width: "100%", height: "100%", padding: "0" }}
@@ -344,11 +359,11 @@ export default function UploadLecture() {
               <div >
               <div class="mb-3 mt-4">
   <label for="exampleFormControlInput1" class="form-label">Title </label>
-  <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title of your video" />
+  <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title of your video" onChange={(e)=>{handlePlaylistData(e)}} value={playlistData.title} />
 </div>
           <div class="mb-3">
   <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-  <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3"></textarea>
+  <textarea name="description" class="form-control" placeholder="Enter Description for your video" id="exampleFormControlTextarea1" rows="3" onChange={(e)=>{handlePlaylistData(e)}} value={playlistData.description}></textarea>
 </div>
 <label htmlFor="lectureClassRank">Lecture Class Rank</label>
 <div className="d-flex ">
@@ -356,8 +371,8 @@ export default function UploadLecture() {
             className="lectureClassRank flex-grow-1 Playlist mb-3"
             name="lectureClassRank"
             onChange={handleChange}
-            value={playlistData.StudentClassID}
             required
+            value={formData.lectureClassRank}
           >
             {classesData &&
                 Array.from(
@@ -382,12 +397,13 @@ export default function UploadLecture() {
             <div className="d-flex">
               <Select
               style={{color:"Black" , backgroundColor:"white"}}
+              name="subjects"
                 className="flex-grow-1 Playlist"
                 labelId="demo-multiple-chip-label"
                 id="demo-multiple-chip"
                 multiple
-                value={formData.subjects}
-                onChange={handleSelectChange}
+                onChange={(e)=>{handlePlaylistData(e)}}
+                value={playlistData.subjects}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -465,5 +481,4 @@ export default function UploadLecture() {
         </form>
       </div>
     </div>
-  );
-}
+)}

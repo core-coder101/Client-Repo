@@ -46,3 +46,12 @@
 .PlayList{
     width: 100%;
 }
+.closeBtn{
+    position: absolute;
+    right: 3px;
+    top: 3px;
+}
+.closeBtn:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+}
