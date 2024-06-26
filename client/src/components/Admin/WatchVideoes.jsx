@@ -1,5 +1,4 @@
 import React from 'react'
-import vid1 from '../../assets/videosfortesting/vid1.mp4'
 import vid2 from '../../assets/videosfortesting/vid2.mp4'
 import "../../assets/css/WatchVideo.css";
 
