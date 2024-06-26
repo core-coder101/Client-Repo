@@ -16,15 +16,20 @@ import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
 import Popup from 'react-animated-popup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetClasses, setError, setPopup } from '../../redux/slices/UploadLecture';
+import { SetStudentData, setError as setStudentError, setPopup as setStudentPopup } from '../../redux/slices/CreateStudent';
+import CustomPopup from '../common/CustomPopup';
+import { GetStudentData, UpdateStudent, Createstudent } from '../../redux/slices/CreateStudent';
 
 
 export default function CreateStudent() {
 
     const { ID } = useParams();
-    
-    
-    smoothscroll.polyfill()
+    const { classesData , loading , popup , error } = useSelector((state)=> state.classes);
+    const { loading: studentLoading , popup: studentPopup , error: studentError , StudentData } = useSelector((state)=> state.createStudent);
+    const dispatch = useDispatch();
+    smoothscroll.polyfill();
     
     const { CSRFToken, user } = useSelector((state) => state.auth)
     
@@ -37,11 +42,10 @@ export default function CreateStudent() {
         
         const [open, setOpen] = useState(false)
         const [imgClass, setImgClass] = useState("")
-        const [ClassData , SetClassData] = useState("");
         const [errorMessage, setErrorMessage] = useState("");
-        const [popup, setPopup] = useState(false)
-        const [StudentData , SetStudentData] = useState();
-        const [loading, setLoading] = useState(false)
+        // const [popup1, setPopup] = useState(false)
+        // const [StudentData , SetStudentData] = useState();
+        // const [loading1, setLoading] = useState(false)
         const [formData, setFormData] = useState({
         image: null,
         name: "",
@@ -67,40 +71,40 @@ export default function CreateStudent() {
 
   const topRef = useRef(null);
 
-  const GetClasses = async () => {
-    setErrorMessage("Loading Classes' data. . .");
-    setLoading(true);
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
-        headers: {
-          "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
-        },
-      });
-      if (response.data.success == true) {
-        if (!response.data.data.length > 0) {
-          setErrorMessage("Please create a class first");
-          setPopup(true);
-        } else {
-          SetClassData(response.data.data);
-          setFormData((prev) => ({
-            ...prev,
-            StudentClassID: JSON.stringify(response.data.data[0].id),
-          }));
-        }
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Load Classes");
-      setPopup(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const GetClasses = async () => {
+  //   setErrorMessage("Loading Classes' data. . .");
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
+  //       headers: {
+  //         "X-CSRF-TOKEN": CSRFToken,
+  //         "Content-Type": "application/json",
+  //         "API-TOKEN": "IT is to secret you cannot break it :)",
+  //       },
+  //     });
+  //     if (response.data.success == true) {
+  //       if (!response.data.data.length > 0) {
+  //         setErrorMessage("Please create a class first");
+  //         setPopup(true);
+  //       } else {
+  //         SetClassData(response.data.data);
+          // setFormData((prev) => ({
+          //   ...prev,
+          //   StudentClassID: JSON.stringify(response.data.data[0].id),
+          // }));
+  //       }
+  //     } else {
+  //       setErrorMessage(response.data.message);
+  //       setPopup(true);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     setErrorMessage("Failed to Load Classes");
+  //     setPopup(true);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   function handleImgClick() {
     document.getElementById("studentImageInput").click();
@@ -122,161 +126,115 @@ export default function CreateStudent() {
   };
 
   useEffect(() => {
-    GetClasses();
-  }, []);
+    dispatch(GetClasses()).unwrap(()=>{
+      setFormData((prev) => ({
+        ...prev,
+        StudentClassID: JSON.stringify(classesData[0].id),
+      }));
+    })
+  }, [])
 
-  const GetStudentData = async () => {
-    setErrorMessage("Loading student data. . .");
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/GetStudentData?ID=${ID}`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      console.log(response.data);
-      if (response.data.success == true) {
-        if (!(response.data.data.length > 0)) {
-          setErrorMessage("Student not found");
-          setPopup(true);
-          navigate("/addstudent");
-        } else {
-          SetStudentData(response.data.data);
-        }
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      setErrorMessage("Failed to Load Edit Student");
-      setPopup(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+// const GetStudentData = async () => {
+//     setErrorMessage("Loading student data. . .");
+//     setLoading(true);
+//     try {
+//       const response = await axios.get(
+//         `http://127.0.0.1:8000/api/GetStudentData?ID=${ID}`,
+//         {
+//           headers: {
+//             "X-CSRF-TOKEN": CSRFToken,
+//             "Content-Type": "application/json",
+//             "API-TOKEN": "IT is to secret you cannot break it :)",
+//           },
+//         }
+//       );
+//       console.log(response.data);
+//       if (response.data.success == true) {
+//         if (!(response.data.data.length > 0)) {
+//           setErrorMessage("Student not found");
+//           setPopup(true);
+//           navigate("/addstudent");
+//         } else {
+//           SetStudentData(response.data.data);
+//         }
+//       } else {
+//         setErrorMessage(response.data.message);
+//         setPopup(true);
+//       }
+//     } catch (error) {
+//       setErrorMessage("Failed to Load Edit Student");
+//       setPopup(true);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
   useEffect(() => {
     if (ID) {
-      GetStudentData();
+      dispatch(GetStudentData(ID)).unwrap().catch(()=>{
+        navigate("/addstudent");
+      })
     }
   }, []);
 
-  const CreateStudent = async (formData) => {
-    setErrorMessage("Creating new student")
-    setLoading(true)
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/CreateStudent",
-        formData,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      if (response.data.success == true) {
-        setErrorMessage("New Student created successfully");
-        setPopup(true);
-        setFormData({
-          name: "",
-          userName: "",
-          email: "",
-          subjects: [],
-          StudentDOB: "",
-          StudentGender: "Male",
-          StudentCNIC: "",
-          StudentClassID: "",
-          StudentPhoneNumber: "",
-          StudentHomeAddress: "",
-          StudentReligion: "Islam",
-          StudentMonthlyFee: "",
-          FatherName: "",
-          MotherName: "",
-          GuardiansCNIC: "",
-          GuardiansPhoneNumber: "",
-          GuardiansPhoneNumber2: "",
-          HomeAddress: "",
-          GuardiansEmail: "",
-        });
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      if (error.response.data.message.includes("users_email_unique")) {
-        setErrorMessage("Email must be unique");
-        setPopup(true);
-        scrollToElement(topRef);
-      } else {
-        setErrorMessage("Failed to create Student");
-        setPopup(true);
-      }
-    } finally {
-      setLoading(false)
-    }
-  };
+  // const CreateStudent = async (formData) => {
+  //   setErrorMessage("Creating new student")
+  //   setLoading(true)
+  //   try {
+  //     const response = await axios.post(
+  //       "http://127.0.0.1:8000/api/CreateStudent",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "X-CSRF-TOKEN": CSRFToken,
+  //           "Content-Type": "application/json",
+  //           "API-TOKEN": "IT is to secret you cannot break it :)",
+  //         },
+  //       }
+  //     );
+  //     if (response.data.success == true) {
+  //       setErrorMessage("New Student created successfully");
+  //       setPopup(true);
+  //       setFormData({
+  //         name: "",
+  //         userName: "",
+  //         email: "",
+  //         subjects: [],
+  //         StudentDOB: "",
+  //         StudentGender: "Male",
+  //         StudentCNIC: "",
+  //         StudentClassID: "",
+  //         StudentPhoneNumber: "",
+  //         StudentHomeAddress: "",
+  //         StudentReligion: "Islam",
+  //         StudentMonthlyFee: "",
+  //         FatherName: "",
+  //         MotherName: "",
+  //         GuardiansCNIC: "",
+  //         GuardiansPhoneNumber: "",
+  //         GuardiansPhoneNumber2: "",
+  //         HomeAddress: "",
+  //         GuardiansEmail: "",
+  //       });
+  //     } else {
+  //       setErrorMessage(response.data.message);
+  //       setPopup(true);
+  //     }
+  //   } catch (error) {
+  //     if (error.response.data.message.includes("users_email_unique")) {
+  //       setErrorMessage("Email must be unique");
+  //       setPopup(true);
+  //       scrollToElement(topRef);
+  //     } else {
+  //       setErrorMessage("Failed to create Student");
+  //       setPopup(true);
+  //     }
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // };
 
-  const UpdateStudent = async (formData) => {
-    setErrorMessage("Updating student information. . .");
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/UpdateStudent",
-        formData,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      if (response.data.success == true) {
-        setErrorMessage("Student Updated successfully");
-        setPopup(true);
-        setFormData({
-          name: "",
-          userName: "",
-          image: "",
-          email: "",
-          subjects: [],
-          StudentDOB: "",
-          StudentGender: "Male",
-          StudentCNIC: "",
-          StudentClassID: "",
-          StudentPhoneNumber: "",
-          StudentHomeAddress: "",
-          StudentReligion: "Islam",
-          StudentMonthlyFee: "",
-          FatherName: "",
-          MotherName: "",
-          GuardiansCNIC: "",
-          GuardiansPhoneNumber: "",
-          GuardiansPhoneNumber2: "",
-          HomeAddress: "",
-          GuardiansEmail: "",
-        });
-        SetStudentData([])
-        navigate("/addstudent")
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      setErrorMessage("Failed to Update Student");
-      setPopup(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -299,24 +257,52 @@ export default function CreateStudent() {
       return;
     }
     if (StudentData && StudentData.length > 0 && StudentData[0].users) {
-      UpdateStudent(formData);
+      dispatch(UpdateStudent(formData)).unwrap(()=>{
+        navigate("/addstudent");
+      })
     } else {
-      CreateStudent(formData);
+      dispatch(Createstudent(formData)).unwrap(()=>{
+        setFormData({
+          name: "",
+          userName: "",
+          email: "",
+          subjects: [],
+          StudentDOB: "",
+          StudentGender: "Male",
+          StudentCNIC: "",
+          StudentClassID: "",
+          StudentPhoneNumber: "",
+          StudentHomeAddress: "",
+          StudentReligion: "Islam",
+          StudentMonthlyFee: "",
+          FatherName: "",
+          MotherName: "",
+          GuardiansCNIC: "",
+          GuardiansPhoneNumber: "",
+          GuardiansPhoneNumber2: "",
+          HomeAddress: "",
+          GuardiansEmail: "",
+        });
+      }).catch((error)=>{
+        if (error.response?.data?.message?.includes("users_email_unique")) {
+          scrollToElement(topRef);
+        }
+      })
     }
   };
 
   useEffect(() => {
     if(!ID){
-      if (ClassData && ClassData.length > 0) {
+      if (classesData && classesData.length > 0) {
         setFormData((prev) => {
           return {
             ...prev,
-            StudentClassID: JSON.stringify(ClassData[0].id),
+            StudentClassID: JSON.stringify(classesData[0].id),
           };
         });
       }
     }
-  }, [ClassData]);
+  }, [classesData]);
 
   useEffect(() => {
     if (StudentData && StudentData.length > 0 && StudentData[0].users) {
@@ -597,8 +583,8 @@ export default function CreateStudent() {
                 value={formData.StudentClassID}
                 required
               >
-                {ClassData &&
-                  ClassData.map((Class) => {
+                {classesData &&
+                  classesData.map((Class) => {
                     return (
                       <option value={Class.id}>
                         {Class.ClassRank} {Class.ClassName}
@@ -741,12 +727,45 @@ export default function CreateStudent() {
                   required
                 />
               </div>
-              <Popup
+              <CustomPopup 
+              Visible={popup}
+              OnClose={() => {
+                dispatch(setPopup(false));
+                  setTimeout(() => {
+                    dispatch(setError(""))
+                  }, 400);
+                }}
+              errorMessage = {error}
+              />
+
+            <CustomPopup 
+              Visible={loading}
+              OnClose={() => {}}
+              errorMessage={error}
+              />
+              <CustomPopup 
+              Visible={studentPopup}
+              OnClose={() => {
+                dispatch(setStudentPopup(false));
+                  setTimeout(() => {
+                    dispatch(setStudentError(""))
+                  }, 400);
+                }}
+              errorMessage = {studentError}
+              />
+
+            <CustomPopup 
+              Visible={studentLoading}
+              OnClose={() => {}}
+              errorMessage={studentError}
+              />
+
+      {/* <Popup
                 visible={popup}
                 onClose={() => {
-                  setPopup(false);
+                dispatch(setPopup(false));
                   setTimeout(() => {
-                    setErrorMessage("");
+                    dispatch(setError(""))
                   }, 400);
                 }}
                 style={{
@@ -760,11 +779,11 @@ export default function CreateStudent() {
                   style={{ width: "max-content", height: "100%", padding: "0" }}
                 >
                   <h5 style={{ color: "white", margin: "0" }}>
-                    {errorMessage}
+                    {error}
                   </h5>
                 </div>
-              </Popup>
-              <Popup
+      </Popup>
+      <Popup
                 visible={loading}
                 onClose={() => {}}
                 style={{
@@ -782,7 +801,7 @@ export default function CreateStudent() {
                     style={{ color: "white", margin: "0" }}
                   ></h5>
                 </div>
-              </Popup>
+              </Popup> */}
 
               <div className="d-flex flex-column ">
                 <button className="btn btn-primary" type="submit">

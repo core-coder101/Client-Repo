@@ -15,7 +15,7 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
       });
       if (data.success == true) {
         if (!data.data.length > 0) {
-        return rejectWithValue("Please create a class first")
+          return rejectWithValue("Please create a class first")
         } else {
           return (data.data)
           // setFormData((prev) => ({
