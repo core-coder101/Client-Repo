@@ -16,6 +16,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: all 0.4s ease;
 }
 .uploadIcon{
     width: 80px;
@@ -61,5 +62,8 @@
 }
 .closeBtn:hover{
     cursor: pointer;
+    transform: scale(1.05);
+}
+.uploadDivHover{
     transform: scale(1.05);
 }

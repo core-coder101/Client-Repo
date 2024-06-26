@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Popup from "react-animated-popup";
 import "../../assets/css/class.css";
 import "../../assets/css/UploadLecture.css";
@@ -6,7 +6,7 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdUpload } from "react-icons/md";
-import { createPlaylist, getPlaylist, setError, setPopup } from "../../redux/slices/UploadLecture";
+import { createPlaylist, getPlaylist, setError, setPopup, uploadLecture } from "../../redux/slices/UploadLecture";
 import { Tooltip } from "@mui/material";
 import { GetClasses } from "../../redux/slices/UploadLecture";
 import Box from "@mui/material/Box";
@@ -20,8 +20,10 @@ import { IoClose } from "react-icons/io5";
 
 export default function UploadLecture() {
   const navigate = useNavigate();
-  const { popup, classesData, loading, error, playlistData } = useSelector((state) => state.uploadLecture);
-  const dispatch = useDispatch();
+  const { popup, classesData, loading, error, playlistData } = useSelector((state) => state.uploadLecture)
+  const dispatch = useDispatch()
+
+  const topRef = useRef(null)
 
   // moving it to the top cuz I need it in a state declaration. . .
   const names = [
@@ -37,7 +39,8 @@ export default function UploadLecture() {
     "Islamiat",
   ];
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [imgClass, setImgClass] = useState("")
   const [previewUrl, setPreviewUrl] = useState("");
   const [PlaylistPopup, setPlaylistPopup] = useState(false);
   const [Playlist, setPlaylist] = useState(false);
@@ -50,9 +53,10 @@ export default function UploadLecture() {
   })
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    playlistID: "",
+    VideoTitle: "",
+    VideoDescription: "",
+    VideoPlaylistID: "",
+    video: null,
   });
 
   const [playlistFormData, setPlaylistFormData] = useState({
@@ -61,6 +65,12 @@ export default function UploadLecture() {
     PlaylistRank: "",
     playlistCategory: "",
   });
+
+  const scrollToElement = (ref) => {
+    if(ref.current){
+        ref.current.scrollIntoView({behavior: 'smooth'})
+    }
+}
 
   const handlePlaylistData = (e) => {
     const { name, value } = e.target;
@@ -75,12 +85,16 @@ export default function UploadLecture() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("video/")) {
-      setSelectedFile(file);
+      setFormData((prev) => {
+        return {
+          ...prev,
+          video: file
+        }
+      });
       setPreviewUrl(URL.createObjectURL(file));
     } else {
       dispatch(setError("Please upload a valid video file."));
       dispatch(setPopup(true));
-      setSelectedFile(null);
     }
   };
 
@@ -123,14 +137,20 @@ export default function UploadLecture() {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!selectedFile) {
-      dispatch(setError("Please Select a file"));
-      dispatch(setPopup(true))
+    e.preventDefault()
+    if (!formData.video) {
+      setTooltipOpen(true);
+      setImgClass("uploadDivHover");
+      scrollToElement(topRef);
+      setTimeout(() => {
+        setTooltipOpen(false);
+        setImgClass("");
+      }, 1000);
     } else{
-
+      dispatch(uploadLecture(formData))
     }
-  };
+  }
+
   const handleClick = () => {
     document.getElementById("videoLectureInput").click();
   };
@@ -142,7 +162,8 @@ export default function UploadLecture() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name == "PlaylistID"){
+    if(name == "VideoPlaylistID"){
+      console.log("SETTING VideoPlaylistID");
       setFormData((prev) => {
         return {
           ...prev,
@@ -178,7 +199,7 @@ export default function UploadLecture() {
       setFormData((prev) => {
         return {
           ...prev,
-          lectureClassRank: classesData[0].id,
+          VideoPlaylistID: classesData[0].id,
         };
       });
       setPlaylistFormData((prev) => {
@@ -202,10 +223,11 @@ export default function UploadLecture() {
         return (playlist.PlaylistCategory == filterQuery.subject && playlist.PlaylistRank == filterQuery.ClassRank)
       })
       if(tempFiltered.length > 0){
+        console.log("RAN");
         setFormData((prev) => {
           return {
             ...prev,
-            PlaylistID: parseInt(tempFiltered[0].id)
+            VideoPlaylistID: parseInt(tempFiltered[0].id)
           }
         })
         setFilteredPlaylist(tempFiltered)
@@ -213,7 +235,7 @@ export default function UploadLecture() {
         setFormData((prev) => {
           return {
             ...prev,
-            PlaylistID: ""
+            VideoPlaylistID: ""
           }
         })
         setFilteredPlaylist([])
@@ -232,17 +254,23 @@ export default function UploadLecture() {
                 navigate("/");
               }}
             />
-            <h4>Dashboard \ Upload Lecture</h4>
+            <h4 ref={topRef}>Dashboard \ Upload Lecture</h4>
           </div>
           <div className="ms-auto me-4"></div>
         </div>
       </div>
       <div className="uploadLecture ms-auto me-auto">
         <form onSubmit={handleSubmit}>
-          <Tooltip title={clickable ? "Upload a video" : ""} arrow>
+          <Tooltip title={clickable ? "Upload a video" : ""} arrow open={tooltipOpen}>
             <div
-              className={"videoPreview " + clickable}
+              className={"videoPreview " + clickable + " " + imgClass}
               onClick={clickable ? handleClick : null}
+              onMouseEnter={() => {
+                  setTooltipOpen(true);
+                }}
+                onMouseLeave={() => {
+                  setTooltipOpen(false);
+                }}
             >
               {previewUrl ? (
                 <video width="100%" controls>
@@ -250,7 +278,7 @@ export default function UploadLecture() {
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                <MdUpload className="uploadIcon" />
+                <MdUpload className="uploadIcon "/>
               )}
             </div>
           </Tooltip>
@@ -270,12 +298,13 @@ export default function UploadLecture() {
             </label>
             <input
               type="text"
-              name="title"
+              name="VideoTitle"
               className="form-control"
               id="exampleFormControlInput1"
               placeholder="Enter Title of your video"
-              value={formData.title}
+              value={formData.VideoTitle}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="mb-3">
@@ -283,12 +312,12 @@ export default function UploadLecture() {
               Description
             </label>
             <textarea
-              name="description"
+              name="VideoDescription"
               className="form-control"
               placeholder="Enter Description for your video"
               id="exampleFormControlTextarea1"
               rows="3"
-              value={formData.description}
+              value={formData.VideoDescription}
               onChange={handleChange}
             ></textarea>
           </div>
@@ -354,10 +383,10 @@ export default function UploadLecture() {
                 <div className="flex-grow-1">
                   <select
                     className="lectureClassRank PlayList"
-                    name="PlaylistID"
+                    name="VideoPlaylistID"
                     onChange={handleChange}
-                    value={formData.playlistID}
-                    required
+                    value={formData.VideoPlaylistID}
+                    
                   >
                     {filteredPlaylist?.map((playlist, index) => (
                         <option key={index} value={playlist.id}>
@@ -390,7 +419,7 @@ export default function UploadLecture() {
               type="button"
             >
               <p className="ml-1" style={{ color: "blueviolet" }}>
-                Add Video to Playlist .. ..
+                Add Video to Playlist
               </p>
             </button>
           )}
@@ -436,6 +465,7 @@ export default function UploadLecture() {
                     placeholder="Enter Title of your video"
                     value={playlistFormData.PlaylistTitle}
                     onChange={handlePlaylistData}
+                    required
                   />
                 </div>
                 <div className="mb-3">

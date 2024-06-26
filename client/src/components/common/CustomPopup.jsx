@@ -18,7 +18,7 @@ export default function CustomPopup({ Visible , errorMessage ,OnClose }) {
               >
                 <div
                   className="d-flex justify-content-center align-items-center"
-                  style={{ width: "max-content", height: "100%", padding: "0" }}
+                  style={{ width: "fit-content", height: "100%", padding: "0" }}
                 >
                   <h5 style={{ color: "white", margin: "0" }}>
                     {errorMessage}

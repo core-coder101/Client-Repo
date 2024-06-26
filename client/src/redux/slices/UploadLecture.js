@@ -78,19 +78,19 @@ export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, 
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.post("http://127.0.0.1:8000/api/",
+      const { data } = await axios.post("http://127.0.0.1:8000/api/upload-video",
         formData, 
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           "API-TOKEN": "IT is to secret you cannot break it :)",
         },
       });
       if (data.success == true) {
         return data
       } else {
-        return rejectWithValue(data.message || "Failed to get Playlist data")
+        return rejectWithValue(data.message || "Failed to upload lecture")
       }
     } catch (error) {
       console.error(error);
