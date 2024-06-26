@@ -1,0 +1,19 @@
+.video{
+    object-fit: cover;
+    width:100%;
+    max-height: 400px;
+}
+:focus-visible {
+    outline: none !important;
+}
+.videodiv{
+    border-radius: 25px;
+    background-color: black;
+}
+.videoSideDiv{
+    padding: 30px 20px 25px 40px;
+}
+
+
+
+
