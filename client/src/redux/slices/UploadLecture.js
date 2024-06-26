@@ -16,7 +16,7 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
         if (!data.data.length > 0) {
         return rejectWithValue("Please create a class first")
         } else {
-          return (data.data)
+          return (data)
         }
       } else {
         return rejectWithValue(data.message || "Failed to get classes' data")
@@ -31,8 +31,8 @@ export const createPlaylist = createAsyncThunk("createPlaylist", async (playlist
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.post("http://127.0.0.1:8000/api/createplaylist", 
-        createPlaylist,
+      const { data } = await axios.post("http://127.0.0.1:8000/api/Create-playlist", 
+        playlistData,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
@@ -41,7 +41,7 @@ export const createPlaylist = createAsyncThunk("createPlaylist", async (playlist
         },
       });
       if (data.success == true) {
-        return
+        return data
       } else {
         return rejectWithValue(data.message || "Failed to get classes' data")
       }
@@ -51,11 +51,59 @@ export const createPlaylist = createAsyncThunk("createPlaylist", async (playlist
     }
 })
 
+export const getPlaylist = createAsyncThunk("getPlaylist", async (_, { getState, rejectWithValue }) => {
+  const state = getState()
+  const CSRFToken = state.auth.CSRFToken
+    try {
+      const { data } = await axios.get("http://127.0.0.1:8000/api/PlaylistData", 
+        {
+        headers: {
+          "X-CSRF-TOKEN": CSRFToken,
+          "Content-Type": "application/json",
+          "API-TOKEN": "IT is to secret you cannot break it :)",
+        },
+      });
+      if (data.success == true) {
+        return data
+      } else {
+        return rejectWithValue(data.message || "Failed to get Playlist data")
+      }
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching Playlist data")
+    }
+})
+
+export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, { getState, rejectWithValue }) => {
+  const state = getState()
+  const CSRFToken = state.auth.CSRFToken
+    try {
+      const { data } = await axios.post("http://127.0.0.1:8000/api/",
+        formData, 
+        {
+        headers: {
+          "X-CSRF-TOKEN": CSRFToken,
+          "Content-Type": "application/json",
+          "API-TOKEN": "IT is to secret you cannot break it :)",
+        },
+      });
+      if (data.success == true) {
+        return data
+      } else {
+        return rejectWithValue(data.message || "Failed to get Playlist data")
+      }
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching Playlist data")
+    }
+})
+
   const initialState = {
     classesData: [],
     loading: false,
     error: null,
     popup: false,
+    playlistData: []
   }
 
 const ClassSlice = createSlice({
@@ -77,7 +125,7 @@ const ClassSlice = createSlice({
           state.loading = true
         })
         .addCase(GetClasses.fulfilled, (state, action) => {
-          state.classesData = action.payload
+          state.classesData = action.payload.data
           state.loading = false
         })
         .addCase(GetClasses.rejected, (state, action) => {
@@ -89,12 +137,39 @@ const ClassSlice = createSlice({
           state.error = "Creating new playlist"
           state.loading = true
         })
-        .addCase(createPlaylist.fulfilled, (state) => {
+        .addCase(createPlaylist.fulfilled, (state, action) => {
           state.loading = false
-          state.error = "Playlist created successfully"
+          state.error = action.payload.message || "Playlist created successfully"
           state.popup = true
         })
         .addCase(createPlaylist.rejected, (state, action) => {
+          state.error = action.payload || "An Unknown Error"
+          state.loading = false
+          state.popup = true
+        })
+        .addCase(getPlaylist.pending, (state) => {
+          state.error = "Loading playlist data"
+          state.loading = true
+        })
+        .addCase(getPlaylist.fulfilled, (state, action) => {
+          state.playlistData = action.payload.data
+          state.loading = false
+        })
+        .addCase(getPlaylist.rejected, (state, action) => {
+          state.error = action.payload || "An Unknown Error"
+          state.loading = false
+          state.popup = true
+        })
+        .addCase(uploadLecture.pending, (state) => {
+          state.error = "Uploading Lecture"
+          state.loading = true
+        })
+        .addCase(uploadLecture.fulfilled, (state, action) => {
+          state.error = action.payload.message || "Lecture uploaded successfully"
+          state.loading = false
+          state.popup = true
+        })
+        .addCase(uploadLecture.rejected, (state, action) => {
           state.error = action.payload || "An Unknown Error"
           state.loading = false
           state.popup = true

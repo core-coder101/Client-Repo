@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/css/class.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Popup from "react-animated-popup";
 import { useDispatch, useSelector } from "react-redux";
-import { GetClassDataById, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/CreateClass";
+import { GetClassDataById, GetTeachers, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/CreateClass";
 
 export default function CreateClass() {
   const { ID } = useParams();
-  const { CSRFToken } = useSelector((state) => state.auth);
-  const { loading, error, popup, classData } = useSelector((state) => state.createClass);
-  const [teachers, setteachers] = useState(null);
-
-  const [errorMessage, setErrorMessage] = useState(""); // useless now. . .
-  const [loading1, setLoading] = useState(false); // useless now. . .
+  const { loading, error, popup, classData, teachersData } = useSelector((state) => state.createClass);
 
   const [formData, setFormData] = useState({
     ClassName: "",
@@ -27,46 +21,44 @@ export default function CreateClass() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
-
-  const GetTeachers = async () => {
-    setErrorMessage("Loading teacher's data. . .");
-    setLoading(true);
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/GetTeacher", {
-        headers: {
-          "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
-        },
-      });
-      if (response.data.success == true) {
-        if (!response.data.data.length > 0) {
-          setErrorMessage("Please add a teacher first");
-          setPopup(true);
-          return;
-        }
-        setteachers(response.data.data);
-        setFormData((prev) => ({
-          ...prev,
-          ClassTeacherID: JSON.stringify(response.data.data[0].id),
-        }));
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      if (error.response.data.message.includes("[2002]")) {
-        setErrorMessage("Database down at the moment. . . ");
-        setPopup(true);
-      } else {
-        setErrorMessage("Failed to Load Teachers");
-        setPopup(true);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   setErrorMessage("Loading teacher's data. . .");
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get("http://127.0.0.1:8000/api/GetTeacher", {
+  //       headers: {
+  //         "X-CSRF-TOKEN": CSRFToken,
+  //         "Content-Type": "application/json",
+  //         "API-TOKEN": "IT is to secret you cannot break it :)",
+  //       },
+  //     });
+  //     if (response.data.success == true) {
+  //       if (!response.data.data.length > 0) {
+  //         setErrorMessage("Please add a teacher first");
+  //         setPopup(true);
+  //         return;
+  //       }
+  //       setteachers(response.data.data);
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         ClassTeacherID: JSON.stringify(response.data.data[0].id),
+  //       }));
+  //     } else {
+  //       setErrorMessage(response.data.message);
+  //       setPopup(true);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     if (error.response.data.message.includes("[2002]")) {
+  //       setErrorMessage("Database down at the moment. . . ");
+  //       setPopup(true);
+  //     } else {
+  //       setErrorMessage("Failed to Load Teachers");
+  //       setPopup(true);
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(()=>{
     if(ID && classData.data){
@@ -91,7 +83,7 @@ export default function CreateClass() {
   }, []);
 
   useEffect(() => {
-    GetTeachers();
+    dispatch(GetTeachers())
   }, []);
 
   const handleChange = (e) => {
@@ -100,7 +92,6 @@ export default function CreateClass() {
       ...prev,
       [name]: value,
     }));
-    setErrorMessage("");
   };
 
   const handleSubmit = (e) => {
@@ -208,9 +199,9 @@ export default function CreateClass() {
               ) : (
                 ""
               )}
-              {teachers &&
-                Object.values(teachers).length > 0 &&
-                Object.values(teachers).map((teacher, index) => {
+              {teachersData &&
+                Object.values(teachersData).length > 0 &&
+                Object.values(teachersData).map((teacher, index) => {
                   return (
                     <option value={teacher.id}>{teacher.users.name}</option>
                   );

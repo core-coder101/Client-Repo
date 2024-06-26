@@ -23,6 +23,29 @@ export const GetClassDataById = createAsyncThunk("GetClassDataById", async (ID, 
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message)
     }
+})
+export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState, rejectWithValue }) => {
+  const state = getState()
+  const CSRFToken = state.auth.CSRFToken
+    try {
+      const { data } = await axios.get(
+        `http://127.0.0.1:8000/api/GetTeacher`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+      if (data.success == true) {
+        return data.data;
+      } else {
+        return rejectWithValue(data.message || "Failed to load teachers' data")
+      }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message)
+    }
   })
 
   export const createClass = createAsyncThunk("createClass", async (formData, { getState, rejectWithValue }) => {
@@ -79,6 +102,7 @@ export const GetClassDataById = createAsyncThunk("GetClassDataById", async (ID, 
 
   const initialState = {
     classData: [],
+    teachersData: [],
     loading: false,
     error: null,
     popup: false,
@@ -135,6 +159,19 @@ const createClassSlice = createSlice({
           state.popup = true
         })
         .addCase(UpdateClass.rejected, (state, action) => {
+          state.error = action.payload || "An Unknown Error Occurred"
+          state.loading = false
+          state.popup = true
+        })
+        .addCase(GetTeachers.pending, (state) => {
+          state.error = "Loading teachers' data. . ."
+          state.loading = true
+        })
+        .addCase(GetTeachers.fulfilled, (state, action) => {
+          state.teachersData = action.payload
+          state.loading = false
+        })
+        .addCase(GetTeachers.rejected, (state, action) => {
           state.error = action.payload || "An Unknown Error Occurred"
           state.loading = false
           state.popup = true

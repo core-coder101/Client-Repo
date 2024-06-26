@@ -50,6 +50,9 @@
     border: none;
     outline: none !important;
 }
+.uploadLectureMain textarea{
+    max-height: 150px;
+}
 
 .closeBtn{
     position: absolute;

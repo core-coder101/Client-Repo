@@ -27,6 +27,8 @@ export default function CreateStudent() {
     smoothscroll.polyfill()
     
     const { CSRFToken, user } = useSelector((state) => state.auth)
+
+    const { classData } = useSelector(state => state.uploadLecture)
     
     const navigate = useNavigate()
     
