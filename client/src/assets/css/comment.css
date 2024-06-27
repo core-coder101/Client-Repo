@@ -1,0 +1,95 @@
+.commentMainDiv{
+    width: 100%;
+    /* background-color: rgba(0, 0, 0, 0.1); */
+}
+.comment{
+    display: flex;
+    align-items: top;
+}
+.imgDiv{
+    width: 60px;
+    height:60px;
+    min-width: 60px;
+    min-height: 60px;
+    border-radius: 50%;
+}
+.imgDiv img{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    overflow: hidden;
+}
+.contentDiv{
+    margin-left: 15px;
+}
+.title{
+    display: flex;
+}
+.title p{
+    margin-left: 15px;
+}
+.commentButtons{
+    display: flex;
+    width: 22%;
+    min-width: 150px;
+    justify-content: space-between;
+    margin-top: 10px;
+    align-items: center;
+}
+.commentButtons p{
+    margin: 0;
+}
+.commentButtons button{
+    border: none;
+    font-style: bold;
+    padding: 5px 10px;
+    border-radius: 2rem;
+}
+.commentButtons button:hover{
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.replies{
+    display: flex;
+    align-items: center;
+    color: #203cd6;
+    margin-bottom: 15px;
+}
+.replies p{
+    margin: 0;
+}
+.replies:hover{
+    cursor: pointer;
+}
+.optionsButtonDiv{
+    position: relative;
+}
+.optionsMenu{
+    background-color: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    border-radius: 0.25rem;
+}
+.option{
+    padding: 2px 10px;
+    display: flex;
+    min-width: 100px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 5px;
+    object-fit: cover;
+}
+.option p{
+    margin: 0;
+    margin-left: 5px;
+}
+.option:hover{
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.optionsButton{
+    width: 25px;
+    height: 25px;
+    margin-top: 10px;
+}
+.optionsButton:hover{
+    cursor: pointer;
+}

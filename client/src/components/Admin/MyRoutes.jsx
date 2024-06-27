@@ -14,7 +14,7 @@ import TeachersInformation from "./TeachersInformation.jsx";
 import StudentAttendance from "./StudentAttendance.jsx";
 import ClassDetails from "./ClassDetails.jsx";
 import UploadLecture from "./UploadLecture.jsx";
-import WatchVideoes from "./WatchVideoes.jsx";
+import WatchVideoes from "./WatchVideos.jsx";
 
 export default function MyRoutes() {
   return (
