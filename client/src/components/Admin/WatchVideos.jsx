@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getVideoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
 import CustomPopup from '../common/CustomPopup';
 import Comment from './Comment';
+import PlaylistItem from './PlaylistItem';
 
 export default function WatchVideoes() {
   const { ID } = useParams();
@@ -40,13 +41,29 @@ export default function WatchVideoes() {
   return (
     <>
       <div className='row m-0 p-0'>
-        <div className='col-8 videoSideDiv'>
-          <div className='videodiv'>
-            <video src={videoSrc} className='video' controls>
-              <source type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+      <div className='d-flex videoAndPlaylistContainer'>
+        <div className='videodiv col-8'>
+          <video src={videoSrc} className='video' controls>
+            <source type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div className='Playlist col-4'>
+          <div className='fixedTopDiv'></div>
+          <div className='playlistItems'>
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
+            <PlaylistItem />
           </div>
+        </div>
+      </div>
+        <div className='col-8 videoSideDiv'>
           <div className='video-Details'>
 
             <div className='description'>
@@ -66,9 +83,7 @@ export default function WatchVideoes() {
           </div>
         </div>
         <div className='col-4'>
-          <div className=''>
-            bye
-          </div>
+          
         </div>
       </div>
 

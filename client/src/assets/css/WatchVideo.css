@@ -1,23 +1,28 @@
 .video{
     object-fit: cover;
     width:100%;
-    max-height: 400px;
+    height: 100%;
+
     object-fit: cover;
+    border-radius: 25px;
 }
 :focus-visible {
     outline: none !important;
 }
 .videodiv{
-    border-radius: 25px;
-    background-color: black;
     overflow: hidden;
     position: relative;
+    padding-right: 32px;
 }
 .videoSideDiv{
-    padding: 30px 20px 25px 40px;
+    padding: 15px 20px 25px 40px;
 }
 .video-Details{
     margin: 18px 10px 10px 0px;
+}
+.videoAndPlaylistContainer{
+    padding: 30px 20px 0px 40px;
+    max-height: 360px;
 }
 
 .roboto-black-italic {
@@ -48,4 +53,23 @@
     background: none;
     border-bottom: 1px solid #0000004f;
     width: 100%;
+}
+.Playlist{
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 1rem;
+    position: relative;
+    height: 100%;
+}
+.fixedTopDiv{
+    position: absolute;
+    height: 25%;
+    width: 100%;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background-color: rgba(0,0,0,0.1);
+}
+.playlistItems{
+    margin-top: 20%;
+    overflow-y: auto;
+    max-height: 72%;
 }
