@@ -14,6 +14,7 @@ import TeachersInformation from "./TeachersInformation.jsx";
 import StudentAttendance from "./StudentAttendance.jsx";
 import ClassDetails from "./ClassDetails.jsx";
 import UploadLecture from "./UploadLecture.jsx";
+import WatchVideoes from "./WatchVideoes.jsx";
 
 export default function MyRoutes() {
   return (
@@ -44,6 +45,7 @@ export default function MyRoutes() {
             <Route path="studentattendance" element={<StudentAttendance />} />
             <Route path="addteacher" element={<StudentAttendance />} />
             <Route path="uploadlecture" element={<UploadLecture />} />
+            <Route path="watchvideo/:ID" element={<WatchVideoes />} />
           </Route>
         </Route>
       </Routes>
