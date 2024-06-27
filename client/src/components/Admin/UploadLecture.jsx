@@ -17,13 +17,17 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { IoClose } from "react-icons/io5";
+import { ProgressBar } from 'react-bootstrap';
+import CustomPopup from "../common/CustomPopup";
 
 export default function UploadLecture() {
   const navigate = useNavigate();
-  const { popup, classesData, loading, error, playlistData } = useSelector((state) => state.uploadLecture)
+  const { popup, classesData, loading, error, playlistData, progress } = useSelector((state) => state.uploadLecture)
   const dispatch = useDispatch()
 
   const topRef = useRef(null)
+
+  console.log(progress);
 
   // moving it to the top cuz I need it in a state declaration. . .
   const names = [
@@ -588,15 +592,16 @@ export default function UploadLecture() {
             }}
           >
             <div
-              className="d-flex justify-content-center align-items-center"
+              className="d-column-flex justify-content-center align-items-center"
               style={{ width: "max-content", height: "100%", padding: "0" }}
             >
               <h5
                 dangerouslySetInnerHTML={{ __html: error }}
                 style={{ color: "white", margin: "0" }}
               ></h5>
+              {progress ? <ProgressBar style={{height: "20px", marginTop: "15px"}} now={progress} label={`${progress}%`} /> : null}
             </div>
-          </Popup>
+          </Popup>          
           <div>
             <button className="btn btn-primary w-100 mt-2" type="submit">
               Upload

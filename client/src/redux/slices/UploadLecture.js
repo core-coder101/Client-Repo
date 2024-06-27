@@ -51,16 +51,16 @@ export const createPlaylist = createAsyncThunk("createPlaylist", async (playlist
     }
 })
 
-export const getPlaylist = createAsyncThunk("getPlaylist", async (_, { getState, rejectWithValue }) => {
+export const getPlaylist = createAsyncThunk("getPlaylist", async (_, { getState,rejectWithValue }) => {
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.get("http://127.0.0.1:8000/api/PlaylistData", 
+      const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/PlaylistData`, 
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       });
       if (data.success == true) {
@@ -74,19 +74,23 @@ export const getPlaylist = createAsyncThunk("getPlaylist", async (_, { getState,
     }
 })
 
-export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, { getState, rejectWithValue }) => {
+export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, { getState, dispatch,rejectWithValue }) => {
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
       const { data } = await axios.post("http://127.0.0.1:8000/api/upload-video",
-        formData, 
+        formData,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "multipart/form-data",
           "API-TOKEN": "IT is to secret you cannot break it :)",
         },
-      });
+        onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        dispatch(setProgress(percentCompleted))
+        }
+      })
       if (data.success == true) {
         return data
       } else {
@@ -103,7 +107,8 @@ export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, 
     loading: false,
     error: null,
     popup: false,
-    playlistData: []
+    playlistData: [],
+    progress: 0
   }
 
 const ClassSlice = createSlice({
@@ -117,6 +122,9 @@ const ClassSlice = createSlice({
         state.popup = !!action.payload
         // even though we will only pass true or false to this but I'm still writing '!!' to ensure this stays as a boolean type state
       },
+      setProgress: (state, action) => {
+        state.progress = action.payload
+      }
     },
     extraReducers: (builder) => {
         builder
@@ -161,16 +169,19 @@ const ClassSlice = createSlice({
           state.popup = true
         })
         .addCase(uploadLecture.pending, (state) => {
+          state.progress = 0
           state.error = "Uploading Lecture"
           state.loading = true
         })
         .addCase(uploadLecture.fulfilled, (state, action) => {
           state.error = action.payload.message || "Lecture uploaded successfully"
+          state.progress = 0
           state.loading = false
           state.popup = true
         })
         .addCase(uploadLecture.rejected, (state, action) => {
           state.error = action.payload || "An Unknown Error"
+          state.progress = 0
           state.loading = false
           state.popup = true
         })
@@ -179,7 +190,8 @@ const ClassSlice = createSlice({
 
 export const {
   setError,
-  setPopup
+  setPopup,
+  setProgress
 } = ClassSlice.actions;
 
 export default ClassSlice.reducer;
