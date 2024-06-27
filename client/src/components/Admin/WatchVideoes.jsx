@@ -14,12 +14,26 @@ export default function WatchVideoes() {
           </video>
           </div>
           <div className='video-Details'>
-            <h4 className='Video-Title roboto-black-italic'>Build a Realtime Chat App with React not support the video tag. hiihi </h4>
-            
+            <h4 className='Video-Title roboto-black-italic'>Build a Realtime Chat App with React not support the video tag. hiihi ok ok ok</h4>
+            <div className='description'>
+            👉 Check our website: https://scalablescripts.com 
+                Learn how to create a Realtime Chat App with React and Pusher. 
+                
+                Source Code: https://github.com/scalablescripts/re...
+                <br></br>
+                <button className='morebutton'>...more</button>
+            </div>
+            <hr></hr>
+            <div>
+              <h5 className='comments_num'>13 Comments</h5>
+              <input name='Comment' className='commentinput' placeholder='Add a comment'></input>
+            </div>
           </div>
         </div>
         <div className='col-4'>
+          <div className=''>
             bye
+          </div>
         </div>
       </div>
     </>
