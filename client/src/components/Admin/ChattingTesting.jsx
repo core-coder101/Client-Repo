@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import Pusher from 'pusher-js'
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import echo from './Echo';
+import { useParams } from 'react-router-dom';
 
 export default function ChattingTesting() {
 
+    const { ID } = useParams();
 
-    const { CSRFToken, user } = useSelector((state) => state.auth)
+
+    const { CSRFToken, user , userData } = useSelector((state) => state.auth)
 
 
     if (user.token) {
@@ -22,34 +25,50 @@ export default function ChattingTesting() {
 
 
 
-    useEffect(() => {
-        Pusher.logToConsole = true;
+    // useEffect(() => {
+    //     const channel = echo.channel('Chat');
 
-        const pusher = new Pusher('89d9a354e95472191a14', {
-            cluster: 'ap2',
-        });
+    //     channel.listen('.message', (message) => {
+    //         setmessages((prevMessages) => [...prevMessages, message]);
+    //     });
 
-        const channel = pusher.subscribe('chat');
-        channel.bind('message.sent', function(data) {
-            setmessages([...messages, data.message]);
-        });
-
-        return () => {
-            channel.unbind_all();
-            channel.unsubscribe();
-        };
-    }, [messages]);
+    //     return () => {
+    //         channel.stopListening('.message');
+    //         echo.leaveChannel('Chat');
+    //     };
+    // }, []);
     
+
+    useEffect(() => {
+        if (userData?.id) {
+            console.log(`Subscribing to private-chat.${userData.id}`); 
+            const channel = echo.private(`private-chat.${userData.id}`);
+
+            channel.listen('PrivateMessageSent', (event) => {
+                console.log('Message received:', event.message); // Debugging line
+                setmessages((prevMessages) => [...prevMessages, event.message]);
+            });
+
+            channel.error((error) => {
+                console.error('Channel error:', error); // Debugging line
+            });
+
+            return () => {
+                channel.stopListening('PrivateMessageSent');
+                echo.leaveChannel(`private-chat.${userData.id}`);
+            };
+        }
+    }, [userData]);
 
 
 
     const Submit = async(e) =>{
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8000/api/SendMessage',
+                'http://127.0.0.1:8000/api/PrivateMessage',
                 {
-                    username : username,
-                    message : message
+                    message : message,
+                    receiver_id : ID
                 },
                 {
                     headers: {
@@ -76,11 +95,9 @@ export default function ChattingTesting() {
         </div>
         </div>
         <div className='col-9'>
-        {messages.map((message)=>{
-            return (
-                <p>{message.message}</p>
-            )
-        })}
+        {messages.map((msg, index) => (
+                    <p key={index}>{msg}</p>
+                ))}
         <div class="mb-3">
             <input type="text" name='message' value={message} onChange={e => setmessage(e.target.value)} class="form-control" id="exampleFormControlInput1" placeholder="Enter message" />
             <button onClick={Submit}>Send message</button>

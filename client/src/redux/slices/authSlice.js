@@ -14,6 +14,28 @@ export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rej
   }
 });
 
+
+export const UserData = createAsyncThunk("UserData", async (_ ,{ getState , rejectWithValue  }) => {
+  const state = getState()
+  try {
+    const { data } = await axios.get("http://127.0.0.1:8000/api/user",{
+      headers: {
+        "X-CSRF-TOKEN": state.auth.CSRFToken,
+        "Content-Type": "application/json",
+        "API-TOKEN": "IT is to secret you cannot break it :)",
+      },
+    });
+    if(data.data){
+      return data
+    } else{
+      rejectWithValue(data.message || "Failed to fetch User Data")
+    }
+  }catch (error) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+
 export const login = createAsyncThunk("login", async (action, { getState, rejectWithValue }) => {
   try {
     const state = getState()
@@ -45,6 +67,7 @@ const initialState = {
   result: "",
   loading: false,
   error: null,
+  userData: ""
 }
 
 if(userFromLocalStorage && userFromLocalStorage.token){
@@ -96,6 +119,18 @@ const authSlice = createSlice({
         state.loading = false
       })
       .addCase(login.rejected, (state, action) => {
+        state.error = action.payload
+        state.loading = false;
+      })
+      .addCase(UserData.pending, (state) => {
+        state.loading = true;
+        state.error = null
+      })
+      .addCase(UserData.fulfilled, (state, action) => {
+        state.userData = action.payload.data
+        state.loading = false
+      })
+      .addCase(UserData.rejected, (state, action) => {
         state.error = action.payload
         state.loading = false;
       })

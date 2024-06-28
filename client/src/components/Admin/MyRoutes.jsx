@@ -47,7 +47,7 @@ export default function MyRoutes() {
             <Route path="addteacher" element={<StudentAttendance />} />
             <Route path="uploadlecture" element={<UploadLecture />} />
             <Route path="watchvideo/:ID" element={<WatchVideoes />} />
-            <Route path="ChattingTesting" element={<ChattingTesting />} />
+            <Route path="ChattingTesting/:ID" element={<ChattingTesting />} />
           </Route>
         </Route>
       </Routes>
