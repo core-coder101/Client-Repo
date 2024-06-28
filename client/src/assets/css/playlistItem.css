@@ -1,0 +1,42 @@
+.playlistItemDiv{
+    display: flex;
+    align-items: center;
+    margin: 5px 5px;
+}
+.playlistItemDiv:hover{
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.1);
+}
+.previewImgDiv{
+    min-width: 100px;
+    max-width: 100px;
+    height: auto;
+    margin: 0px 5px;
+    position: relative;
+}
+.previewImgDiv img{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+.previewImgDiv p{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    margin: 0;
+    border-radius: 0.3rem;
+    padding: 1px 3px;
+    color: white;
+    background-color: rgba(0,0,0,0.3);
+}
+.playlistItemDiv .info {
+    padding-right: 10px;
+    line-height-step: 2;
+}
+.playlistItemDiv .info h6{
+    font-size: 14px;
+}
+.playlistItemDiv .info p{
+    font-size: 12px;
+}
