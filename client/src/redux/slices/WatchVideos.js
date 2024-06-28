@@ -1,46 +1,43 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
-import { useSelector } from "react-redux";
 
-export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, rejectWithValue }) => {
+export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getState, rejectWithValue }) => {
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
+      const { data } = await axios.get(`http://127.0.0.1:8000/api/show-video?ID=${ID}`,
+        {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
           "API-TOKEN": "IT is to secret you cannot break it :)",
         },
-      });
+      })
       if (data.success == true) {
-        if (!data.data.length > 0) {
-          return rejectWithValue("Please create a class first")
+        if (!data.data) {
+        return rejectWithValue("Lecture not found")
         } else {
-          return (data.data)
-          // setFormData((prev) => ({
-          //   ...prev,
-          //   StudentClassID: JSON.stringify(data.data[0].id),
-          // }));
+          return (data)
         }
       } else {
-        return rejectWithValue(data.message || "Failed to get classes' data")
+        return rejectWithValue(data.message || "Failed to load lecture")
       }
     } catch (error) {
       console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
+      return rejectWithValue(error.response?.data?.message || error.message || "Error loading lecture")
     }
-  })
+})
 
   const initialState = {
-    classesData: [],
     loading: false,
     error: null,
     popup: false,
+    videoInfo: null,
+    file: null,
   }
 
-const ClassSlice = createSlice({
-    name: "classes",
+const watchVideosSlice = createSlice({
+    name: "watchVideos",
     initialState,
     reducers: {
       setError: (state, action) => {
@@ -53,15 +50,16 @@ const ClassSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        .addCase(GetClasses.pending, (state) => {
-          state.error = "Loading Classes' Data"
+        .addCase(getVideoByID.pending, (state) => {
+          state.error = "Loading Lecture"
           state.loading = true
         })
-        .addCase(GetClasses.fulfilled, (state, action) => {
-          state.classesData = action.payload
+        .addCase(getVideoByID.fulfilled, (state, action) => {
+          state.videoInfo = action.payload.data
+          state.file = action.payload.file
           state.loading = false
         })
-        .addCase(GetClasses.rejected, (state, action) => {
+        .addCase(getVideoByID.rejected, (state, action) => {
           state.error = action.payload || "An Unknown Error"
           state.loading = false
           state.popup = true
@@ -71,7 +69,8 @@ const ClassSlice = createSlice({
 
 export const {
   setError,
-  setPopup
-} = ClassSlice.actions;
+  setPopup,
+  setProgress
+} = watchVideosSlice.actions;
 
-export default ClassSlice.reducer;
+export default watchVideosSlice.reducer;

@@ -5,20 +5,17 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import defaultImg from "../../assets/img/default.png";
 import { Tooltip } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
-import Popup from 'react-animated-popup';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetClasses, setError, setPopup } from '../../redux/slices/UploadLecture';
-import { SetStudentData, setError as setStudentError, setPopup as setStudentPopup } from '../../redux/slices/CreateStudent';
+import { setError as setStudentError, setPopup as setStudentPopup } from '../../redux/slices/CreateStudent';
 import CustomPopup from '../common/CustomPopup';
 import { GetStudentData, UpdateStudent, Createstudent } from '../../redux/slices/CreateStudent';
 
@@ -26,12 +23,12 @@ import { GetStudentData, UpdateStudent, Createstudent } from '../../redux/slices
 export default function CreateStudent() {
 
     const { ID } = useParams();
-    const { classesData , loading , popup , error } = useSelector((state)=> state.classes);
+    const { classesData , loading , popup , error } = useSelector((state)=> state.uploadLecture)
     const { loading: studentLoading , popup: studentPopup , error: studentError , StudentData } = useSelector((state)=> state.createStudent);
     const dispatch = useDispatch();
     smoothscroll.polyfill();
     
-    const { CSRFToken, user } = useSelector((state) => state.auth)
+    const { user } = useSelector((state) => state.auth)
     
     const navigate = useNavigate()
     
@@ -42,10 +39,6 @@ export default function CreateStudent() {
         
         const [open, setOpen] = useState(false)
         const [imgClass, setImgClass] = useState("")
-        const [errorMessage, setErrorMessage] = useState("");
-        // const [popup1, setPopup] = useState(false)
-        // const [StudentData , SetStudentData] = useState();
-        // const [loading1, setLoading] = useState(false)
         const [formData, setFormData] = useState({
         image: null,
         name: "",
@@ -70,41 +63,6 @@ export default function CreateStudent() {
     });
 
   const topRef = useRef(null);
-
-  // const GetClasses = async () => {
-  //   setErrorMessage("Loading Classes' data. . .");
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
-  //       headers: {
-  //         "X-CSRF-TOKEN": CSRFToken,
-  //         "Content-Type": "application/json",
-  //         "API-TOKEN": "IT is to secret you cannot break it :)",
-  //       },
-  //     });
-  //     if (response.data.success == true) {
-  //       if (!response.data.data.length > 0) {
-  //         setErrorMessage("Please create a class first");
-  //         setPopup(true);
-  //       } else {
-  //         SetClassData(response.data.data);
-          // setFormData((prev) => ({
-          //   ...prev,
-          //   StudentClassID: JSON.stringify(response.data.data[0].id),
-          // }));
-  //       }
-  //     } else {
-  //       setErrorMessage(response.data.message);
-  //       setPopup(true);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     setErrorMessage("Failed to Load Classes");
-  //     setPopup(true);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   function handleImgClick() {
     document.getElementById("studentImageInput").click();
@@ -134,106 +92,22 @@ export default function CreateStudent() {
     })
   }, [])
 
-// const GetStudentData = async () => {
-//     setErrorMessage("Loading student data. . .");
-//     setLoading(true);
-//     try {
-//       const response = await axios.get(
-//         `http://127.0.0.1:8000/api/GetStudentData?ID=${ID}`,
-//         {
-//           headers: {
-//             "X-CSRF-TOKEN": CSRFToken,
-//             "Content-Type": "application/json",
-//             "API-TOKEN": "IT is to secret you cannot break it :)",
-//           },
-//         }
-//       );
-//       console.log(response.data);
-//       if (response.data.success == true) {
-//         if (!(response.data.data.length > 0)) {
-//           setErrorMessage("Student not found");
-//           setPopup(true);
-//           navigate("/addstudent");
-//         } else {
-//           SetStudentData(response.data.data);
-//         }
-//       } else {
-//         setErrorMessage(response.data.message);
-//         setPopup(true);
-//       }
-//     } catch (error) {
-//       setErrorMessage("Failed to Load Edit Student");
-//       setPopup(true);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
   useEffect(() => {
     if (ID) {
-      dispatch(GetStudentData(ID)).unwrap().catch(()=>{
+      dispatch(GetStudentData(ID))
+      .unwrap(()=>{
+        // setFormData((prev) => {
+        //   return {
+        //     ...prev,
+        //     StudentClassID: StudentData[0].StudentClassID
+        //   }
+        // })
+      }).
+      catch((error)=>{
         navigate("/addstudent");
       })
     }
   }, []);
-
-  // const CreateStudent = async (formData) => {
-  //   setErrorMessage("Creating new student")
-  //   setLoading(true)
-  //   try {
-  //     const response = await axios.post(
-  //       "http://127.0.0.1:8000/api/CreateStudent",
-  //       formData,
-  //       {
-  //         headers: {
-  //           "X-CSRF-TOKEN": CSRFToken,
-  //           "Content-Type": "application/json",
-  //           "API-TOKEN": "IT is to secret you cannot break it :)",
-  //         },
-  //       }
-  //     );
-  //     if (response.data.success == true) {
-  //       setErrorMessage("New Student created successfully");
-  //       setPopup(true);
-  //       setFormData({
-  //         name: "",
-  //         userName: "",
-  //         email: "",
-  //         subjects: [],
-  //         StudentDOB: "",
-  //         StudentGender: "Male",
-  //         StudentCNIC: "",
-  //         StudentClassID: "",
-  //         StudentPhoneNumber: "",
-  //         StudentHomeAddress: "",
-  //         StudentReligion: "Islam",
-  //         StudentMonthlyFee: "",
-  //         FatherName: "",
-  //         MotherName: "",
-  //         GuardiansCNIC: "",
-  //         GuardiansPhoneNumber: "",
-  //         GuardiansPhoneNumber2: "",
-  //         HomeAddress: "",
-  //         GuardiansEmail: "",
-  //       });
-  //     } else {
-  //       setErrorMessage(response.data.message);
-  //       setPopup(true);
-  //     }
-  //   } catch (error) {
-  //     if (error.response.data.message.includes("users_email_unique")) {
-  //       setErrorMessage("Email must be unique");
-  //       setPopup(true);
-  //       scrollToElement(topRef);
-  //     } else {
-  //       setErrorMessage("Failed to create Student");
-  //       setPopup(true);
-  //     }
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // };
-
  
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -241,7 +115,6 @@ export default function CreateStudent() {
       ...prev,
       [name]: value,
     }));
-    setErrorMessage("");
   };
 
   const handleSubmit = (e) => {
@@ -257,11 +130,35 @@ export default function CreateStudent() {
       return;
     }
     if (StudentData && StudentData.length > 0 && StudentData[0].users) {
-      dispatch(UpdateStudent(formData)).unwrap(()=>{
+      dispatch(UpdateStudent(formData)).unwrap().then((result)=>{
+        console.log("RAN");
+        setFormData({
+          name: "",
+          userName: "",
+          image: "",
+          email: "",
+          subjects: [],
+          StudentDOB: "",
+          StudentGender: "Male",
+          StudentCNIC: "",
+          StudentClassID: JSON.stringify(classesData[0].StudentClassID),
+          StudentPhoneNumber: "",
+          StudentHomeAddress: "",
+          StudentReligion: "Islam",
+          StudentMonthlyFee: "",
+          FatherName: "",
+          MotherName: "",
+          GuardiansCNIC: "",
+          GuardiansPhoneNumber: "",
+          GuardiansPhoneNumber2: "",
+          HomeAddress: "",
+          GuardiansEmail: "",
+        }
+          );
         navigate("/addstudent");
       })
     } else {
-      dispatch(Createstudent(formData)).unwrap(()=>{
+      dispatch(Createstudent(formData)).unwrap().then(()=>{
         setFormData({
           name: "",
           userName: "",
@@ -323,7 +220,7 @@ export default function CreateStudent() {
           subjects: subjects,
           StudentDOB: StudentData[0].StudentDOB || "",
           StudentGender: StudentData[0].StudentGender || "Male",
-          StudentClassID: StudentData[0].StudentClassID || "",
+          StudentClassID: JSON.stringify(StudentData[0].StudentClassID) || "",
           StudentCNIC: StudentData[0].StudentCNIC || "",
           StudentPhoneNumber: StudentData[0].StudentPhoneNumber || "",
           StudentHomeAddress: StudentData[0].StudentHomeAddress || "",
@@ -759,50 +656,6 @@ export default function CreateStudent() {
               OnClose={() => {}}
               errorMessage={studentError}
               />
-
-      {/* <Popup
-                visible={popup}
-                onClose={() => {
-                dispatch(setPopup(false));
-                  setTimeout(() => {
-                    dispatch(setError(""))
-                  }, 400);
-                }}
-                style={{
-                  backgroundColor: "rgba(17, 16, 29, 0.95)",
-                  boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-                  padding: "40px 20px",
-                }}
-              >
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ width: "max-content", height: "100%", padding: "0" }}
-                >
-                  <h5 style={{ color: "white", margin: "0" }}>
-                    {error}
-                  </h5>
-                </div>
-      </Popup>
-      <Popup
-                visible={loading}
-                onClose={() => {}}
-                style={{
-                  backgroundColor: "rgba(17, 16, 29, 0.95)",
-                  boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-                  padding: "40px 20px",
-                }}
-              >
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ width: "max-content", height: "100%", padding: "0" }}
-                >
-                  <h5
-                    dangerouslySetInnerHTML={{ __html: errorMessage }}
-                    style={{ color: "white", margin: "0" }}
-                  ></h5>
-                </div>
-              </Popup> */}
-
               <div className="d-flex flex-column ">
                 <button className="btn btn-primary" type="submit">
                   Submit

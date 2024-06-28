@@ -14,7 +14,7 @@ import TeachersInformation from "./TeachersInformation.jsx";
 import StudentAttendance from "./StudentAttendance.jsx";
 import ClassDetails from "./ClassDetails.jsx";
 import UploadLecture from "./UploadLecture.jsx";
-import WatchVideoes from "./WatchVideoes.jsx";
+import WatchVideoes from "./WatchVideos.jsx";
 import ChattingTesting from "./ChattingTesting.jsx";
 import SelectVideo from "./SelectVideo.jsx";
 
