@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
+import { handleError } from "../errorHandler";
 
 export const GetClassDataById = createAsyncThunk("GetClassDataById", async (ID, { getState, rejectWithValue }) => {
   const state = getState()
@@ -21,7 +22,10 @@ export const GetClassDataById = createAsyncThunk("GetClassDataById", async (ID, 
         return rejectWithValue(data.message || "Failed to load class")
       }
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message)
+      console.log(error.message)
+      const errorMessage = handleError(error)
+      return rejectWithValue(errorMessage)
+      // return rejectWithValue(error.response?.data?.message || error.message)
     }
 })
 export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState, rejectWithValue }) => {
@@ -44,7 +48,10 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
         return rejectWithValue(data.message || "Failed to load teachers' data")
       }
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message)
+      console.log(error.message)
+      const errorMessage = handleError(error)
+      return rejectWithValue(errorMessage)
+      // return rejectWithValue(error.response?.data?.message || error.message)
     }
   })
 
@@ -69,8 +76,11 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
           return rejectWithValue(data?.message || "Failed to create class")
         }
       } catch (error) {
-        console.error(error);
-        return rejectWithValue(error.response?.data?.message || "Failed to create class")
+        console.log(error.message)
+        const errorMessage = handleError(error)
+        return rejectWithValue(errorMessage)
+        // console.error(error);
+        // return rejectWithValue(error.response?.data?.message || "Failed to create class")
       }
   })
 
@@ -95,7 +105,10 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
           return rejectWithValue(data.message || "Failed to Update Class")
         }
       } catch (error) {
-        return rejectWithValue(error.response?.data?.message || error.message)
+        console.log(error.message)
+        const errorMessage = handleError(error)
+        return rejectWithValue(errorMessage)
+        // return rejectWithValue(error.response?.data?.message || error.message)
       }
 })
 

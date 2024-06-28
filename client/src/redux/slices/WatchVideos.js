@@ -1,5 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
+import { handleError } from "../errorHandler";
+
+
+const decodeVideo = (file) => {
+  const byteCharacters = atob(file);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: 'video/mp4' });
+  const videoUrl = URL.createObjectURL(blob);
+  return videoUrl
+};
 
 export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getState, rejectWithValue }) => {
   const state = getState()
@@ -17,14 +31,15 @@ export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getSta
         if (!data.data) {
         return rejectWithValue("Lecture not found")
         } else {
-          return (data)
+          const videoURL = decodeVideo(data.file)
+          return ({data, videoURL: videoURL})
         }
       } else {
         return rejectWithValue(data.message || "Failed to load lecture")
       }
     } catch (error) {
-      console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error loading lecture")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error loading lecture")
     }
 })
 
@@ -55,8 +70,8 @@ const watchVideosSlice = createSlice({
           state.loading = true
         })
         .addCase(getVideoByID.fulfilled, (state, action) => {
-          state.videoInfo = action.payload.data
-          state.file = action.payload.file
+          state.videoInfo = action.payload.data.data
+          state.file = action.payload.videoURL
           state.loading = false
         })
         .addCase(getVideoByID.rejected, (state, action) => {

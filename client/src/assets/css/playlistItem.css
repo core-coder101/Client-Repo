@@ -1,14 +1,15 @@
 .playlistItemDiv{
     display: flex;
     align-items: center;
-    margin: 5px 0px;
+    margin: 5px 5px;
 }
 .playlistItemDiv:hover{
     cursor: pointer;
     background-color: rgba(0,0,0,0.1);
 }
 .previewImgDiv{
-    width: 130px;
+    min-width: 100px;
+    max-width: 100px;
     height: auto;
     margin: 0px 5px;
     position: relative;
@@ -27,7 +28,12 @@
     border-radius: 0.3rem;
     padding: 1px 3px;
     color: white;
-    background-color: rgba(0,0,0,0.3);
+    font-size: 11px;
+    background-color: rgba(0,0,0,0.8);
+}
+.playlistItemDiv .info {
+    padding-right: 10px;
+    line-height-step: 2;
 }
 .playlistItemDiv .info h6{
     font-size: 14px;

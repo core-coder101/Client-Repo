@@ -11,68 +11,56 @@ export default function WatchVideoes() {
   const { ID } = useParams();
   const { loading, error, popup, videoInfo, file } = useSelector(state => state.watchVideos);
   const dispatch = useDispatch();
-  const [videoSrc, setVideoSrc] = useState(null);
+
+  const descriptionText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+
+  const [showMore, setShowMore] = useState(false)
 
   useEffect(() => {
     if (ID) {
-      dispatch(getVideoByID(ID)).unwrap()
-        .then(() => {
-          decodeVideo(file);
-        })
-        .catch((err) => {
-          console.error('Error fetching video:', err);
-          dispatch(setError("Error fetching video."));
-        });
+      dispatch(getVideoByID(ID))
     }
-  }, [ID, dispatch,file]);
+  }, [ID]);
 
-  const decodeVideo = (file) => {
-    const byteCharacters = atob(file);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'video/mp4' });
-    const videoUrl = URL.createObjectURL(blob);
-    setVideoSrc(videoUrl);
-  };
 
   return (
     <>
       <div className='row m-0 p-0'>
-      <div className='d-flex videoAndPlaylistContainer'>
-        <div className='videodiv col-8'>
-          <video src={videoSrc} className='video' controls>
-            <source type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-        <div className='Playlist col-4'>
-          <div className='fixedTopDiv'></div>
-          <div className='playlistItems'>
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
-            <PlaylistItem />
+        <div className='col-lg-8 videoSideDiv'>
+          <div className='videodiv'>
+            <video src={file} className='video' controls>
+              <source type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
+          <div className='Playlist d-md-block d-lg-none d-none'>
+        <div className='playlistItems'>
+            <div className='fixedTopDiv'>
+                <div className='info'>
+                <h6>g3ox_em - GigaChad Theme (Phonk House Version)</h6>
+                <p>g3ox_em - 1 / 10</p>
+                </div>
+            </div>
+            <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+            </div>
         </div>
-      </div>
-        <div className='col-8 videoSideDiv'>
+    </div>
           <div className='video-Details'>
+          <h4 className='Video-Title roboto-black-italic'>Lorem Ipsum is simply dummy text of the printing and typesetting industry</h4>
 
             <div className='description'>
-              👉 Check our website: https://scalablescripts.com
-              Learn how to create a Realtime Chat App with React and Pusher.
-                
-              Source Code: https://github.com/scalablescripts/re...
-              <br />
-              <button className='morebutton'>...more</button>
+              {showMore ? descriptionText : descriptionText.substring(0, 100)}
+              {/* <br /> */}
+              <button className='morebutton text-info' onClick={()=>{setShowMore(prev=>!prev)}}>{showMore ? " . . .show less" : " . . .show more"}</button>
             </div>
             <hr />
             <div>
@@ -82,10 +70,28 @@ export default function WatchVideoes() {
             </div>
           </div>
         </div>
-        <div className='col-4'>
-          
+        <div className='Playlist col-lg-4 d-lg-block d-none'>
+        <div className='playlistItems'>
+            <div className='fixedTopDiv'>
+                <div className='info'>
+                <h6>g3ox_em - GigaChad Theme (Phonk House Version)</h6>
+                <p>g3ox_em - 1 / 10</p>
+                </div>
+            </div>
+            <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+                <PlaylistItem />
+            </div>
         </div>
-      </div>
+    </div>
+        </div>
 
       <CustomPopup
         Visible={popup}

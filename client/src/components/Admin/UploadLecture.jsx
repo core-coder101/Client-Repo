@@ -9,14 +9,10 @@ import { MdUpload } from "react-icons/md";
 import { createPlaylist, getPlaylist, setError, setPopup, uploadLecture } from "../../redux/slices/UploadLecture";
 import { Tooltip } from "@mui/material";
 import { GetClasses } from "../../redux/slices/UploadLecture";
-import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Chip from "@mui/material/Chip";
-import { IoClose } from "react-icons/io5";
 import { ProgressBar } from 'react-bootstrap';
 import CustomPopup from "../common/CustomPopup";
 
@@ -26,8 +22,9 @@ export default function UploadLecture() {
   const dispatch = useDispatch()
 
   const topRef = useRef(null)
+  const videoRef = useRef(null)
+  const canvasRef = useRef(null)
 
-  console.log(progress);
 
   // moving it to the top cuz I need it in a state declaration. . .
   const names = [
@@ -61,6 +58,8 @@ export default function UploadLecture() {
     VideoDescription: "",
     VideoPlaylistID: "",
     video: null,
+    thumbnail: null,
+    VideoLength: ""
   });
 
   const [playlistFormData, setPlaylistFormData] = useState({
@@ -120,10 +119,44 @@ export default function UploadLecture() {
       })
     }
   }
+  
+  const extractThumbnail = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataURL =  canvas.toDataURL("image/jpeg")
+
+    setFormData(prev => {
+      return {
+        ...prev,
+        thumbnail: dataURL,
+      }
+    })
+  };
 
   useEffect(() => {
     if (previewUrl) {
       setClickable("");
+      const videoElement = document.getElementById("previewVideo");
+      const previewUrl = URL.createObjectURL(formData.video);
+      
+      videoElement.src = previewUrl;
+  
+      videoElement.onloadedmetadata = () => {
+        const VideoLength = parseInt(videoElement.duration)
+        setFormData(prev => {
+          return {
+            ...prev,
+            VideoLength: VideoLength
+          }
+        })
+      }
     } else {
       setClickable("clickable");
     }
@@ -277,10 +310,22 @@ export default function UploadLecture() {
                 }}
             >
               {previewUrl ? (
-                <video width="100%" controls>
+                <>
+                <video 
+                width="100%"
+                controls
+                ref={videoRef}
+                id="previewVideo"
+                onLoadedMetadata={() => {
+                  videoRef.current.currentTime = 5;
+                }}
+                onSeeked={extractThumbnail}
+                >
                   <source src={previewUrl} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
+                <canvas ref={canvasRef} className="d-none" />
+                </>
               ) : (
                 <MdUpload className="uploadIcon "/>
               )}
@@ -296,6 +341,12 @@ export default function UploadLecture() {
               handleFileChange(e);
             }}
           />
+          <div className="mb-3 d-flex w-100" style={{justifyContent: "space-between", alignContent: "center"}}>
+            <label className="form-label d-flex align-items-center">
+              Thumbnail:
+            </label>
+            {formData.thumbnail ? <img style={{width: "250px", height: "auto"}} src={formData.thumbnail} /> : null}
+          </div>
           <div className="mb-3">
             <label for="exampleFormControlInput1" className="form-label">
               Title{" "}
@@ -345,7 +396,7 @@ export default function UploadLecture() {
               <br></br>
               <div className="d-flex mb-3">
                 <div className="flex-grow-1 me-1">
-                  <label htmlFor="PlayList ">Class Rank</label>
+                  <label for="PlayList ">Class Rank</label>
                   <select
                     className="lectureClassRank PlayList"
                     name="ClassRank"
@@ -364,7 +415,7 @@ export default function UploadLecture() {
                   </select>
                 </div>
                 <div className="flex-grow-1 ms-1">
-                  <label htmlFor="PlayList ">Subject</label>
+                  <label for="PlayList ">Subject</label>
                   <select
                     className="lectureClassRank PlayList"
                     name="subject"
@@ -382,7 +433,7 @@ export default function UploadLecture() {
                   </select>
                 </div>
               </div>
-              <label htmlFor="PlayList ">PlayList</label>
+              <label for="PlayList ">PlayList</label>
               <div className="d-flex m-0 p-0 g-5 mb-4">
                 <div className="flex-grow-1">
                   <select
@@ -486,7 +537,7 @@ export default function UploadLecture() {
                     onChange={handlePlaylistData}
                   ></textarea>
                 </div>
-                <label htmlFor="lectureClassRank">PlayList Class Rank</label>
+                <label for="lectureClassRank">PlayList Class Rank</label>
                 <div className="d-flex ">
                   <select
                     className="lectureClassRank flex-grow-1 Playlist mb-3"
