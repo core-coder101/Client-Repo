@@ -18,6 +18,7 @@ import { GetClasses, setError, setPopup } from '../../redux/slices/UploadLecture
 import { setError as setStudentError, setPopup as setStudentPopup } from '../../redux/slices/CreateStudent';
 import CustomPopup from '../common/CustomPopup';
 import { GetStudentData, UpdateStudent, Createstudent } from '../../redux/slices/CreateStudent';
+import { handleError } from '../../redux/errorHandler';
 
 
 export default function CreateStudent() {
@@ -96,14 +97,9 @@ export default function CreateStudent() {
     if (ID) {
       dispatch(GetStudentData(ID))
       .unwrap(()=>{
-        // setFormData((prev) => {
-        //   return {
-        //     ...prev,
-        //     StudentClassID: StudentData[0].StudentClassID
-        //   }
-        // })
       }).
       catch((error)=>{
+        setError(handleError(error))
         navigate("/addstudent");
       })
     }

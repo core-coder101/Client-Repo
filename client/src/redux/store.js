@@ -5,6 +5,7 @@ import UploadLectureReducer from "./slices/UploadLecture";
 import createClassReducer from "./slices/CreateClass";
 import createStudentReducer from "./slices/CreateStudent";
 import watchVideosSlice from "./slices/WatchVideos"
+import CreateTeacherReducer from "./slices/CreateTeacherSlice"
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     createClass: createClassReducer,
     createStudent: createStudentReducer,
     watchVideos: watchVideosSlice,
+    createTeacher: CreateTeacherReducer,
   },
   devTools: true,
 });

@@ -28,7 +28,8 @@
     border-radius: 0.3rem;
     padding: 1px 3px;
     color: white;
-    background-color: rgba(0,0,0,0.3);
+    font-size: 11px;
+    background-color: rgba(0,0,0,0.8);
 }
 .playlistItemDiv .info {
     padding-right: 10px;

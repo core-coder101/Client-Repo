@@ -341,8 +341,13 @@ export default function UploadLecture() {
               handleFileChange(e);
             }}
           />
+          <div className="mb-3 d-flex w-100" style={{justifyContent: "space-between", alignContent: "center"}}>
+            <label className="form-label d-flex align-items-center">
+              Thumbnail:
+            </label>
+            {formData.thumbnail ? <img style={{width: "250px", height: "auto"}} src={formData.thumbnail} /> : null}
+          </div>
           <div className="mb-3">
-          {formData.thumbnail ? <img style={{width: "100px", height: "auto"}} src={formData.thumbnail} /> : null}
             <label for="exampleFormControlInput1" className="form-label">
               Title{" "}
             </label>
