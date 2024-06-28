@@ -16,6 +16,7 @@ import ClassDetails from "./ClassDetails.jsx";
 import UploadLecture from "./UploadLecture.jsx";
 import WatchVideoes from "./WatchVideoes.jsx";
 import ChattingTesting from "./ChattingTesting.jsx";
+import SelectVideo from "./SelectVideo.jsx";
 
 export default function MyRoutes() {
   return (
@@ -48,6 +49,7 @@ export default function MyRoutes() {
             <Route path="uploadlecture" element={<UploadLecture />} />
             <Route path="watchvideo/:ID" element={<WatchVideoes />} />
             <Route path="ChattingTesting/:ID" element={<ChattingTesting />} />
+            <Route path="SelectVideo" element={<SelectVideo />} />
           </Route>
         </Route>
       </Routes>
