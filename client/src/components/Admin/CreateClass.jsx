@@ -80,11 +80,18 @@ export default function CreateClass() {
         navigate("/createclass")
       })
     }
-  }, []);
+  }, [ID]);
 
   useEffect(() => {
     dispatch(GetTeachers())
   }, []);
+
+  // using the redux loading state directly does not work properly
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  useEffect(()=>{
+    console.log("createClass loading: ",loading);
+    setLoadingOpen(loading)
+  }, [loading])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -231,7 +238,8 @@ export default function CreateClass() {
             </div>
           </Popup>
           <Popup
-            visible={loading}
+          animationDuration={400}
+            visible={loadingOpen}
             onClose={() => {}}
             style={{
               backgroundColor: "rgba(17, 16, 29, 0.95)",

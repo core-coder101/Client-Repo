@@ -43,6 +43,9 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
         }
       );
       if (data.success == true) {
+        if(!data.data.length > 0){
+          return rejectWithValue("Please add a teacher first")
+        }
         return data.data;
       } else {
         return rejectWithValue(data.message || "Failed to load teachers' data")

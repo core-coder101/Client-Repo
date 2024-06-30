@@ -12,14 +12,11 @@ export default function App() {
     if(!CSRFToken){
     dispatch(fetchCSRFToken());
   }
-    // if (!CSRFToken) {
-    //   fetchCSRFToken();
-    // }
   }, [CSRFToken]);
 
   return (
     <div>
-      <MyRoutes />
+      {CSRFToken ? <MyRoutes /> : null}
     </div>
   );
 }

@@ -1,7 +1,9 @@
 export const handleError = (error) => {
+
+  console.log("Error received: ", error)
   
     if (!error.response) {
-      return error.message || "Network Error";
+      return error.message || "Network error";
     }
 
     const { data } = error.response;
