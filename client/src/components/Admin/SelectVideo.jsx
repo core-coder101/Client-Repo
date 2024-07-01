@@ -3,6 +3,8 @@ import '../../assets/css/selectVideo.css'
 import { RiPlayList2Fill } from "react-icons/ri";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import defaultImg from "../../assets/img/default.png";
+
 
 export default function SelectVideo() {
 
@@ -78,7 +80,7 @@ export default function SelectVideo() {
             <img class="channelimg" src={
                             VideoData.users.images
                               ? `data:image/png;base64,${VideoData.users.images.data}`
-                              : ''
+                              : defaultImg
                           } width="30px" />
             <div class="card-body costom-body">
               <h5 class="card-title customtitle">{VideoData.PlaylistTitle}</h5>

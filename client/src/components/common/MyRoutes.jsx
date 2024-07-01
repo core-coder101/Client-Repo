@@ -18,6 +18,7 @@ import WatchVideoes from "../Admin/WatchVideos.jsx";
 import RoleRoute from "../Admin/Auth/RoleRoute.jsx";
 import StudentDashboard from "../Student/StudentDashboard.jsx";
 import TeacherDashboard from "../Teacher/TeacherDashboard.jsx";
+import SelectVideo from "../Admin/SelectVideo.jsx";
 
 export default function MyRoutes() {
   return (
@@ -44,6 +45,7 @@ export default function MyRoutes() {
                 <Route path="addteacher" element={<StudentAttendance />} />
                 <Route path="uploadlecture" element={<UploadLecture />} />
                 <Route path="watchvideo/:ID" element={<WatchVideoes />} />
+                <Route path="selectvideo" element={<SelectVideo />} />
               </Route>
             </Route>
             <Route element={<AdminTemplate />}>
