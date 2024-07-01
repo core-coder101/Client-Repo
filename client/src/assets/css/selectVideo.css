@@ -1,0 +1,99 @@
+.all{
+    z-index: 10 !important;
+    text-align: left;
+    margin: 15px 0px 0px 30px;
+    overflow-y: hidden;
+    overflow-x :scroll;
+    white-space: nowrap;
+}
+.costom-button1{
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    font-size: small;
+    background-color: #ebebeb;
+    text-decoration: none;
+}
+.costom-button1:hover{
+    background-color: #dfdfdf;
+    color: black;
+}
+.active{
+    background-color: #11101D !important;
+    color: aliceblue !important;
+}
+.section{
+    z-index: 1 !important;
+    margin-left: 20px;
+    margin-top: 30px;
+    padding-right: 20px;
+    padding-bottom: 25px;
+}
+.custom-card{
+    border: none;
+  }
+  .custom-card1{
+    margin: -20px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .costom-body{
+    margin-top: -48px;
+    margin-left: 35px;
+  }
+  .channelimg{
+    border-radius: 50%;
+    margin-top: 10px;
+    margin-left: 10px;
+    text-align: left;
+  }
+  .customviews{
+    text-align: left;
+  }
+  .customchannelname{
+    text-align: left;
+  }
+  .customtitle{
+    color: rgb(221, 221, 221);
+    font-size: large;
+    font-weight: 600;
+    text-align: left;
+}
+.outerCardBtn{
+    background: none;
+    border: none;
+}
+.playlist{
+    box-shadow: 
+    #302e4975 3px -4px, 
+    #322f5352 5px -6px,
+    rgba(131, 103, 163, 0.2) 8px -9px, 
+    rgba(130, 130, 173, 0.1) 11px -12px, 
+    rgba(166, 163, 216, 0.05) 14px -15px;
+}
+.playlisticon{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 24px;
+    color:white;
+    background-color: #000000c0;
+    padding: 0px 12px 2px 12px;
+    border-radius: 6px;
+}
+.Cardimage{
+    position: relative;
+}
+.Videotime{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 12px;
+    color:white;
+    background-color: #000000c0;
+    padding: 0px 9px 0px 9px;
+    border-radius: 6px;
+}
