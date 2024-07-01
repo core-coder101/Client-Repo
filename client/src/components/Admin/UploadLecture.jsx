@@ -261,6 +261,7 @@ export default function UploadLecture() {
   }, [classesData]);
 
   useEffect(()=>{
+    console.log("useEffect Ran");
     if(playlistData && playlistData.length > 0){
       const tempFiltered = playlistData.filter((playlist)=>{
         return (playlist.PlaylistCategory == filterQuery.subject && playlist.PlaylistRank == filterQuery.ClassRank)
@@ -284,7 +285,7 @@ export default function UploadLecture() {
         setFilteredPlaylist([])
       }
     }
-  }, [filterQuery])
+  }, [filterQuery, playlistData])
 
   return (
     <div className="uploadLectureMain">
@@ -404,7 +405,7 @@ export default function UploadLecture() {
                 <div className="flex-grow-1 me-1">
                   <label for="PlayList ">Class Rank</label>
                   <select
-                    className="lectureClassRank PlayList"
+                    className="lectureClassRank AddPlayList"
                     name="ClassRank"
                     required
                     value={filterQuery.ClassRank}
@@ -423,7 +424,7 @@ export default function UploadLecture() {
                 <div className="flex-grow-1 ms-1">
                   <label for="PlayList ">Subject</label>
                   <select
-                    className="lectureClassRank PlayList"
+                    className="lectureClassRank AddPlayList"
                     name="subject"
                     value={filterQuery.subject}
                     onChange={handleFilterChange}
@@ -443,7 +444,7 @@ export default function UploadLecture() {
               <div className="d-flex m-0 p-0 g-5 mb-4">
                 <div className="flex-grow-1">
                   <select
-                    className="lectureClassRank PlayList"
+                    className="lectureClassRank AddPlayList"
                     name="VideoPlaylistID"
                     onChange={handleChange}
                     value={formData.VideoPlaylistID}
@@ -546,7 +547,7 @@ export default function UploadLecture() {
                 <label for="lectureClassRank">PlayList Class Rank</label>
                 <div className="d-flex ">
                   <select
-                    className="lectureClassRank flex-grow-1 Playlist mb-3"
+                    className="lectureClassRank flex-grow-1 AddPlayList mb-3"
                     name="PlaylistRank"
                     required
                     value={playlistFormData.PlaylistRank}
@@ -579,7 +580,7 @@ export default function UploadLecture() {
                   <div className="d-flex">
                     <Select
                       style={{ color: "Black", backgroundColor: "white" }}
-                      className="flex-grow-1 Playlist"
+                      className="flex-grow-1 AddPlayList"
                       labelId="demo-multiple-chip-label"
                       id="demo-multiple-chip"
                       value={playlistFormData.playlistCategory}
