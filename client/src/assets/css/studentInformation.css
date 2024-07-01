@@ -1,0 +1,125 @@
+.inputsDiv{
+    display: flex;
+    width: auto;
+    justify-content: space-between;
+    margin: 0px 25px;
+    padding: 20px;
+    background-color: #FEFEFE;
+    box-shadow: rgba(0, 0, 0, 0.122) 0px 5px 5px 1px;
+    border-radius: 0 0 1rem 1rem;
+}
+.inputsDiv p{
+    color: black;
+    margin: 0;
+    font-size: large;
+}
+.inputDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    width: 100%;
+}
+.input{
+    padding: 5px 5px;
+    margin-right: 10px;
+    border: 1px solid grey;
+    outline: none;
+    text-align: left;
+}
+.input:hover{
+    cursor: pointer;
+}
+.filterDataDiv{
+    display: flex;
+    background-color: #65BC6D;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    height: 40px;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+}
+.filterDataDiv p{
+    color: white;
+    margin: 0px 10px;
+}
+.filterDataDiv button{
+    background-color: #027F3F;
+    height: 100%;
+    border: none;
+    padding: 0px 10px;
+}
+.tableDiv{
+    margin: 25px 25px;
+    box-shadow: rgba(0, 0, 0, 0.122) 0px 10px 10px 1px;
+}
+.successDiv{
+    width: 100%;
+    height: 40px;
+    background-color: rgba(88, 255, 54, 0.877);
+    border-radius: 0.25rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.successDiv p{
+    color: white;
+    margin: 0;
+    font-size: medium;
+}
+
+.errorDiv{
+    width: 100%;
+    height: 40px;
+    background-color: rgba(255, 54, 54, 0.45);
+    border-radius: 0.25rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.errorDiv p{
+    color: white;
+    margin: 0;
+    font-size: medium;
+}
+th, td{
+    text-align: center;
+    vertical-align: middle;
+    font-size: 12px;
+}
+.generateID{
+    background-color: #F19A13;
+}
+.generateID button{
+    background-color: #FFCE0C;
+}
+.resetPassword{
+    background-color: #65BC6F;
+}
+.resetPassword button{
+    background-color: #0F733F;
+}
+.viewProfile{
+    background-color: #046FBC;
+}
+.viewProfile button{
+    background-color: #005793;
+}
+.innerButtonDiv{
+    height: 25px;
+}
+.innerButtonDiv:hover{
+    cursor: pointer;
+}
+.DeleteBtn{
+    background-color: #930000;
+    color: white;
+    border: none;
+    padding: 5px;
+}
+.dropdown-item:hover{
+    cursor: pointer;
+}
