@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
-import MyRoutes from "./components/Admin/MyRoutes";
+import { fetchCSRFToken } from "./redux/slices/authSlice";
+import MyRoutes from "./components/common/MyRoutes";
 import { fetchCSRFToken ,UserData } from "./redux/slices/authSlice";
 
 export default function App() {
@@ -13,9 +14,6 @@ export default function App() {
     dispatch(fetchCSRFToken());
     dispatch(UserData())
   }
-    // if (!CSRFToken) {
-    //   fetchCSRFToken();
-    // }
   }, [CSRFToken]);
 
   return (

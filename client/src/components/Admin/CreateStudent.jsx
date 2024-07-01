@@ -32,6 +32,17 @@ export default function CreateStudent() {
     const { user } = useSelector((state) => state.auth)
     
     const navigate = useNavigate()
+
+    // using the redux loading state directly does not work properly
+    // don't know if I should just put them both in the same useEffect. . . 
+    const [localLoading, setLocalLoading] = useState(false)
+    useEffect(()=>{
+      setLocalLoading(loading)
+    }, [loading])
+    const [studentLocalLoading, setStudentLocalLoading] = useState(false)
+    useEffect(()=>{
+      setStudentLocalLoading(loading)
+    }, [studentLoading])
     
     if (user.token) {
         axios.defaults.headers.common['Authorization'] =
@@ -85,11 +96,13 @@ export default function CreateStudent() {
   };
 
   useEffect(() => {
-    dispatch(GetClasses()).unwrap(()=>{
+    dispatch(GetClasses()).unwrap().then(()=>{
       setFormData((prev) => ({
         ...prev,
         StudentClassID: JSON.stringify(classesData[0].id),
       }));
+    }).catch((error)=>{
+      return
     })
   }, [])
 
@@ -632,7 +645,7 @@ export default function CreateStudent() {
               />
 
             <CustomPopup 
-              Visible={loading}
+              Visible={localLoading}
               OnClose={() => {}}
               errorMessage={error}
               />
@@ -648,7 +661,7 @@ export default function CreateStudent() {
               />
 
             <CustomPopup 
-              Visible={studentLoading}
+              Visible={studentLocalLoading}
               OnClose={() => {}}
               errorMessage={studentError}
               />

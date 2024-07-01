@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { handleError } from "../errorHandler";
 
 export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rejectWithValue }) => {
   try {
@@ -10,7 +11,8 @@ export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rej
       rejectWithValue(data.message || "Failed to fetch CSRF Token")
     }
   } catch (error) {
-    return rejectWithValue(error.response?.data?.message || error.message);
+    return rejectWithValue(handleError(error))
+    // return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
 
@@ -56,7 +58,8 @@ export const login = createAsyncThunk("login", async (action, { getState, reject
       return rejectWithValue(data.message || "An unexpected error occurred")
     }
   } catch (error) {
-    return rejectWithValue(error.response?.data?.message || error.message);
+    return rejectWithValue(handleError(error))
+    // return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
 
@@ -67,6 +70,7 @@ const initialState = {
   result: "",
   loading: false,
   error: null,
+  popup: false,
   userData: ""
 }
 
@@ -97,30 +101,34 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCSRFToken.pending, (state) => {
+        state.error = "Loading. . ."
         state.loading = true
-        state.error = null
       })
       .addCase(fetchCSRFToken.fulfilled, (state, action) => {
         state.CSRFToken = action.payload.csrfToken;
         state.loading = false
       })
       .addCase(fetchCSRFToken.rejected, (state, action) => {
-        state.error = action
+        state.error = action.payload
         state.loading = false
+        state.popup = true
+        logout()
       })
       .addCase(login.pending, (state) => {
+        state.popup = false
+        state.error = "Processing request. . ."
         state.loading = true;
-        state.error = null
       })
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.data
         localStorage.setItem("user", JSON.stringify(action.payload.data))
-        axios.defaults.headers.common["Authorization"] = action.payload.data.token
+        axios.defaults.headers.common["Authorization"] = `Bearer ${action.payload.data.token}`;
         state.loading = false
       })
       .addCase(login.rejected, (state, action) => {
         state.error = action.payload
         state.loading = false;
+        state.popup = true
       })
       .addCase(UserData.pending, (state) => {
         state.loading = true;
@@ -133,6 +141,7 @@ const authSlice = createSlice({
       .addCase(UserData.rejected, (state, action) => {
         state.error = action.payload
         state.loading = false;
+        state.popup = true
       })
   },
 });

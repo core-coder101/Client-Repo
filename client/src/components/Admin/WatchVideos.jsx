@@ -22,6 +22,12 @@ export default function WatchVideoes() {
     }
   }, [ID]);
 
+    // using the redux loading state directly does not work properly
+    const [localLoading, setLocalLoading] = useState(false)
+    useEffect(()=>{
+      setLocalLoading(loading)
+    }, [loading])
+
 
   return (
     <>
@@ -105,7 +111,7 @@ export default function WatchVideoes() {
       />
 
       <CustomPopup 
-        Visible={loading}
+        Visible={localLoading}
         OnClose={() => {}}
         errorMessage={error}
       />

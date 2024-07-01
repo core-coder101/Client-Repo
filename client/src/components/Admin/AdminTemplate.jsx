@@ -3,7 +3,7 @@ import Navbar from './Navbar.jsx'
 import Sidebar from './sidebar.jsx'
 import { Outlet } from 'react-router-dom'
 
-export default function Template() {
+export default function AdminTemplate() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     let sidebarClass = ""
     if(sidebarOpen){sidebarClass = "sidebarOpen"} else {sidebarClass = ""}

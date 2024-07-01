@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
+import { handleError } from "../errorHandler";
 
 export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, rejectWithValue }) => {
   const state = getState()
@@ -23,7 +24,8 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
       }
     } catch (error) {
       console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
     }
 })
 
@@ -47,7 +49,8 @@ export const createPlaylist = createAsyncThunk("createPlaylist", async (playlist
       }
     } catch (error) {
       console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
     }
 })
 
@@ -70,7 +73,8 @@ export const getPlaylist = createAsyncThunk("getPlaylist", async (_, { getState,
       }
     } catch (error) {
       console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching Playlist data")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching Playlist data")
     }
 })
 
@@ -98,7 +102,8 @@ export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, 
       }
     } catch (error) {
       console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching Playlist data")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching Playlist data")
     }
 })
 

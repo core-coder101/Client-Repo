@@ -69,6 +69,12 @@ export default function UploadLecture() {
     playlistCategory: "",
   });
 
+    // using the redux loading state directly does not work properly
+    const [localLoading, setLocalLoading] = useState(false)
+    useEffect(()=>{
+      setLocalLoading(loading)
+    }, [loading])
+
   const scrollToElement = (ref) => {
     if(ref.current){
         ref.current.scrollIntoView({behavior: 'smooth'})
@@ -634,7 +640,7 @@ export default function UploadLecture() {
             </div>
           </Popup>
           <Popup
-            visible={loading}
+            visible={localLoading}
             onClose={() => {}}
             style={{
               backgroundColor: "rgba(17, 16, 29, 0.95)",
