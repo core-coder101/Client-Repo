@@ -83,8 +83,16 @@ export default function CreateClass() {
   }, [ID]);
 
   useEffect(() => {
-    dispatch(GetTeachers())
-  }, []);
+    dispatch(GetTeachers()).unwrap().then((result)=>{
+      setFormData((prev) => ({
+        ...prev,
+        ClassTeacherID: JSON.stringify(result[0].id),
+      }))
+      return
+    }).catch(()=>{
+      return
+    })
+  }, [])
 
   // using the redux loading state directly does not work properly
   const [loadingOpen, setLoadingOpen] = useState(false)
@@ -104,7 +112,7 @@ export default function CreateClass() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.ClassID == ""){
-      createClass(formData).unwrap().then( (result) => {
+      dispatch(createClass(formData)).unwrap().then( (result) => {
         setFormData((prev) => {
           return {
             ...prev,
@@ -119,7 +127,7 @@ export default function CreateClass() {
         return
       })
     } else {
-      UpdateClass(formData).unwrap(()=>{
+      dispatch(UpdateClass(formData)).unwrap().then(()=>{
         setTimeout(() => {
             dispatch(setPopup(false))
           }, 1000);
@@ -130,9 +138,11 @@ export default function CreateClass() {
             ClassName: "",
             ClassRank: "",
             ClassFloor: "",
-            ClassTeacherID: "",
+            ClassTeacherID: teachersData[0].id,
             ClassID: "",
           });
+      }).catch(()=>{
+        return
       })
     }
   };

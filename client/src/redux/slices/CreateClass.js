@@ -88,8 +88,8 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
       }
   })
 
-  export const UpdateClass = createAsyncThunk("CreateClass", async (formData, { getState, rejectWithValue }) => {
-    const state = getState
+  export const UpdateClass = createAsyncThunk("UpdateClass", async (formData, { getState, rejectWithValue }) => {
+    const state = getState( )
     const CSRFToken = state.auth.CSRFToken
       try {
         const { data } = await axios.post(
@@ -104,7 +104,7 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
           }
         );
         if (data.success == true) {
-          return
+          return data
         } else {
           return rejectWithValue(data.message || "Failed to Update Class")
         }
