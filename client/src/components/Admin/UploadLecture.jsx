@@ -546,7 +546,7 @@ export default function UploadLecture() {
                 <label for="lectureClassRank">PlayList Class Rank</label>
                 <div className="d-flex ">
                   <select
-                    className="lectureClassRank flex-grow-1 Playlist mb-3"
+                    className="lectureClassRank flex-grow-1 AddPlayList mb-3"
                     name="PlaylistRank"
                     required
                     value={playlistFormData.PlaylistRank}
@@ -579,7 +579,7 @@ export default function UploadLecture() {
                   <div className="d-flex">
                     <Select
                       style={{ color: "Black", backgroundColor: "white" }}
-                      className="flex-grow-1 Playlist"
+                      className="flex-grow-1 AddPlayList"
                       labelId="demo-multiple-chip-label"
                       id="demo-multiple-chip"
                       value={playlistFormData.playlistCategory}
