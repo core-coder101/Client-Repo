@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCSRFToken } from "./redux/slices/authSlice";
 import MyRoutes from "./components/common/MyRoutes";
 import { fetchCSRFToken ,UserData } from "./redux/slices/authSlice";
 
