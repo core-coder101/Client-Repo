@@ -3,7 +3,7 @@ import '../../assets/css/selectVideo.css'
 import { RiPlayList2Fill } from "react-icons/ri";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import defaultImg from "../../assets/img/default.png";
+import DefaultImg from "../../assets/img/default.png";
 
 
 export default function SelectVideo() {
@@ -14,6 +14,7 @@ export default function SelectVideo() {
   const [Subject,setSubject] = useState('Not in Categories');
   const [Rank, SetRank] = useState(10);
   const [VideosData , SetVideosData] = useState();
+  const [PlaylistData , SetPlaylistData] = useState();
 
   const names = [
     "Not in Categories",
@@ -41,7 +42,12 @@ export default function SelectVideo() {
               },
           }
       );
-      SetVideosData(response.data.data);
+      if(response.data.message == 'video'){
+        SetVideosData(response.data.data);
+      }
+      else{
+        SetPlaylistData(response.data.data);
+      }
   } catch (error) {
 
   } 
@@ -65,46 +71,63 @@ export default function SelectVideo() {
     </div>
     <div class="section">
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 g-4 custom-card1">
-      { VideosData && VideosData.length > 0 && VideosData.map((VideoData,index)=>{
+      { PlaylistData && PlaylistData.length > 0 && PlaylistData.map((PlaylistData,index)=>{
         return(
         <button onClick={()=>{}} className='outerCardBtn'>
         <div class="col ">
           <div class="card custom-card playlist">
             <div className='Cardimage'><img src={
-                            VideoData.videos[0].images
-                              ? `data:image/png;base64,${VideoData.videos[0].images.data}`
+                            PlaylistData.videos[0].images
+                              ? `data:image/png;base64,${PlaylistData.videos[0].images.data}`
                               : ''
                           } class="card-img-top custom-img" alt="..." />
             <div className='playlisticon'><RiPlayList2Fill/></div>
             </div>
             <img class="channelimg" src={
-                            VideoData.users.images
-                              ? `data:image/png;base64,${VideoData.users.images.data}`
-                              : defaultImg
+                            PlaylistData.users.images
+                              ? `data:image/png;base64,${PlaylistData.users.images.data}`
+                              : DefaultImg
                           } width="30px" />
             <div class="card-body costom-body">
-              <h5 class="card-title customtitle">{VideoData.PlaylistTitle}</h5>
-              <p class="card-text customchannelname">{VideoData.users.name}</p>
-              <p class="card-text customviews">342 veiws ,{VideoData.Date}</p>
+              <h5 class="card-title customtitle">{PlaylistData.PlaylistTitle}</h5>
+              <p class="card-text customchannelname">{PlaylistData.users.name}</p>
+              <p class="card-text customviews">342 veiws ,{PlaylistData.Date}</p>
             </div>
           </div>
         </div>
         </button>
         )
       })}
-        <div class="col blocking2">
+      {VideosData && VideosData.length > 0 && VideosData.map((videoData)=>{
+        return(
+          <button onClick={()=>{}} className='outerCardBtn'>
+        <div class="col">
           <div class="card custom-card">
           <div className='Cardimage'>
-            <img src={require("../../assets/img/amazinggames.PNG")} class="card-img-top custom-img" alt="..." />
-            <div className='Videotime'>12:40</div></div>
-            <img class="channelimg" src={require("../../assets/img/unnamed (1).jpg")} width="30px" />
+            <img  class="card-img-top custom-img"  src={
+                            videoData.images
+                              ? `data:image/png;base64,${videoData.images.data}`
+                              : ''
+                              }
+                              alt="..." />
+            <div className='Videotime'>{videoData.VideoLength}</div></div>
+            <img class="channelimg" src={
+                            (videoData.users.images == [])
+                              ? `data:image/png;base64,${videoData.users.images.data}`
+                              : DefaultImg
+                              }
+                               width="30px" />
             <div class="card-body costom-body">
-              <h5 class="card-title customtitle">TOP 35 Free FPS Games to Play Right Now!</h5>
-              <p class="card-text customchannelname">undercoverdudes</p>
-              <p class="card-text customviews">34k veiws , 12 Hours ago</p>
+              <h5 class="card-title customtitle">{videoData.VideoTitle}</h5>
+              <p class="card-text customchannelname">{videoData.users.name}</p>
+              <p class="card-text customviews">34k veiws , {videoData.Date}</p>
             </div>
           </div>
         </div>
+        </button>
+        );
+      })}
+     
         <div class="col blocking3">
           <div class="card custom-card">
             <img src="images/f16istoogood.PNG" class="card-img-top custom-img" alt="..." />
