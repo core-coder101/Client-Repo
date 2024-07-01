@@ -4,11 +4,11 @@ import axios from 'axios';
 import echo from './Echo';
 import { useParams } from 'react-router-dom';
 import '../../assets/css/ChatBox.scss';
+import defaultImg from "../../assets/img/default.png";
 
 export default function ChattingTesting() {
 
-    const { ID } = useParams();
-
+    const [ID , setID] = useState(23);
 
     const { CSRFToken, user , userData } = useSelector((state) => state.auth)
 
@@ -17,46 +17,70 @@ export default function ChattingTesting() {
         axios.defaults.headers.common['Authorization'] =
         `Bearer ${user.token}`;
     }
+    const [UsersData,setUsersData] = useState([]);
 
 
 useEffect(()=>{
-  document.querySelector('.chat[data-chat=person2]').classList.add('active-chat')
-  document.querySelector('.person[data-chat=person2]').classList.add('active')
-  
-  let friends = {
+  GetStudentDataFORChat();
+},[])
+
+
+
+useEffect(() => {
+    const chatElement = document.querySelector('.chat[data-chat=person0]');
+    const personElement = document.querySelector('.person[data-chat=person0]');
+
+    if (chatElement && personElement) {
+      chatElement.classList.add('active-chat');
+      personElement.classList.add('active');
+    } else {
+      console.error('Chat or person element not found');
+    }
+
+    let friends = {
       list: document.querySelector('ul.people'),
       all: document.querySelectorAll('.left .person'),
       name: ''
-    },
-    chat = {
+    };
+
+    let chat = {
       container: document.querySelector('.container .right'),
       current: null,
       person: null,
       name: document.querySelector('.container .right .top .name')
+    };
+
+    friends.all.forEach(f => {
+      f.addEventListener('mousedown', () => {
+        if (!f.classList.contains('active')) {
+          setActiveChat(f);
+        }
+      });
+    });
+
+    function setActiveChat(f) {
+      const activeFriend = friends.list.querySelector('.active');
+      const activeChat = chat.container.querySelector('.active-chat');
+      const newChatPerson = chat.container.querySelector(`[data-chat="${f.getAttribute('data-chat')}"]`);
+
+      if (activeFriend && activeChat && newChatPerson) {
+        activeFriend.classList.remove('active');
+        f.classList.add('active');
+        activeChat.classList.remove('active-chat');
+        newChatPerson.classList.add('active-chat');
+        friends.name = f.querySelector('.name').innerText;
+        chat.name.innerHTML = friends.name;
+      } else {
+        console.error('Active elements or new chat person element not found');
+      }
     }
-  
-  friends.all.forEach(f => {
-    f.addEventListener('mousedown', () => {
-      f.classList.contains('active') || setAciveChat(f)
-    })
-  });
-  
-  function setAciveChat(f) {
-    friends.list.querySelector('.active').classList.remove('active')
-    f.classList.add('active')
-    chat.current = chat.container.querySelector('.active-chat')
-    chat.person = f.getAttribute('data-chat')
-    chat.current.classList.remove('active-chat')
-    chat.container.querySelector('[data-chat="' + chat.person + '"]').classList.add('active-chat')
-    friends.name = f.querySelector('.name').innerText
-    chat.name.innerHTML = friends.name
-  }
-  GetStoredMessages(ID);
-},[])
+}, [userData]);
+
 
     const [username, setusername] = useState('username');
     const [messages,setmessages] = useState([]);
     const [message,setmessage] = useState('');
+
 
 
 
@@ -76,9 +100,6 @@ useEffect(()=>{
 
     useEffect(() => {
         if (userData?.id) {
-
-
-
             console.log(`Subscribing to private-chat.${userData.id}`); 
             const channel = echo.private(`private-chat.${userData.id}`);
 
@@ -100,7 +121,38 @@ useEffect(()=>{
                 echo.leaveChannel(`private-chat.${userData.id}`);
             };
         }
-    }, [userData]);
+        
+    }, [userData,ID]);
+
+    useEffect(()=>{
+      setmessages([]);
+      GetStoredMessages(ID);
+    },[ID])
+
+
+
+
+    const GetStudentDataFORChat = async () =>{
+      try {
+        const response = await axios.get(
+            'http://127.0.0.1:8000/api/GetStudentDataFORChat',
+            {
+                headers: {
+                    'X-CSRF-TOKEN': CSRFToken,
+                    'Content-Type': 'application/json',
+                    'API-TOKEN': 'IT is to secret you cannot break it :)',
+                },
+            }
+        );
+        setUsersData(response.data.data);
+    } catch (error) {
+
+    } 
+    }
+
+
+
+
 
 
     const GetStoredMessages = async (ID) =>{
@@ -179,13 +231,23 @@ useEffect(()=>{
               <a href="javascript:;" className="search" />
             </div>
             <ul className="people">
-              <li className="person" data-chat="person1">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/thomas.jpg" alt="" />
-                <span className="name">Thomas Bangalter</span>
-                <span className="time">2:09 PM</span>
-                <span className="preview">I was wondering...</span>
-              </li>
-              <li className="person" data-chat="person2">
+            {UsersData.map((user,index) =>{
+              return(
+                <li className="person" onClick={()=>{setID(user.users.id)}} data-chat={`person${index}`}>
+    <img src={
+                            user.users.images[0]
+                              ? `data:image/png;base64,${user.users.images[0].data}`
+                              : defaultImg
+                          } alt="" />
+    <span className="name">{user.users.name}</span>
+    <span className="time">2:09 PM</span>
+    <span className="preview">I was wondering...</span>
+                </li>
+
+              );
+            })}
+
+              {/* <li className="person" data-chat="person2">
                 <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/dog.png" alt="" />
                 <span className="name">Dog Woofson</span>
                 <span className="time">1:44 PM</span>
@@ -215,32 +277,37 @@ useEffect(()=>{
                 <span className="name">Drake</span>
                 <span className="time">2:09 PM</span>
                 <span className="preview">howdoyoudoaspace</span>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div className="right ">
             <div className="top"><span>To: <span className="name">Dog Woofson</span></span></div>
             <div className='ChatSide'>
-            <div className="chat" data-chat="person1">
+            {UsersData.map((user,index) =>{
+              return(
+            <div className="chat" data-chat={`person${index}`}>
               <div className="conversation-start">
                 <span>Today, 6:48 AM</span>
               </div>
               {messages.map((msg, index) => (
-                ((msg.Sending_id == ID) ?
+                <>
+              
+                {((msg.Sending_id == ID) ?
                 <div key={index} className="bubble you">
                     {msg.Message}
-              </div>
+                </div>
                 :
                 <div key={index} className="bubble me">
                     {msg.Message}
+                </div>
+              )}
+              </>
+              ))}
               </div>
-              )
-
-                ))}
-              
-            </div>
-            </div>
-            <div className="chat" data-chat="person2">
+          );
+        })}
+        </div>
+            {/* <div className="chat" data-chat="person2">
               <div className="conversation-start">
                 <span>Today, 5:38 PM</span>
               </div>
@@ -345,7 +412,7 @@ useEffect(()=>{
               <div className="bubble you">
                 howdoyoudoaspace
               </div>
-            </div>
+            </div> */}
             <div className="write">
               <a href="javascript:;" className="write-link attach" />
               <input type="text" name='message' value={message} onChange={e => setmessage(e.target.value)} class="form-control" id="exampleFormControlInput1" placeholder="Enter message"  />

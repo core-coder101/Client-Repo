@@ -1,42 +1,95 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import '../../assets/css/selectVideo.css'
 import { RiPlayList2Fill } from "react-icons/ri";
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 export default function SelectVideo() {
+
+
+  const { CSRFToken} = useSelector((state) => state.auth)
+
+  const [Subject,setSubject] = useState('Not in Categories');
+  const [Rank, SetRank] = useState(10);
+  const [VideosData , SetVideosData] = useState();
+
+  const names = [
+    "Not in Categories",
+    "Maths",
+    "General Science",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Computer Science",
+    "Pakistan Studies",
+    "Urdu",
+    "English",
+    "Islamiat",
+  ];
+
+  const GetVideoData = async () =>{
+    try {
+      const response = await axios.get(
+          `http://127.0.0.1:8000/api/showvideoDataPic?Subject=${Subject}&ClassRank=${Rank}`,
+          {
+              headers: {
+                  'X-CSRF-TOKEN': CSRFToken,
+                  'Content-Type': 'application/json',
+                  'API-TOKEN': 'IT is to secret you cannot break it :)',
+              },
+          }
+      );
+      SetVideosData(response.data.data);
+  } catch (error) {
+
+  } 
+  }
+
+  useEffect(()=>{
+    GetVideoData();
+  },[Subject])
+
+
+
   return (
     <>
         <div class="col">
       <div class="all">
-      <a href="#"> <button type="button" class="btn active costom-button1 ">Not in Categories</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Math</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">English</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Chemistry</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Urdu</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Pak Studies</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Islamiat</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Computer science</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Biology</button></a>
-      <a href="#"> <button type="button" class="btn costom-button1">Drawing</button></a>
-    </div>
+      {/* <button onClick={() =>{setSubject()}} type="button" class="btn active costom-button1 "></button> */}
+      {names.map((name , index)=>{
+        return(<button onClick={() =>{setSubject(name)}} type="button" name={name} class={`btn ${Subject == name ? 'active' : ''}  costom-button1`}>{name}</button>)
+      })}
+      </div>
     </div>
     <div class="section">
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 g-4 custom-card1">
-      <button className='outerCardBtn'>
+      { VideosData && VideosData.length > 0 && VideosData.map((VideoData,index)=>{
+        return(
+        <button onClick={()=>{}} className='outerCardBtn'>
         <div class="col ">
           <div class="card custom-card playlist">
-            
-            <div className='Cardimage'><img src={require("../../assets/img/farytale.PNG")} class="card-img-top custom-img" alt="..." />
+            <div className='Cardimage'><img src={
+                            VideoData.videos[0].images
+                              ? `data:image/png;base64,${VideoData.videos[0].images.data}`
+                              : ''
+                          } class="card-img-top custom-img" alt="..." />
             <div className='playlisticon'><RiPlayList2Fill/></div>
             </div>
-            <img class="channelimg" src={require('../../assets/img/unnamed (1).jpg')} width="30px" />
+            <img class="channelimg" src={
+                            VideoData.users.images
+                              ? `data:image/png;base64,${VideoData.users.images.data}`
+                              : ''
+                          } width="30px" />
             <div class="card-body costom-body">
-              <h5 class="card-title customtitle">Fairy Tale 2 EP 08 - PART 01 [CC]</h5>
-              <p class="card-text customchannelname">Hum tv</p>
-              <p class="card-text customviews">342 veiws ,6 Hours ago</p>
+              <h5 class="card-title customtitle">{VideoData.PlaylistTitle}</h5>
+              <p class="card-text customchannelname">{VideoData.users.name}</p>
+              <p class="card-text customviews">342 veiws ,{VideoData.Date}</p>
             </div>
           </div>
         </div>
         </button>
+        )
+      })}
         <div class="col blocking2">
           <div class="card custom-card">
           <div className='Cardimage'>
