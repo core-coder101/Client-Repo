@@ -45,8 +45,9 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
       if (data.success == true) {
         if(!data.data.length > 0){
           return rejectWithValue("Please add a teacher first")
+        } else{
+          return data.data;
         }
-        return data.data;
       } else {
         return rejectWithValue(data.message || "Failed to load teachers' data")
       }
@@ -188,8 +189,8 @@ const createClassSlice = createSlice({
           state.loading = false
         })
         .addCase(GetTeachers.rejected, (state, action) => {
-          state.error = action.payload || "An Unknown Error Occurred"
           state.loading = false
+          state.error = action.payload || "An Unknown Error Occurred"
           state.popup = true
         })
     }

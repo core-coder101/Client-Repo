@@ -13,8 +13,9 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
-import Popup from 'react-animated-popup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetTeacherByID, UpdateTeacher, createTeacher, setError, setPopup } from '../../redux/slices/CreateTeacherSlice';
+import CustomPopup from "./../common/CustomPopup"
 
 
 export default function CreateTeacher() {    
@@ -23,14 +24,10 @@ export default function CreateTeacher() {
 
     smoothscroll.polyfill()
 
-    const { CSRFToken, user } = useSelector((state) => state.auth)
-
+    const { teacherData, loading, error, popup } = useSelector((state) => state.createTeacher)
+    
     const navigate = useNavigate()
-
-    if (user.token) {
-        axios.defaults.headers.common['Authorization'] =
-        `Bearer ${user.token}`;
-    }
+    const dispatch = useDispatch()
 
     const [formData, setFormData] = useState({
         image: null,
@@ -46,115 +43,10 @@ export default function CreateTeacher() {
         TeacherSalary: "",
     });
 
-
-    const [errorMessage, setErrorMessage] = useState("");
-    const [popup, setPopup] = useState(false)
-    // useEffect(()=>{
-    //     if(errorMessage){
-    //     setPopup(true)
-    //     } else {
-    //     setPopup(false)
-    //     }
-    // }, [errorMessage])
-
-
     const [open, setOpen] = useState(false)
     const [imgClass, setImgClass] = useState("")
 
     const topRef = useRef(null)
-    const emailRef = useRef(null)
-
-    const [loading, setLoading] = useState(false)
-
-    const createTeacher = async (formData) => {
-        setErrorMessage("Adding new teacher. . .")
-        setLoading(true)
-        try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/CreateTeacher',
-                formData,
-                {
-                    headers: {
-                        'X-CSRF-TOKEN': CSRFToken,
-                        'Content-Type': 'application/json',
-                        'API-TOKEN': 'IT is to secret you cannot break it :)',
-                    },
-                }
-            );
-            if(response.data.success == true){
-                setErrorMessage("New Teacher created successfully")
-                setPopup(true)
-                setFormData({
-                    name: "",
-                    userName: "",
-                    email: "",
-                    subjects: [],
-                    TeacherDOB: "",
-                    TeacherCNIC: "",
-                    TeacherPhoneNumber: "",
-                    TeacherHomeAddress: "",
-                    TeacherReligion: "Islam",
-                    TeacherSalary: "",
-                });
-              }
-              else{
-                setErrorMessage(response.data.message);
-                setPopup(true)
-              }
-        } catch (error) {
-            // console.log(error.response.data.message);
-            if(error.response.data.message.includes("users_email_unique")){
-                setErrorMessage("Email must be unique")
-                setPopup(true)
-                scrollToElement(emailRef)
-            } else{
-                setErrorMessage("Failed to create teacher");
-                setPopup(true)
-            }
-        } finally {
-            setLoading(false)
-        }
-    };
-
-
-
-    const UpdateTeacher = async (formData) => {
-        setErrorMessage("Updating Changes. . .")
-        setLoading(true)
-        try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/UpdateTeacher',
-                formData,
-                {
-                    headers: {
-                        'X-CSRF-TOKEN': CSRFToken,
-                        'Content-Type': 'application/json',
-                        'API-TOKEN': 'IT is to secret you cannot break it :)',
-                    },
-                }
-            );
-            if(response.data.success == true){
-                setErrorMessage("Teacher Updated successfully")
-                setPopup(true)
-                setTimeout(()=>{
-                    setPopup(false)
-                },800)
-                setTimeout(()=>{
-                    navigate(-1)
-                },1400)
-              }
-              else{
-                setErrorMessage(response.data.message);
-                setPopup(true)
-              }
-        } catch (error) {
-            setErrorMessage("Failed to Update Teacher");
-            setPopup(true)
-        } finally {
-            setLoading(false)
-        }
-    };
-
 
 
     const handleChange = (e) => {
@@ -163,7 +55,6 @@ export default function CreateTeacher() {
             ...prev,
             [name]: value,
         }));
-        setErrorMessage("");
     };
 
     const handleFileChange = (e) => {
@@ -188,27 +79,57 @@ export default function CreateTeacher() {
         if(!formData.image){
             setOpen(true)
             setImgClass("imgHover")
-            scrollToElement(emailRef)
+            scrollToElement(topRef)
             setTimeout(()=>{
                 setOpen(false)
                 setImgClass("")
             }, 1000)
-        } else if (TeacherData  && TeacherData.users){
-            UpdateTeacher(formData);
+        } else if (teacherData  && teacherData.users){
+            dispatch(UpdateTeacher(formData))
+            .unwrap()
+            .then(()=>{
+                navigate("/addteacher")
+                setFormData({
+                    image: null,
+                    name: "",
+                    userName: "",
+                    email: "",
+                    subjects: [],
+                    TeacherDOB: "",
+                    TeacherCNIC: "",
+                    TeacherPhoneNumber: "",
+                    TeacherHomeAddress: "",
+                    TeacherReligion: "Islam",
+                    TeacherSalary: "",
+                })
+                return
+            })
+            .catch(()=>{
+                // this is done to fix an unhandled promise erorr
+                // we are dealing with erorrs in the slice already so we just need to return the promise to avoid error
+                return
+            })
         }
         else{
-            createTeacher(formData);
+            dispatch(createTeacher(formData)).unwrap().then(()=>{
+                setFormData({
+                    name: "",
+                    userName: "",
+                    email: "",
+                    subjects: [],
+                    TeacherDOB: "",
+                    TeacherCNIC: "",
+                    TeacherPhoneNumber: "",
+                    TeacherHomeAddress: "",
+                    TeacherReligion: "Islam",
+                    TeacherSalary: "",
+                })
+                return
+            }).catch(()=>{
+                return
+            })
         }
     };
-
-
-
-
-
-
-
-
-
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -247,79 +168,47 @@ export default function CreateTeacher() {
     });
   };
 
-
-
-
-  const [TeacherData , SetTeacherData] = useState();
-
-  const GetTeacherData = async () =>{
-    setErrorMessage("Loading teacher. . .")
-    setLoading(true)
-    try {
-      const response = await axios.get(
-          `http://127.0.0.1:8000/api/GetTeacherData?ID=${ID}`
-          ,{
-              headers: {
-                  'X-CSRF-TOKEN': CSRFToken,
-                  'Content-Type': 'application/json',
-                  'API-TOKEN': 'IT is to secret you cannot break it :)',
-              },
-          }
-      );
-      console.log(response.data);
-      if(response.data.success == true){
-        SetTeacherData(response.data.data,)
-      }
-      else{
-        setErrorMessage(response.data.message);
-        setPopup(true)
-      }
-  } catch (error) {
-        console.error(error)
-        setErrorMessage("Failed to Load Edit Teacher");
-        setPopup(true)
-        navigate("/addteacher")
-  } finally{
-    setLoading(false)
-  }
-  }
-  
-
-
 useEffect(()=>{
     if(ID){
-        GetTeacherData()
+        // GetTeacherData()
+        dispatch(GetTeacherByID(ID)).unwrap().catch((error) =>{
+            navigate("/addteacher")
+            return
+        })
     }
 },[]);
 
-
-
+    // using the redux loading state directly does not work properly
+    const [localLoading, setLocalLoading] = useState(false)
+    useEffect(()=>{
+        setLocalLoading(loading)
+    }, [loading])
 
 
 useEffect(() => {
-    if (TeacherData && TeacherData.users) {
+    if (teacherData && teacherData.users) {
         let subjects = [];
 
-        for (let subject of TeacherData.users.subjects) {
+        for (let subject of teacherData.users.subjects) {
             subjects.push(subject.SubjectName);
         }
 
         setFormData({
             ID : ID,
-            image: `data:image/png;base64,${TeacherData.users.images[0].data}` || "",
-            name: TeacherData.users.name || "",
-            userName: TeacherData.users.userName || "",
-            email: TeacherData.users.email || "",
+            image: `data:image/png;base64,${teacherData.users.images[0].data}` || "",
+            name: teacherData.users.name || "",
+            userName: teacherData.users.userName || "",
+            email: teacherData.users.email || "",
             subjects: subjects,
-            TeacherDOB: TeacherData.TeacherDOB || "",
-            TeacherCNIC: TeacherData.TeacherCNIC || "",
-            TeacherPhoneNumber: TeacherData.TeacherPhoneNumber || "",
-            TeacherHomeAddress: TeacherData.TeacherHomeAddress || "",
-            TeacherReligion: TeacherData.TeacherReligion,
-            TeacherSalary: TeacherData.TeacherSalary || "",
+            TeacherDOB: teacherData.TeacherDOB || "",
+            TeacherCNIC: teacherData.TeacherCNIC || "",
+            TeacherPhoneNumber: teacherData.TeacherPhoneNumber || "",
+            TeacherHomeAddress: teacherData.TeacherHomeAddress || "",
+            TeacherReligion: teacherData.TeacherReligion,
+            TeacherSalary: teacherData.TeacherSalary || "",
         });
     }
-}, [TeacherData]);
+}, [teacherData]);
 
 
 
@@ -367,15 +256,15 @@ function scrollToElement(ref){
                         arrow
                         placement="bottom"
                         size="lg"
-                        variant="solid"
+                        variant="filled"
                         open={open}
                     >
                         <div className={"profile-container ms-auto me-auto mb-3 " + imgClass} onMouseEnter={()=>{setOpen(true)}} onMouseLeave={()=>{setOpen(false)}}>
                         <img 
                             src={
                                 formData.image ? formData.image :
-                                TeacherData && TeacherData.users && TeacherData.users.images  && TeacherData.users.images > 0
-                                ? `data:image/png;base64,${TeacherData.users.images[0].data}`
+                                teacherData && teacherData.users && teacherData.users.images  && teacherData.users.images > 0
+                                ? `data:image/png;base64,${teacherData.users.images[0].data}`
                                 : formData.image
                                     ? formData.image
                                     : defaultImg
@@ -417,7 +306,6 @@ function scrollToElement(ref){
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            ref={emailRef}
                         />
                     </div>
                     <InputLabel className='mb-1 mt-2' id="demo-multiple-chip-label">Subjects</InputLabel>
@@ -426,7 +314,7 @@ function scrollToElement(ref){
                         arrow
                         placement="bottom"
                         size="lg"
-                        variant="solid"
+                        variant="filled"
                     >
                         <Select
                             labelId="demo-multiple-chip-label"
@@ -528,16 +416,16 @@ function scrollToElement(ref){
                             required
                         />
                     </div>
-                    <Popup visible={popup} animationDuration={400} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
-                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                            <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
-                        </div>
-                    </Popup>
-                    <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
-                        <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                            <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
-                        </div>
-                    </Popup>
+                    <CustomPopup
+                        Visible={localLoading}
+                        OnClose={() => {}}
+                        errorMessage={error}
+                    />
+                    <CustomPopup
+                        Visible={popup}
+                        OnClose={() => {dispatch(setPopup(false)); setTimeout(()=>{dispatch(setError(""))},400)}}
+                        errorMessage={error}
+                    />
                     <div>
                         <button className='btn btn-primary w-100' type='submit'>
                             Submit

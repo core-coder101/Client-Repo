@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
+import { handleError } from "../errorHandler";
 
 export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, rejectWithValue }) => {
   const state = getState()
@@ -22,8 +23,9 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
         return rejectWithValue(data.message || "Failed to get classes' data")
       }
     } catch (error) {
-      console.error(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
+      console.log(error);
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
     }
 })
 
@@ -48,7 +50,8 @@ export const GetStudentData = createAsyncThunk("GetStudentData", async (ID, { ge
       }
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
     }
 })
 
@@ -72,11 +75,12 @@ export const Createstudent = createAsyncThunk("Createstudent", async (formData, 
         return rejectWithValue(data.message || "Failed to Create student")
       }
     } catch (error) {
-      if (error.response.data.message.includes("users_email_unique")){
-        return rejectWithValue("Email must be unique");
-      }
+      // if (error.response.data.message.includes("users_email_unique")){
+      //   return rejectWithValue("Email must be unique");
+      // }
       console.log(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error adding student")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error adding student")
     }
 })
 
@@ -101,11 +105,12 @@ export const UpdateStudent = createAsyncThunk("UpdateStudent", async (formData, 
         return rejectWithValue(data.message || "Failed to Updated Student")
       }
     } catch (error) {
-      if (error.response.data.message.includes("users_email_unique")){
-        return rejectWithValue("Email must be unique");
-      }
+      // if (error.response.data.message.includes("users_email_unique")){
+      //   return rejectWithValue("Email must be unique");
+      // }
       console.log(error);
-      return rejectWithValue(error.response?.data?.message || error.message || "Error Updating student")
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error Updating student")
     }
 })
 

@@ -9,8 +9,8 @@ export const handleError = (error) => {
     const { data } = error.response;
 
     if (data.message) {
-      if (data.message.email) {
-        return data.message.email;
+      if (JSON.parse(data.message).email) {
+        return JSON.parse(data.message).email[0];
       }
       
       if (typeof data.message === 'string') {
@@ -21,6 +21,9 @@ export const handleError = (error) => {
 
         if (data.message.includes("users_email_unique")) {
           return "Email must be unique";
+        }
+        if (data.message.includes("Undefined variable $teacher")) {
+          return "Teacher not Found";
         }
   
         return data.message;

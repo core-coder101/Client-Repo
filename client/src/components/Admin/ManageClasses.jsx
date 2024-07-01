@@ -119,7 +119,7 @@ export default function ManageClasses() {
             </tr>
           </thead>
           <tbody>
-            {Classes && Classes.length > 0 && Classes.map((Class) => {
+            {Classes && Classes.length > 0 ? Classes.map((Class) => {
               console.log(Class);
                 return (
               <tr>
@@ -132,7 +132,11 @@ export default function ManageClasses() {
               <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} class="btn btn-danger">Delete</button></td>
             </tr>
           );
-            })}
+            }) :
+
+              <p style={{textAlign: "center"}}>No classes to show. . .</p>
+
+            }
           </tbody>
         </table>
       </div>

@@ -104,7 +104,7 @@ export default function CreateClass() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.ClassID == ""){
-      createClass(formData).unwrap(() => {
+      createClass(formData).unwrap().then( (result) => {
         setFormData((prev) => {
           return {
             ...prev,
@@ -114,6 +114,9 @@ export default function CreateClass() {
             ClassID: "",
           };
         });
+        return
+      }).catch(()=>{
+        return
       })
     } else {
       UpdateClass(formData).unwrap(()=>{

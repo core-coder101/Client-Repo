@@ -89,6 +89,7 @@ const authSlice = createSlice({
         state.error = action.payload
         state.loading = false
         state.popup = true
+        logout()
       })
       .addCase(login.pending, (state) => {
         state.popup = false
