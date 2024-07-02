@@ -1,0 +1,25 @@
+.imgDiv{
+    width: 40px;
+    height:40px;
+    min-width: 40px;
+    min-height: 40px;
+}
+.commentButtons{
+    width: 23%;
+}
+.optionsButtonDiv{
+    margin-bottom: 25px;
+}
+.commentButtons button{
+    font-style: bold;
+    padding: 3px 7px;
+    border-radius: 2rem;
+}
+.contentDiv{
+    margin-bottom: 20px;
+}
+.optionsButton{
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+}
