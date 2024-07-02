@@ -49,7 +49,8 @@ const initialState = {
   loading: false,
   error: null,
   popup: false,
-  roles: ["Admin", "Student", "Teacher"]
+  roles: ["Admin", "Student", "Teacher"],
+  rememberMe: true,
 }
 
 if(userFromLocalStorage && userFromLocalStorage.token){
@@ -75,6 +76,9 @@ const authSlice = createSlice({
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload))
     },
+    toggleRememberMe: (state) => {
+      state.rememberMe = !state.rememberMe
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -115,6 +119,7 @@ export const {
   logout,
   setUser,
   setError,
+  toggleRememberMe,
 } = authSlice.actions;
 
 export default authSlice.reducer;

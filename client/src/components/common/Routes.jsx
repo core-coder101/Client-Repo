@@ -5,10 +5,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from "../Admin/Login.jsx";
-import PublicRoute from "../Admin/Auth/PublicRoute.jsx";
+import Login from "./Login.jsx";
+import PublicRoute from "./Auth/PublicRoute.jsx";
 import AdminTemplate from "../Admin/AdminTemplate.jsx";
-import PrivateRoute from "../Admin/Auth/PrivateRoute.jsx";
+import PrivateRoute from "./Auth/PrivateRoute.jsx";
 import ManageClasses from "../Admin/ManageClasses.jsx";
 import CreateClass from "../Admin/CreateClass.jsx";
 import CreateTeacher from "../Admin/CreateTeacher.jsx";
