@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import MyRoutes from "./components/common/MyRoutes";
+import NewRouter from "./components/common/NewRouter";
 import { fetchCSRFToken ,UserData } from "./redux/slices/authSlice";
 
 export default function App() {
@@ -17,7 +18,8 @@ export default function App() {
 
   return (
     <div>
-      <MyRoutes />
+      {/* <MyRoutes /> */}
+      <NewRouter />
     </div>
   );
 }

@@ -88,13 +88,10 @@ input:-webkit-autofill:active {
     color: white;
     border-bottom: 1px solid white !important;
 }
-p{
+/* p{
     margin: 0;
     margin-bottom: 5px;
     font-size: smaller;
-}
-a{
-    text-decoration: none;
 }
 h1{
     font-weight: 700;
@@ -102,7 +99,7 @@ h1{
     font-size: 50px;
     margin-bottom: 10px;
     transition: all 0.2s;
-}
+} */
 .admin{
     border: none;
     background-color: transparent;

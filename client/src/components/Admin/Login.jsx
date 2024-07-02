@@ -31,6 +31,12 @@ export default function Login() {
     setLocalLoading(loading)
   }, [loading])
 
+  const pStyles = {
+      color: "white",
+      marginBottom: "5px",
+      fontSize: "smaller",
+  }
+
   return (
     <div className="Login">
       <div className="blur">
@@ -60,22 +66,22 @@ export default function Login() {
             />
             <div className="rememberMe">
               <input name="rememberMe" type="checkbox" defaultChecked />
-              <p style={{ color: "white" }}>Remember me?</p>
+              <p style={pStyles}>Remember me?</p>
             </div>
             {localLoading ? (
               <div className="errorDiv" style={{backgroundColor: "rgba(58, 54, 54, 0.45)"}}>
-                <p style={{ color: "white" }}>{error}</p>
+                <p style={pStyles}>{error}</p>
               </div>
             ) : null}
             {popup ? (
               <div className="errorDiv">
-                <p style={{ color: "white" }}>{error}</p>
+                <p style={pStyles}>{error}</p>
               </div>
             ) : null}
             <button type="submit" disabled={localLoading}>
               Login
             </button>
-            <p style={{ color: "white" }} className="mb-5">
+            <p style={pStyles} className="mb-5">
               Forgot password?{" "}
               <button className="admin" onClick={() => {}}>
                 Forgot Password

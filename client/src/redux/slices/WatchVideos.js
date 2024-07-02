@@ -15,6 +15,29 @@ const decodeVideo = (file) => {
   return videoUrl
 };
 
+export const getVideoInfoByID = createAsyncThunk("getVideoInfoByID", async (ID, { getState, rejectWithValue }) => {
+  const state = getState()
+  const CSRFToken = state.auth.CSRFToken
+    try {
+      const { data } = await axios.get(`http://127.0.0.1:8000/api/show-video-info?ID=${ID}`,
+        {
+        headers: {
+          "X-CSRF-TOKEN": CSRFToken,
+          "Content-Type": "application/json",
+          "API-TOKEN": "IT is to secret you cannot break it :)",
+        },
+      })
+      if (data.success == true) {
+       return data
+      } else {
+        return rejectWithValue(data.message || "Failed to load lecture info")
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error))
+      // return rejectWithValue(error.response?.data?.message || error.message || "Error loading lecture")
+    }
+})
+
 export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getState, rejectWithValue }) => {
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
@@ -27,13 +50,9 @@ export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getSta
           "API-TOKEN": "IT is to secret you cannot break it :)",
         },
       })
-      if (data.success == true) {
-        if (!data.data) {
-        return rejectWithValue("Lecture not found")
-        } else {
-          const videoURL = decodeVideo(data.file)
-          return ({data, videoURL: videoURL})
-        }
+      console.log(data);
+      if (data) {
+          return (data)
       } else {
         return rejectWithValue(data.message || "Failed to load lecture")
       }
@@ -70,11 +89,23 @@ const watchVideosSlice = createSlice({
           state.loading = true
         })
         .addCase(getVideoByID.fulfilled, (state, action) => {
-          state.videoInfo = action.payload.data.data
-          state.file = action.payload.videoURL
+          state.file = action.payload
           state.loading = false
         })
         .addCase(getVideoByID.rejected, (state, action) => {
+          state.error = action.payload || "An Unknown Error"
+          state.loading = false
+          state.popup = true
+        })
+        .addCase(getVideoInfoByID.pending, (state) => {
+          state.error = "Loading Lecture Info"
+          state.loading = true
+        })
+        .addCase(getVideoInfoByID.fulfilled, (state, action) => {
+          state.videoInfo = action.payload.data
+          state.loading = false
+        })
+        .addCase(getVideoInfoByID.rejected, (state, action) => {
           state.error = action.payload || "An Unknown Error"
           state.loading = false
           state.popup = true

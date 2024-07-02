@@ -71,6 +71,7 @@ const initialState = {
   loading: false,
   error: null,
   popup: false,
+  roles: ["Admin", "Student", "Teacher"],
   userData: ""
 }
 
