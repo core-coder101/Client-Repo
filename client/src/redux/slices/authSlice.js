@@ -49,6 +49,7 @@ const initialState = {
   loading: false,
   error: null,
   popup: false,
+  roles: ["Admin", "Student", "Teacher"]
 }
 
 if(userFromLocalStorage && userFromLocalStorage.token){

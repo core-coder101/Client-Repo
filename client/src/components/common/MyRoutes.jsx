@@ -15,48 +15,55 @@ import StudentAttendance from "../Admin/StudentAttendance.jsx";
 import ClassDetails from "../Admin/ClassDetails.jsx";
 import UploadLecture from "../Admin/UploadLecture.jsx";
 import WatchVideoes from "../Admin/WatchVideos.jsx";
-import RoleRoute from "../Admin/Auth/RoleRoute.jsx";
+import { AdminRoute } from "./RoleRouter.jsx";
 import StudentDashboard from "../Student/StudentDashboard.jsx";
 import TeacherDashboard from "../Teacher/TeacherDashboard.jsx";
+import TeacherTemplate from "../Teacher/TeacherTemplate.jsx";
+import StudentTemplate from "../Student/StudentTemplate.jsx";
 
 export default function MyRoutes() {
   return (
     <Router>
       <Routes>
-          <Route path="/" element={<PublicRoute />}>
-            <Route path="login" element={<Login />} />
-          </Route>
-          <Route path="/" element={<PrivateRoute />}>
-            <Route element={<AdminTemplate />}>
-              <Route element={<RoleRoute roles={["Admin"]} />} >
-                <Route index element={<Dashboard />} />
-                <Route path="manageclasses" element={<ManageClasses />} />
-                <Route path="classdetails/:ID" element={<ClassDetails />} />
-                <Route path="createclass" element={<CreateClass />} />
-                <Route path="createclass/:ID" element={<CreateClass />} />
-                <Route path="addstudent" element={<CreateStudent />} />
-                <Route path="addstudent/:ID" element={<CreateStudent />} />
-                <Route path="studentsinformation" element={<StudentInformation />} />
-                <Route path="addteacher" element={<CreateTeacher />} />
-                <Route path="addteacher/:ID" element={<CreateTeacher />} />
-                <Route path="teachersinformation" element={<TeachersInformation />} />
-                <Route path="studentattendance" element={<StudentAttendance />} />
-                <Route path="addteacher" element={<StudentAttendance />} />
-                <Route path="uploadlecture" element={<UploadLecture />} />
-                <Route path="watchvideo/:ID" element={<WatchVideoes />} />
-              </Route>
-            </Route>
-            <Route element={<AdminTemplate />}>
-              <Route element={<RoleRoute roles={["Teacher"]} />} >
-                <Route index element={<TeacherDashboard />} />
-              </Route>
-            </Route>
-            <Route element={<AdminTemplate />}>
-              <Route element={<RoleRoute roles={["Student"]} />} >
-                <Route index element={<StudentDashboard />} />
-              </Route>
+        <Route path="/" element={<PublicRoute />}>
+          <Route path="login" element={<Login />} />
+        </Route>
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="" element={<AdminTemplate />}>
+            <Route path="" element={<AdminRoute />}>
+              <Route index element={<Dashboard />} />
+              <Route path="manageclasses" element={<ManageClasses />} />
+              <Route path="classdetails/:ID" element={<ClassDetails />} />
+              <Route path="createclass" element={<CreateClass />} />
+              <Route path="createclass/:ID" element={<CreateClass />} />
+              <Route path="addstudent" element={<CreateStudent />} />
+              <Route path="addstudent/:ID" element={<CreateStudent />} />
+              <Route
+                path="studentsinformation"
+                element={<StudentInformation />}
+              />
+              <Route path="addteacher" element={<CreateTeacher />} />
+              <Route path="addteacher/:ID" element={<CreateTeacher />} />
+              <Route
+                path="teachersinformation"
+                element={<TeachersInformation />}
+              />
+              <Route path="studentattendance" element={<StudentAttendance />} />
+              <Route path="uploadlecture" element={<UploadLecture />} />
+              <Route path="watchvideo/:ID" element={<WatchVideoes />} />
             </Route>
           </Route>
+          <Route path="" element={<TeacherTemplate />}>
+            <Route path="" element={<AdminRoute />}>
+              <Route index element={<TeacherDashboard />} />
+            </Route>
+          </Route>
+          <Route path="" element={<StudentTemplate />}>
+            <Route path="" element={<AdminRoute />}>
+              <Route index element={<StudentDashboard />} />
+            </Route>
+          </Route>
+        </Route>
       </Routes>
     </Router>
   );

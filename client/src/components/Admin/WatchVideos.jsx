@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../../assets/css/WatchVideo.css";
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVideoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
+import { getVideoByID, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
 import CustomPopup from '../common/CustomPopup';
 import Comment from './Comment';
 import PlaylistItem from './PlaylistItem';
@@ -19,6 +19,7 @@ export default function WatchVideoes() {
   useEffect(() => {
     if (ID) {
       dispatch(getVideoByID(ID))
+      dispatch(getVideoInfoByID(ID))
     }
   }, [ID]);
 
