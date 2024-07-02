@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../../assets/css/WatchVideo.css";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchVideoRange, getVideoByID, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
+import { fetchVideoRange, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
 import CustomPopup from '../common/CustomPopup';
 import Comment from './Comment';
 import PlaylistItem from './PlaylistItem';
@@ -76,8 +76,7 @@ export default function WatchVideoes() {
   useEffect(() => {
     
     if (ID) {
-      // dispatch(getVideoByID(ID))
-      dispatch(fetchVideoRange({ ID, startByte: 0 , endByte: 100000000}))
+      dispatch(fetchVideoRange({ ID, startByte: 0 , endByte: 83886080})) // 83,886,080 bits == 10MB
       dispatch(getVideoInfoByID(ID))
     }
   }, [ID]);
@@ -97,12 +96,26 @@ export default function WatchVideoes() {
 
 
 
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter') {
-          event.preventDefault(); // Prevent the default form submission behavior
-          SubmitComment();
-      }
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default form submission behavior
+        SubmitComment();
+    }
   };
+  const handleEnded = () => {
+    let index = null
+    const filtered = PlaylistData.videos.filter((video, i) =>{
+      if(videoInfo.id == video.id){
+        index = i
+        return true
+      } else {
+        return false
+      }
+    })
+    if(Number.isInteger(index) && (PlaylistData.videos.length > (index + 1))){
+      navigate("/watchvideo/" + (PlaylistData.videos[index + 1].id).toString())
+    }
+  }
 
 function formatDateMessage(uploadDate) {
   const createdAt = new Date(uploadDate);
@@ -146,7 +159,7 @@ function formatDateMessage(uploadDate) {
       <div className='row m-0 p-0'>
         <div className='col-lg-8 videoSideDiv'>
           <div className='videodiv'>
-            <video src={file} className='video' controls>
+            <video autoPlay src={file} className='video' controls onEnded={handleEnded}>
               <source type="video/mp4" />
               Your browser does not support the video tag.
             </video>

@@ -4,7 +4,7 @@ import "../../assets/css/playlistItem.css"
 export default function PlaylistItem({ index, image, VideoLength, Title, UName, onClickFunction, highlight }) {
 
 
-  const maxTitleLengthToShow = 30
+  const maxTitleLengthToShow = 56 // same as youtube
 
   let lengthMsg = ""
   const lengthInSec = VideoLength
@@ -44,5 +44,3 @@ export default function PlaylistItem({ index, image, VideoLength, Title, UName, 
     </div>
   )
 }
-
-// 0:36

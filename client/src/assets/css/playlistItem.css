@@ -7,20 +7,22 @@
     cursor: pointer;
     background-color: rgba(0,0,0,0.1);
 }
-.previewImgDiv{
-    min-width: 100px;
-    max-width: 100px;
-    height: auto;
+.previewImgDiv {
+    width: 100px;
+    height: 56px;
     margin: 0px 5px;
     position: relative;
+    overflow: hidden;
 }
-.previewImgDiv img{
+
+.previewImgDiv img {
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    height: 100%;
+    object-fit: cover; 
     border-radius: 0.5rem;
 }
-.previewImgDiv p{
+
+.previewImgDiv p {
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -31,6 +33,7 @@
     font-size: 11px;
     background-color: rgba(0,0,0,0.8);
 }
+
 .playlistItemDiv .info {
     padding-right: 10px;
     padding-left: 5px;
@@ -38,7 +41,10 @@
     line-height-step: 2;
 }
 .playlistItemDiv .info h6{
+    white-space: wrap;
     font-size: 14px;
+    font-family: "Roboto", "Arial", sans-serif;
+    font-weight: bold;
     margin: 0;
     margin-bottom: 5px;
 }
@@ -47,5 +53,5 @@
     max-width: 0;
 }
 .highlight{
-    background-color: rgba(0,0,0,0.15);
+    background-color: rgba(29, 27, 49, 0.15);
 }
