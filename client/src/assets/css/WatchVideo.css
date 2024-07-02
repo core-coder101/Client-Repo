@@ -12,7 +12,6 @@
 .videodiv{
     overflow: hidden;
     position: relative;
-    padding-right: 32px;
 }
 .videoSideDiv{
     padding: 15px 20px 25px 40px;
