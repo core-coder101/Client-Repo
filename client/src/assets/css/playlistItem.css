@@ -33,11 +33,19 @@
 }
 .playlistItemDiv .info {
     padding-right: 10px;
+    padding-left: 5px;
+    padding-top: 5px;
     line-height-step: 2;
 }
 .playlistItemDiv .info h6{
     font-size: 14px;
+    margin: 0;
+    margin-bottom: 5px;
 }
 .playlistItemDiv .info p{
     font-size: 12px;
+    max-width: 0;
+}
+.highlight{
+    background-color: rgba(0,0,0,0.15);
 }
