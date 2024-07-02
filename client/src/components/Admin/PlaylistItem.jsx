@@ -1,19 +1,24 @@
 import React from 'react'
 import "../../assets/css/playlistItem.css"
 
-export default function PlaylistItem() {
+export default function PlaylistItem(props) {
   return (
     <div className='playlistItemDiv'>
-        <p style={{margin: "0px 5px"}}>1</p>
+        <p style={{margin: "0px 5px"}}>{props.index}</p>
         <div className='previewImgDiv'>
-            <img src='https://i.ytimg.com/vi/OVh0bMNSFss/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAnDqUVEdKjaDwkMiaY_4_R89lyxw' />
-            <p>1:26</p>
+            <img 
+                src={
+                props.image
+                ? `data:image/png;base64,${props.image}`
+                : ""
+              }
+            />
+            <p>{props.VideoLength}</p>
         </div>
         <div className='info'>
-            <h6>g3ox_em - GigaChad Theme (Phonk House Version)</h6>
-            <p>g3ox_em</p>
+            <h6>{props.Title}</h6>
+            <p>{props.UName}</p>
         </div>
-
     </div>
   )
 }

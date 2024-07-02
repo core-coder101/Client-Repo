@@ -95,16 +95,31 @@ export default function CreateStudent() {
     }
   };
 
+  // useEffect(() => {
+  //   dispatch(GetClasses()).unwrap().then(()=>{
+  //     if(classesData.length > 0){
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         StudentClassID: JSON.stringify(classesData[0].id),
+  //       }));
+  //     }
+  //   }).catch(()=>{
+  //     return
+  //   })
+  // }, [])
+
   useEffect(() => {
-    dispatch(GetClasses()).unwrap().then(()=>{
+    dispatch(GetClasses())
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (classesData.length > 0) {
       setFormData((prev) => ({
         ...prev,
         StudentClassID: JSON.stringify(classesData[0].id),
       }));
-    }).catch((error)=>{
-      return
-    })
-  }, [])
+    }
+  }, [classesData]);
 
   useEffect(() => {
     if (ID) {
