@@ -27,6 +27,7 @@ import StudentTemplate from "../Student/StudentTemplate.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
 import WatchVideoes from "../Admin/WatchVideos.jsx";
+import SelectVideo from '../Admin/SelectVideo.jsx'
 
 const AllRoutes = [
   {
@@ -149,6 +150,12 @@ const AllRoutes = [
   {
     path: "watchvideo/:ID",
     component: <WatchVideoes />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "SelectVideo",
+    component: <SelectVideo />,
     type: "Admin",
     authentication: "role",
   },
