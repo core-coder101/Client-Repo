@@ -16,7 +16,7 @@ export default function PlaylistItem(props) {
             <p>{props.VideoLength}</p>
         </div>
         <div className='info'>
-            <h6>{props.VideoTitle}</h6>
+            <h6>{props.Title}</h6>
             <p>{props.UName}</p>
         </div>
     </div>

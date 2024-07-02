@@ -75,17 +75,20 @@ export default function WatchVideoes() {
 
 
   useEffect(() => {
-    if(videoInfo){
-      if(videoInfo.VideoPlaylistID != null){
-        GetplaylistData()
-      }
-    }
+    
     if (ID) {
       // dispatch(getVideoByID(ID))
       dispatch(fetchVideoRange({ ID, startByte: 0 , endByte: 100000000}))
       dispatch(getVideoInfoByID(ID))
     }
   }, [ID]);
+  useEffect(()=>{
+    if(videoInfo){
+      if(videoInfo.VideoPlaylistID != null){
+        GetplaylistData()
+      }
+    }
+  },[videoInfo])
 
     // using the redux loading state directly does not work properly
     const [localLoading, setLocalLoading] = useState(false)
@@ -115,19 +118,19 @@ export default function WatchVideoes() {
               Your browser does not support the video tag.
             </video>
           </div>
-          <div className='Playlist d-md-block d-lg-none d-none'>
+          <div className='Playlist d-block d-md-block d-lg-none'>
         <div className='playlistItems'>
             <div className='fixedTopDiv'>
                 <div className='info'>
                 <h6>{PlaylistData.PlaylistTitle}</h6>
-                <p>{PlaylistData.PlaylistCategory} - 1 / </p>
-                {/* {(PlaylistData.videos)} */}
+                <p>{PlaylistData.PlaylistCategory} - 1 / {(PlaylistData?.videos?.length)}</p>
+                
                 </div>
             </div>
             <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
                 {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
-                  return (<PlaylistItem 
-                  index={index}
+                  return (<PlaylistItem
+                  index={index+1}
                   key = {video.id}
                   Title = {video.VideoTitle}
                   VideoLength = {video.VideoLength}
@@ -159,20 +162,21 @@ export default function WatchVideoes() {
         <div className='playlistItems'>
             <div className='fixedTopDiv'>
                 <div className='info'>
-                <h6>g3ox_em - GigaChad Theme (Phonk House Version)</h6>
-                <p>g3ox_em - 1 / 10</p>
+                <h6>{PlaylistData.PlaylistTitle}</h6>
+                <p>{PlaylistData.PlaylistCategory} - 1 / {(PlaylistData?.videos?.length)}</p>
                 </div>
             </div>
             <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
-                <PlaylistItem />
+            {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
+                  return (<PlaylistItem
+                  index={index+1}
+                  key = {video.id}
+                  Title = {video.VideoTitle}
+                  VideoLength = {video.VideoLength}
+                  image = {video.images.data}
+                  UName = "Ahmad"
+                  />);
+                })}
             </div>
         </div>
     </div>
