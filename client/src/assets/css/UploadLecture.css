@@ -53,6 +53,7 @@
 }
 .uploadLectureMain textarea{
     max-height: 150px;
+    height: auto;
 }
 
 .closeBtn{
@@ -66,4 +67,7 @@
 }
 .uploadDivHover{
     transform: scale(1.05);
+}
+.uploadLectureMain textarea::-webkit-scrollbar-thumb:hover{
+    cursor: pointer;
 }

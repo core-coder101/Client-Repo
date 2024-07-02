@@ -40,6 +40,9 @@ export default function UploadLecture() {
     "Islamiat",
   ];
 
+  const maxTitleLength = 100 // same as youtube
+  const maxDescriptionLength = 1000 // youtube does 5000 💀
+
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [imgClass, setImgClass] = useState("")
   const [previewUrl, setPreviewUrl] = useState("");
@@ -181,6 +184,8 @@ export default function UploadLecture() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log("video title length: ", formData.VideoTitle.length);
+    console.log("video description length: ", formData.VideoDescription.length);
     if (!formData.video) {
       setTooltipOpen(true);
       setImgClass("uploadDivHover");
@@ -189,6 +194,12 @@ export default function UploadLecture() {
         setTooltipOpen(false);
         setImgClass("");
       }, 1000);
+    } else if(!(formData.VideoTitle.length <= maxTitleLength)){
+      dispatch(setError("Video title too long"))
+      dispatch(setPopup(true))
+    } else if(!(formData.VideoDescription.length <= maxDescriptionLength)){
+      dispatch(setError("Video description too long"))
+      dispatch(setPopup(true))
     } else{
       dispatch(uploadLecture(formData))
     }
@@ -201,11 +212,11 @@ export default function UploadLecture() {
   useEffect(() => {
     dispatch(GetClasses())
     dispatch(getPlaylist())
-  }, []);
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name == "VideoPlaylistID"){
+    if(name === "VideoPlaylistID"){
       console.log("SETTING VideoPlaylistID");
       setFormData((prev) => {
         return {
@@ -213,13 +224,40 @@ export default function UploadLecture() {
           [name]: parseInt(value),
         };
       });
-    } else{
-      setFormData((prev) => {
-        return {
-          ...prev,
-          [name]: value,
+    } else if (name === "VideoTitle"){
+        if(value.length <= maxTitleLength){
+          setFormData((prev) => {
+            return {
+              ...prev,
+              [name]: value,
+            }
+          })
+        } else {
+          const shortened = value.substring(0, maxDescriptionLength)
+          setFormData((prev) => {
+            return {
+              ...prev,
+              [name]: shortened,
+            }
+          })
         }
-      })
+    } else if (name === "VideoDescription"){
+        if(value.length <= maxDescriptionLength){
+          setFormData((prev) => {
+            return {
+              ...prev,
+              [name]: value,
+            }
+          })
+        } else {
+          const shortened = value.substring(0, maxDescriptionLength)
+          setFormData((prev) => {
+            return {
+              ...prev,
+              [name]: shortened,
+            }
+          })
+        }
     }
   };
 
@@ -261,13 +299,11 @@ export default function UploadLecture() {
   }, [classesData]);
 
   useEffect(()=>{
-    console.log("useEffect Ran");
     if(playlistData && playlistData.length > 0){
       const tempFiltered = playlistData.filter((playlist)=>{
         return (playlist.PlaylistCategory == filterQuery.subject && playlist.PlaylistRank == filterQuery.ClassRank)
       })
       if(tempFiltered.length > 0){
-        console.log("RAN");
         setFormData((prev) => {
           return {
             ...prev,
@@ -348,15 +384,19 @@ export default function UploadLecture() {
               handleFileChange(e);
             }}
           />
+          {formData.thumbnail && (
           <div className="mb-3 d-flex w-100" style={{justifyContent: "space-between", alignContent: "center"}}>
             <label className="form-label d-flex align-items-center">
               Thumbnail:
             </label>
-            {formData.thumbnail ? <img style={{width: "250px", height: "auto"}} src={formData.thumbnail} /> : null}
+            <Tooltip title="Seek video to change" arrow>
+              <img style={{width: "250px", height: "auto"}} src={formData.thumbnail} />
+            </Tooltip>
           </div>
+          )}
           <div className="mb-3">
             <label for="exampleFormControlInput1" className="form-label">
-              Title{" "}
+              Title
             </label>
             <input
               type="text"
@@ -367,7 +407,9 @@ export default function UploadLecture() {
               value={formData.VideoTitle}
               onChange={handleChange}
               required
+              spellCheck={false}
             />
+            {formData.VideoTitle && <p style={{fontSize: "10px", textAlign: "right", margin: "0",marginTop: "5px"}}>{100 - formData.VideoTitle.length}/{maxTitleLength} Characters Remaining</p>}
           </div>
           <div className="mb-3">
             <label for="exampleFormControlTextarea1" className="form-label">
@@ -381,7 +423,9 @@ export default function UploadLecture() {
               rows="3"
               value={formData.VideoDescription}
               onChange={handleChange}
+              spellCheck={false}
             ></textarea>
+            {formData.VideoDescription && <p style={{fontSize: "10px", textAlign: "right", margin: "0",marginTop: "5px"}}>{1000 - formData.VideoDescription.length}/{maxDescriptionLength} Characters Remaining</p>}
           </div>
 
           {Playlist ? (

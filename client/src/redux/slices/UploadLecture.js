@@ -117,7 +117,7 @@ export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, 
   }
 
 const ClassSlice = createSlice({
-    name: "classes",
+    name: "uploadLecture",
     initialState,
     reducers: {
       setError: (state, action) => {

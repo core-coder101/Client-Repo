@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "../../assets/css/WatchVideo.css";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchVideoRange, getVideoByID, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
 import CustomPopup from '../common/CustomPopup';
@@ -17,8 +17,7 @@ export default function WatchVideoes() {
   const { loading, error, popup, videoInfo, file  } = useSelector(state => state.watchVideos);
   
   const dispatch = useDispatch();
-
-  const descriptionText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+  const navigate = useNavigate()
 
   const [showMore, setShowMore] = useState(false)
 
@@ -105,8 +104,42 @@ export default function WatchVideoes() {
       }
   };
 
+function formatDateMessage(uploadDate) {
+  const createdAt = new Date(uploadDate);
+  const now = new Date();
 
+  // Resettting the time part because we are only getting date info from backend -_-
+  createdAt.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
 
+  const diffTime = Math.abs(now - createdAt);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) {
+    return "Today";
+  } else if (diffDays === 1) {
+    return "Yesterday";
+  } else if (diffDays < 7) {
+    return `${diffDays} days ago`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+  } else if (diffDays < 365) {
+    const months = Math.floor(diffDays / 30);
+    return `${months} month${months > 1 ? 's' : ''} ago`;
+  } else {
+    const years = Math.floor(diffDays / 365);
+    return `${years} year${years > 1 ? 's' : ''} ago`;
+  }
+}
+  
+  let dateMsg = ""
+  if(videoInfo?.Date){
+    const createdAt = new Date(videoInfo.Date)
+    dateMsg = formatDateMessage(createdAt)
+  } else {
+    dateMsg = "NAN"
+  }
 
   return (
     <>
@@ -118,7 +151,7 @@ export default function WatchVideoes() {
               Your browser does not support the video tag.
             </video>
           </div>
-          <div className='Playlist d-block d-md-block d-lg-none'>
+          <div className='Playlist d-block d-md-block d-lg-none' style={{marginTop: "10px"}}>
         <div className='playlistItems'>
             <div className='fixedTopDiv'>
                 <div className='info'>
@@ -129,6 +162,11 @@ export default function WatchVideoes() {
             </div>
             <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
                 {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
+                  let highlight = ""
+                  if(ID == video.id){
+                    highlight = "highlight"
+                  }
+
                   return (<PlaylistItem
                   index={index+1}
                   key = {video.id}
@@ -136,6 +174,8 @@ export default function WatchVideoes() {
                   VideoLength = {video.VideoLength}
                   image = {video.images.data}
                   UName = "Ahmad"
+                  onClickFunction = {() => {navigate("/watchvideo/" + video.id.toString())}}
+                  highlight = {highlight}
                   />);
                 })}
                 
@@ -146,9 +186,12 @@ export default function WatchVideoes() {
           <h4 className='Video-Title roboto-black-italic'>{videoInfo ? videoInfo.VideoTitle :""}</h4>
 
             <div className='description'>
+              <div>
+                <p style={{fontWeight: "bold", margin: "0", marginBottom: "5px"}}>{dateMsg}</p>
+              </div>
               {showMore ? (videoInfo ? videoInfo.VideoDescription: "") : (videoInfo ? videoInfo.VideoDescription.substring(0, 100): "")}
               {/* <br /> */}
-              <button className='morebutton text-info' onClick={()=>{setShowMore(prev=>!prev)}}>{showMore ? " . . .show less" : " . . .show more"}</button>
+              {videoInfo?.VideoDescription.length > 100 && <button className='morebutton' onClick={()=>{setShowMore(prev=>!prev)}}>{showMore ? " . . .show less" : " . . .show more"}</button>}
             </div>
             <hr />
             <div>
@@ -168,6 +211,12 @@ export default function WatchVideoes() {
             </div>
             <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
             {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
+
+              let highlight = ""
+                  if(ID == video.id){
+                    highlight = "highlight"
+                  }
+
                   return (<PlaylistItem
                   index={index+1}
                   key = {video.id}
@@ -175,6 +224,8 @@ export default function WatchVideoes() {
                   VideoLength = {video.VideoLength}
                   image = {video.images.data}
                   UName = "Ahmad"
+                  onClickFunction = {() => {navigate("/watchvideo/" + video.id.toString())}}
+                  highlight = {highlight}
                   />);
                 })}
             </div>
