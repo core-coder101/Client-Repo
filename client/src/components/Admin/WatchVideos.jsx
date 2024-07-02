@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../../assets/css/WatchVideo.css";
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVideoByID, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
+import { fetchVideoRange, getVideoByID, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
 import CustomPopup from '../common/CustomPopup';
 import Comment from './Comment';
 import PlaylistItem from './PlaylistItem';
@@ -81,7 +81,8 @@ export default function WatchVideoes() {
       }
     }
     if (ID) {
-      dispatch(getVideoByID(ID))
+      // dispatch(getVideoByID(ID))
+      dispatch(fetchVideoRange({ ID, startByte: 0 , endByte: 100000000}))
       dispatch(getVideoInfoByID(ID))
     }
   }, [ID]);

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/css/Login.css";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/slices/authSlice";
+import { login, toggleRememberMe } from "../../redux/slices/authSlice";
 
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const { loading, error, popup } = useSelector(
+  const { loading, error, popup, rememberMe } = useSelector(
     (state) => state.auth
   );
 
@@ -20,6 +20,7 @@ export default function Login() {
       [name]: value,
     }));
   }
+
   const handleSubmit=(e) =>{
     e.preventDefault();
     dispatch(login(formData));
@@ -65,7 +66,7 @@ export default function Login() {
               required  
             />
             <div className="rememberMe">
-              <input name="rememberMe" type="checkbox" defaultChecked />
+              <input onClick={()=>{dispatch(toggleRememberMe())}} name="rememberMe" type="checkbox" checked={rememberMe} />
               <p style={pStyles}>Remember me?</p>
             </div>
             {localLoading ? (
