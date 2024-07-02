@@ -9,11 +9,13 @@ import PlaylistItem from './PlaylistItem';
 import axios from 'axios';
 
 export default function WatchVideoes() {
+
+  const { CSRFToken } = useSelector((state) => state.auth)
+  
   const { ID } = useParams();
+  
   const { loading, error, popup, videoInfo, file  } = useSelector(state => state.watchVideos);
   
-  const { CSRFToken } = useSelector((state) => state.auth)
-
   const dispatch = useDispatch();
 
   const descriptionText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
@@ -121,7 +123,7 @@ export default function WatchVideoes() {
                 </div>
             </div>
             <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
-                {PlaylistData && PlaylistData.videos.map((video,index)=>{
+                {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
                   return (<PlaylistItem 
                   index={index}
                   key = {video.id}
