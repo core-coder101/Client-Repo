@@ -34,7 +34,7 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
   return (
     <div className="Navbar">
       <div className="leftItems">
-        <MdMenu color="white" style={{width: "23px", height: "23px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
+        <MdMenu color="white" style={{width: "30px", height: "30px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
         <div className="Searchbar d-none d-sm-block">
           <input type="text" placeholder="Search Student" />
           <button>

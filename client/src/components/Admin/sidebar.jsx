@@ -128,7 +128,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
   return (
     <>
       <div>
-        <div className={"sidebar " + (sidebarOpen ? "open" : "")} ref={sidebarRef} style={sidebarOpen ? {left: "0 !important"} : {}}>
+        <div className={"sidebar " + (sidebarOpen ? "open" : "")} ref={sidebarRef} style={sidebarOpen ? {left: "0"} : {}}>
           <div className="logo-details">
             <TbHexagonLetterHFilled
               color="white"
@@ -164,7 +164,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={teachersData} key={1} />
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={studentsData} key={2} />
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={3} />
-            <li className="profile">
+            <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
                 <BsPersonFill
                   color="white"
@@ -179,7 +179,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
                 className="bx bx-log-out"
                 id="log_out"
                 onClick={() => {
-                  dispatch(logout);
+                  dispatch(logout());
                 }}
               />
             </li>

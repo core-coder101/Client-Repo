@@ -193,20 +193,17 @@ export default function UploadLecture() {
     }
   }, [Playlist])
 
-  useEffect(()=>{
-    setFormData(prev => {
-      return {
-        ...prev,
-        VideoPlaylistID: playlistID
-      }
-    })
-  }, [playlistID])
-
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    const dataToSend = {
+      ...formData,
+      VideoPlaylistID: playlistID,
+    }
+    console.log(dataToSend);
+    return
 
-    if (!formData.video) {
+    if (!dataToSend.video) {
       setTooltipOpen(true);
       setImgClass("uploadDivHover");
       scrollToElement(topRef);
@@ -214,14 +211,14 @@ export default function UploadLecture() {
         setTooltipOpen(false);
         setImgClass("");
       }, 1000);
-    } else if(!(formData.VideoTitle.length <= maxTitleLength)){
+    } else if(!(dataToSend.VideoTitle.length <= maxTitleLength)){
       dispatch(setError("Video title too long"))
       dispatch(setPopup(true))
-    } else if(!(formData.VideoDescription.length <= maxDescriptionLength)){
+    } else if(!(dataToSend.VideoDescription.length <= maxDescriptionLength)){
       dispatch(setError("Video description too long"))
       dispatch(setPopup(true))
     } else{
-      dispatch(uploadLecture(formData))
+      dispatch(uploadLecture(dataToSend))
     }
   }
 
@@ -295,9 +292,9 @@ export default function UploadLecture() {
   
 
   useEffect(() => {
-    // this should only ren when there is no ID param in the api
     if (classesData && classesData.length > 0) {
       if(Playlist){
+        console.log("Setting VideoPlaylistID to: ", classesData[0].id);
         setFormData((prev) => {
           return {
             ...prev,
@@ -332,8 +329,14 @@ export default function UploadLecture() {
             VideoPlaylistID: parseInt(tempFiltered[0].id)
           }
         })
+        if(Playlist){
+          setPlaylistID(parseInt(tempFiltered[0].id))
+        }
         setFilteredPlaylist(tempFiltered)
       } else {
+        if(Playlist){
+          setPlaylistID(null)
+        }
         setFormData((prev) => {
           return {
             ...prev,
@@ -347,7 +350,7 @@ export default function UploadLecture() {
 
   return (
     <div className="uploadLectureMain">
-      <div className="mt-2 mb-4">
+      <div className="mb-4" style={{width: "100%"}}>
         <div className="headingNavbar d-flex justify-content-center">
           <div className="d-flex">
             <FaRegArrowAltCircleLeft
@@ -366,6 +369,7 @@ export default function UploadLecture() {
           <Tooltip title={clickable ? "Upload a video" : ""} arrow open={tooltipOpen}>
             <div
               className={"videoPreview " + clickable + " " + imgClass}
+              style={clickable ? {aspectRatio: "16/9"} : {}}
               onClick={clickable ? handleClick : null}
               onMouseEnter={() => {
                   setTooltipOpen(true);

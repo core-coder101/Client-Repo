@@ -241,7 +241,7 @@ export default function StudentInformation() {
   };
 
   return (
-    <div>
+    <div style={{padding: "15px 20px"}}>
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
           <FaRegArrowAltCircleLeft

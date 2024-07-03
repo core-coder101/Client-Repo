@@ -1,33 +1,10 @@
 .outerTable{
     border: 1px solid #b9b9b9 !important;
-    margin: 20px;
     padding: 0px 15px 0px 15px;
     border-radius: 6px;
     height: 100vh;
     min-width: 70vw;
     overflow: auto;
-}
-.headingNavbar h4{
-    margin: auto;
-    margin-left: 10px;
-    color: whitesmoke;
-    font-size: large;
-}
-.headingNavbar{
-    padding: 10px;
-    margin: 15px 20px 0px 20px;
-    justify-content: center;
-    background-color: #11101d;
-    border-radius: 10px ;
-}
-.arrow{
-    color: rgb(255, 255, 255);
-    margin: auto;
-    margin-left: 20px;
-    font-size: 23px;
-}
-.arrow:hover{
-    cursor: pointer;
 }
 .FormBorder{
     border: 1px solid rgb(46, 46, 46);
@@ -79,4 +56,7 @@
     color: white;
     margin: 0;
     font-size: medium;
+}
+.createClass{
+    padding: 15px 20px;
 }
