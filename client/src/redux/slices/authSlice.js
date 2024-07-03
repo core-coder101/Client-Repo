@@ -4,7 +4,7 @@ import { handleError } from "../errorHandler";
 
 export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rejectWithValue }) => {
   try {
-    const { data } = await axios.get("http://127.0.0.1:8000/api/csrf-token");
+    const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/csrf-token`);
     if(data.csrfToken){
       return data
     } else{
@@ -20,11 +20,11 @@ export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rej
 export const UserData = createAsyncThunk("UserData", async (_ ,{ getState , rejectWithValue  }) => {
   const state = getState()
   try {
-    const { data } = await axios.get("http://127.0.0.1:8000/api/user",{
+    const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/user`,{
       headers: {
         "X-CSRF-TOKEN": state.auth.CSRFToken,
         "Content-Type": "application/json",
-        "API-TOKEN": "IT is to secret you cannot break it :)",
+        "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
       },
     });
     if(data.data){
@@ -64,6 +64,9 @@ export const login = createAsyncThunk("login", async (action, { getState, reject
 });
 
 const userFromLocalStorage = JSON.parse(localStorage.getItem("user"))
+if (userFromLocalStorage && userFromLocalStorage.token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${userFromLocalStorage.token}`
+}
 const initialState = {
   user: userFromLocalStorage || null,
   CSRFToken: "",
@@ -74,10 +77,6 @@ const initialState = {
   roles: ["Admin", "Student", "Teacher"],
   rememberMe: true,
   userData: ""
-}
-
-if(userFromLocalStorage && userFromLocalStorage.token){
-  axios.defaults.headers.common['Authorization'] = `Bearer ${userFromLocalStorage.token}`;
 }
 
 const authSlice = createSlice({

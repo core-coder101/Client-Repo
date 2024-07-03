@@ -7,12 +7,12 @@ export const GetClassDataById = createAsyncThunk("GetClassDataById", async (ID, 
   const CSRFToken = state.auth.CSRFToken
     try {
       const { data } = await axios.get(
-        `http://127.0.0.1:8000/api/GetClassData?ID=${ID}`,
+        `${process.env.REACT_APP_HOST}api/GetClassData?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
+            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
           },
         }
       );
@@ -33,12 +33,12 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
   const CSRFToken = state.auth.CSRFToken
     try {
       const { data } = await axios.get(
-        `http://127.0.0.1:8000/api/GetTeacher`,
+        `${process.env.REACT_APP_HOST}api/GetTeacher`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
+            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
           },
         }
       );
@@ -64,13 +64,13 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
     const CSRFToken = state.auth.CSRFToken
       try {
         const { data } = await axios.post(
-          "http://127.0.0.1:8000/api/CreateClass",
+          `${process.env.REACT_APP_HOST}api/CreateClass`,
           formData,
           {
             headers: {
               "X-CSRF-TOKEN": CSRFToken,
               "Content-Type": "application/json",
-              "API-TOKEN": "IT is to secret you cannot break it :)",
+              "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
             },
           }
         );
@@ -93,13 +93,13 @@ export const GetTeachers = createAsyncThunk("GetTeachers", async (_, { getState,
     const CSRFToken = state.auth.CSRFToken
       try {
         const { data } = await axios.post(
-          "http://127.0.0.1:8000/api/UpdateClass",
+          `${process.env.REACT_APP_HOST}api/UpdateClass`,
           formData,
           {
             headers: {
               "X-CSRF-TOKEN": CSRFToken,
               "Content-Type": "application/json",
-              "API-TOKEN": "IT is to secret you cannot break it :)",
+              "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
             },
           }
         );

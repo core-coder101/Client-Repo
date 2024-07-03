@@ -7,6 +7,7 @@ import CustomPopup from '../common/CustomPopup';
 import Comment from './Comment';
 import PlaylistItem from './PlaylistItem';
 import axios from 'axios';
+import loadingVid from "../../assets/Loading.mp4"
 
 export default function WatchVideoes() {
 
@@ -24,6 +25,8 @@ export default function WatchVideoes() {
   const [PlaylistData,SetPlaylistData] = useState([]);
 
   const [comment , setcomment] = useState('');
+
+  const videoRef = React.useRef(null);
 
 
   const GetplaylistData = async () =>{
@@ -102,9 +105,10 @@ export default function WatchVideoes() {
         SubmitComment();
     }
   };
-  const handleEnded = () => {
-    let index = null
-    const filtered = PlaylistData.videos.filter((video, i) =>{
+
+  let index = null
+  if(PlaylistData?.videos){
+    PlaylistData.videos.filter((video, i) =>{
       if(videoInfo.id == video.id){
         index = i
         return true
@@ -112,43 +116,47 @@ export default function WatchVideoes() {
         return false
       }
     })
+  }
+  const handleEnded = () => {
     if(Number.isInteger(index) && (PlaylistData.videos.length > (index + 1))){
       navigate("/watchvideo/" + (PlaylistData.videos[index + 1].id).toString())
     }
   }
 
-function formatDateMessage(uploadDate) {
-  const createdAt = new Date(uploadDate);
-  const now = new Date();
-
-  // Resettting the time part because we are only getting date info from backend -_-
-  createdAt.setHours(0, 0, 0, 0);
-  now.setHours(0, 0, 0, 0);
-
-  const diffTime = Math.abs(now - createdAt);
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  function formatDateMessage(uploadDate) {
+    const createdAt = new Date(uploadDate);
+    const now = new Date();
   
-  if (diffDays === 0) {
-    return "Today";
-  } else if (diffDays === 1) {
-    return "Yesterday";
-  } else if (diffDays < 7) {
-    return `${diffDays} days ago`;
-  } else if (diffDays < 30) {
-    const weeks = Math.floor(diffDays / 7);
-    return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
-  } else if (diffDays < 365) {
-    const months = Math.floor(diffDays / 30);
-    return `${months} month${months > 1 ? 's' : ''} ago`;
-  } else {
-    const years = Math.floor(diffDays / 365);
-    return `${years} year${years > 1 ? 's' : ''} ago`;
+    const diffTime = Math.abs(now - createdAt);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      if (diffHours < 1) {
+        const diffMinutes = Math.floor(diffTime / (1000 * 60));
+        return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+      } else {
+        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      }
+    } else if (diffDays === 1) {
+      return "Yesterday";
+    } else if (diffDays < 7) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    } else if (diffDays < 30) {
+      const weeks = Math.floor(diffDays / 7);
+      return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return `${months} month${months > 1 ? 's' : ''} ago`;
+    } else {
+      const years = Math.floor(diffDays / 365);
+      return `${years} year${years > 1 ? 's' : ''} ago`;
+    }
   }
-}
   
   let dateMsg = ""
-  if(videoInfo?.Date){
-    const createdAt = new Date(videoInfo.Date)
+  if(videoInfo?.created_at){
+    const createdAt = new Date(videoInfo.created_at)
     dateMsg = formatDateMessage(createdAt)
   } else {
     dateMsg = "NAN"
@@ -159,17 +167,24 @@ function formatDateMessage(uploadDate) {
       <div className='row m-0 p-0'>
         <div className='col-lg-8 videoSideDiv'>
           <div className='videodiv'>
-            <video autoPlay src={file} className='video' controls onEnded={handleEnded}>
+            {file ? 
+           
+            <video ref={videoRef} autoPlay muted src={file} className='video' controls onEnded={handleEnded}>
               <source type="video/mp4" />
               Your browser does not support the video tag.
-            </video>
+            </video> : 
+            
+            <video ref={videoRef} autoPlay muted src={loadingVid} className='video'>
+              <source type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>}
           </div>
           <div className='Playlist d-block d-md-block d-lg-none' style={{marginTop: "10px"}}>
         <div className='playlistItems'>
             <div className='fixedTopDiv'>
                 <div className='info'>
                 <h6>{PlaylistData.PlaylistTitle}</h6>
-                <p>{PlaylistData.PlaylistCategory} - 1 / {(PlaylistData?.videos?.length)}</p>
+                <p>{PlaylistData.PlaylistCategory} - {index} / {(PlaylistData?.videos?.length)}</p>
                 
                 </div>
             </div>
@@ -219,7 +234,7 @@ function formatDateMessage(uploadDate) {
             <div className='fixedTopDiv'>
                 <div className='info'>
                 <h6>{PlaylistData.PlaylistTitle}</h6>
-                <p>{PlaylistData.PlaylistCategory} - 1 / {(PlaylistData?.videos?.length)}</p>
+                <p>{PlaylistData.PlaylistCategory} - {index + 1} / {(PlaylistData?.videos?.length)}</p>
                 </div>
             </div>
             <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
@@ -257,11 +272,11 @@ function formatDateMessage(uploadDate) {
         errorMessage={error}
       />
 
-      <CustomPopup 
+      {/* <CustomPopup 
         Visible={localLoading}
         OnClose={() => {}}
         errorMessage={error}
-      />
+      /> */}
     </>
   );
 }

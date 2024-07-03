@@ -171,14 +171,14 @@ const AllTemplates = [
   },
   {
     path: "teacher",
-    component: <AdminTemplate />,
+    component: <TeacherTemplate />,
     type: "Teacher",
     authentication: "role",
     template: true,
   },
   {
     path: "student",
-    component: <AdminTemplate />,
+    component: <StudentTemplate />,
     type: "Student",
     authentication: "role",
     template: true,

@@ -6,6 +6,9 @@
     overflow-x :scroll;
     white-space: nowrap;
 }
+.all::-webkit-scrollbar-thumb:hover{
+  cursor: pointer;
+}
 .costom-button1{
     margin-right: 15px;
     margin-top: 15px;

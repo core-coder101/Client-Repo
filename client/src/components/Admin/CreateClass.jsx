@@ -19,46 +19,28 @@ export default function CreateClass() {
     ClassID: "",
   });
 
+  const [filteredTeachers, setFilteredTeachers] = useState([])
+
+  useEffect(() => {
+    const filtered = teachersData.filter(teacher => {
+      if(teacher.classes && teacher.classes.length > 0){
+        // teacher already has a class assigned to him
+        return false
+      } else {
+        return true
+      }
+    })
+    if(!filtered.length > 0){
+      dispatch(setError("Please add a new teacher"))
+      dispatch(setPopup(true))
+    } else {
+      setFilteredTeachers(filtered)
+    }
+
+  }, [teachersData])
+
   const navigate = useNavigate();
   const dispatch = useDispatch()
-  //   setErrorMessage("Loading teacher's data. . .");
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get("http://127.0.0.1:8000/api/GetTeacher", {
-  //       headers: {
-  //         "X-CSRF-TOKEN": CSRFToken,
-  //         "Content-Type": "application/json",
-  //         "API-TOKEN": "IT is to secret you cannot break it :)",
-  //       },
-  //     });
-  //     if (response.data.success == true) {
-  //       if (!response.data.data.length > 0) {
-  //         setErrorMessage("Please add a teacher first");
-  //         setPopup(true);
-  //         return;
-  //       }
-  //       setteachers(response.data.data);
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         ClassTeacherID: JSON.stringify(response.data.data[0].id),
-  //       }));
-  //     } else {
-  //       setErrorMessage(response.data.message);
-  //       setPopup(true);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     if (error.response.data.message.includes("[2002]")) {
-  //       setErrorMessage("Database down at the moment. . . ");
-  //       setPopup(true);
-  //     } else {
-  //       setErrorMessage("Failed to Load Teachers");
-  //       setPopup(true);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   useEffect(()=>{
     if(ID && classData.data){
@@ -138,7 +120,7 @@ export default function CreateClass() {
             ClassName: "",
             ClassRank: "",
             ClassFloor: "",
-            ClassTeacherID: teachersData[0].id,
+            ClassTeacherID: filteredTeachers[0].id,
             ClassID: "",
           });
       }).catch(()=>{
@@ -219,9 +201,9 @@ export default function CreateClass() {
               ) : (
                 ""
               )}
-              {teachersData &&
-                Object.values(teachersData).length > 0 &&
-                Object.values(teachersData).map((teacher, index) => {
+              {filteredTeachers &&
+                Object.values(filteredTeachers).length > 0 &&
+                Object.values(filteredTeachers).map((teacher, index) => {
                   return (
                     <option value={teacher.id}>{teacher.users.name}</option>
                   );

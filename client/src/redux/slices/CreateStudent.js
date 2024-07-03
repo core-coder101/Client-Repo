@@ -60,13 +60,13 @@ export const Createstudent = createAsyncThunk("Createstudent", async (formData, 
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.post("http://127.0.0.1:8000/api/CreateStudent", 
+      const { data } = await axios.post(`${process.env.REACT_APP_HOST}api/CreateStudent`, 
         formData,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       });
       if (data.success == true) {
@@ -90,13 +90,13 @@ export const UpdateStudent = createAsyncThunk("UpdateStudent", async (formData, 
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.post("http://127.0.0.1:8000/api/UpdateStudent", 
+      const { data } = await axios.post(`${process.env.REACT_APP_HOST}api/UpdateStudent`, 
         formData,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       });
       if (data.success == true) {

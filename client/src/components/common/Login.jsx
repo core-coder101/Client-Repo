@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/css/Login.css";
 import { useDispatch, useSelector } from "react-redux";
-import { login, toggleRememberMe } from "../../redux/slices/authSlice";
+import { UserData, login, toggleRememberMe } from "../../redux/slices/authSlice";
 
 
 export default function Login() {
@@ -23,7 +23,15 @@ export default function Login() {
 
   const handleSubmit=(e) =>{
     e.preventDefault();
-    dispatch(login(formData));
+    dispatch(login(formData))
+    .unwrap()
+    .then(()=>{
+      dispatch(UserData())
+      return
+    })
+    .catch(()=>{
+      return
+    })
   }
 
   // using the redux loading state directly does not work properly
@@ -67,7 +75,7 @@ export default function Login() {
             />
             <div className="rememberMe">
               <input onClick={()=>{dispatch(toggleRememberMe())}} name="rememberMe" type="checkbox" checked={rememberMe} />
-              <p style={pStyles}>Remember me?</p>
+              <p>Remember me?</p>
             </div>
             {localLoading ? (
               <div className="errorDiv" style={{backgroundColor: "rgba(58, 54, 54, 0.45)"}}>
