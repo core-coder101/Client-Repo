@@ -3,7 +3,7 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 
 import NewRouter from "./components/common/NewRouter";
-import { logout,fetchCSRFToken ,UserData } from "./redux/slices/authSlice";
+import { logout,fetchCSRFToken } from "./redux/slices/authSlice";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -12,7 +12,6 @@ export default function App() {
   useEffect(() => {
     if(!CSRFToken){
     dispatch(fetchCSRFToken());
-    dispatch(UserData())
   }
   }, [CSRFToken]);
 

@@ -225,15 +225,15 @@ export default function UploadLecture() {
         };
       });
     } else if (name === "VideoTitle"){
-        if(value.length <= maxTitleLength){
-          setFormData((prev) => {
-            return {
-              ...prev,
-              [name]: value,
-            }
-          })
-        } else {
-          const shortened = value.substring(0, maxDescriptionLength)
+      if(value.length <= maxTitleLength){
+        setFormData((prev) => {
+          return {
+            ...prev,
+            [name]: value,
+          }
+        })
+      } else {
+          const shortened = value.substring(0, maxTitleLength)
           setFormData((prev) => {
             return {
               ...prev,

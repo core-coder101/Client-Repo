@@ -19,12 +19,12 @@ export const getVideoInfoByID = createAsyncThunk("getVideoInfoByID", async (ID, 
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.get(`http://127.0.0.1:8000/api/show-video-info?ID=${ID}`,
+      const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/show-video-info?ID=${ID}`,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       })
       if (data.success == true) {
@@ -42,12 +42,12 @@ export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getSta
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.get(`http://127.0.0.1:8000/api/show-video?ID=${ID}`,
+      const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/show-video?ID=${ID}`,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       })
       console.log(data);
@@ -61,65 +61,8 @@ export const getVideoByID = createAsyncThunk("getVideoByID", async (ID, { getSta
       // return rejectWithValue(error.response?.data?.message || error.message || "Error loading lecture")
     }
 })
-// export const fetchVideoRange = createAsyncThunk("fetchVideoRange", async ({ID, startByte, endByte}, { getState, rejectWithValue }) => {
-//   const url = `http://127.0.0.1:8000/api/show-video?ID=${ID}`;
-//   const state = getState()
-//   const CSRFToken = state.auth.CSRFToken
-//   const headers = {
-//       "X-CSRF-TOKEN": CSRFToken,
-//       "Content-Type": "application/json",
-//       "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
-//       Range: `bytes=${startByte}-${endByte}`,
-//   }
-//   try {
-//     const response = await axios.get(url, { headers });
-
-//     if (response.status === 206) {
-//       console.log(response.data);
-//       const arrayBuffer = response.data
-//       const uint8Array = new Uint8Array(arrayBuffer);
-//       const blob = new Blob([uint8Array], { type: 'video/mp4' });
-//       const videoUrl = URL.createObjectURL(blob);
-//       return videoUrl
-//       const reader = response.body.getReader();
-//       const contentLength = +response.headers['content-length'];
-//       let receivedLength = 0;
-//       const chunks = [];
-
-//       while (true) {
-//         const { done, value } = await reader.read();
-
-//         if (done) {
-//           break;
-//         }
-
-//         chunks.push(value);
-//         receivedLength += value.length;
-//         console.log(`Received ${receivedLength} of ${contentLength} bytes`);
-//       }
-
-//       const concatenatedChunks = new Uint8Array(receivedLength);
-//       let position = 0;
-
-//       for (const chunk of chunks) {
-//         concatenatedChunks.set(chunk, position);
-//         position += chunk.length;
-//       }
-
-//       return concatenatedChunks;
-//     } else {
-//       throw new Error(`HTTP error! Status: ${response.status}`);
-//     }
-//   } catch (error) {
-//     console.error('Fetch error:', error);
-//     return rejectWithValue(error.message);
-//   }
-// })
-
-
-// Async Thunk
 export const fetchVideoRange = createAsyncThunk("fetchVideoRange", async ({ ID, startByte, endByte }, { getState, rejectWithValue }) => {
-  const url = `http://127.0.0.1:8000/api/show-video?ID=${ID}`;
+  const url = `${process.env.REACT_APP_HOST}api/show-video?ID=${ID}`;
   const state = getState();
   const CSRFToken = state.auth.CSRFToken;
   const headers = {

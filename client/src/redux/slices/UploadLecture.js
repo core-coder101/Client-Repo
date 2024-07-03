@@ -6,11 +6,11 @@ export const GetClasses = createAsyncThunk("GetClasses", async (_, { getState, r
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
+      const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/GetClasses`, {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       });
       if (data.success == true) {
@@ -33,13 +33,13 @@ export const createPlaylist = createAsyncThunk("createPlaylist", async (playlist
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.post("http://127.0.0.1:8000/api/Create-playlist", 
+      const { data } = await axios.post(`${process.env.REACT_APP_HOST}api/Create-playlist`, 
         playlistData,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
       });
       if (data.success == true) {
@@ -82,13 +82,13 @@ export const uploadLecture = createAsyncThunk("uploadLecture", async (formData, 
   const state = getState()
   const CSRFToken = state.auth.CSRFToken
     try {
-      const { data } = await axios.post("http://127.0.0.1:8000/api/upload-video",
+      const { data } = await axios.post(`${process.env.REACT_APP_HOST}api/upload-video`,
         formData,
         {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "multipart/form-data",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
+          "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
         },
         onUploadProgress: (progressEvent) => {
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
