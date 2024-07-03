@@ -59,11 +59,13 @@ export default function UploadLecture() {
   const [formData, setFormData] = useState({
     VideoTitle: "",
     VideoDescription: "",
-    VideoPlaylistID: "",
+    VideoPlaylistID: null,
     video: null,
     thumbnail: null,
     VideoLength: ""
   });
+
+  const [playlistID, setPlaylistID] = useState(null)
 
   const [playlistFormData, setPlaylistFormData] = useState({
     PlaylistTitle: "",
@@ -182,10 +184,28 @@ export default function UploadLecture() {
     })
   }
 
+
+  useEffect(() => {
+    if(Playlist){
+      setPlaylistID(formData.VideoPlaylistID)
+    } else {
+      setPlaylistID(null)
+    }
+  }, [Playlist])
+
+  useEffect(()=>{
+    setFormData(prev => {
+      return {
+        ...prev,
+        VideoPlaylistID: playlistID
+      }
+    })
+  }, [playlistID])
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("video title length: ", formData.VideoTitle.length);
-    console.log("video description length: ", formData.VideoDescription.length);
+
+
     if (!formData.video) {
       setTooltipOpen(true);
       setImgClass("uploadDivHover");
@@ -277,12 +297,14 @@ export default function UploadLecture() {
   useEffect(() => {
     // this should only ren when there is no ID param in the api
     if (classesData && classesData.length > 0) {
-      setFormData((prev) => {
-        return {
-          ...prev,
-          VideoPlaylistID: classesData[0].id,
-        };
-      });
+      if(Playlist){
+        setFormData((prev) => {
+          return {
+            ...prev,
+            VideoPlaylistID: classesData[0].id,
+          };
+        });
+      }
       setPlaylistFormData((prev) => {
         return {
           ...prev,

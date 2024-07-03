@@ -1,12 +1,13 @@
 .uploadLecture{
     border: 1px solid rgba(46, 46, 46, 0.26);
-    margin: 25px;
     padding: 35px;
     border-radius: 15px;
     max-width: 800px;
     box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
     box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-    
+}
+.uploadLectureMain{
+    padding: 15px 20px;
 }
 .videoPreview{
     width: 100%;

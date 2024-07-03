@@ -1,15 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import "../../assets/css/Navbar.css";
 import { IoSearch } from "react-icons/io5";
 import { FaHome } from "react-icons/fa";
 import Select from "react-dropdown-select";
 import { IoExitOutline } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
-import { MdMenu } from "react-icons/md";
 
-
-export default function Navbar({ setSidebarOpen, sidebarOpen }) {
+export default function Navbar() {
   const dispatch = useDispatch();
 
   const [selectedValue, setSelectedValue] = useState([
@@ -18,7 +16,6 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
       value: "Main Campus",
     },
   ]);
-  const closeBtnRef = useRef(null);
 
   const options = [
     {
@@ -34,8 +31,7 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
   return (
     <div className="Navbar">
       <div className="leftItems">
-        <MdMenu color="white" style={{width: "23px", height: "23px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
-        <div className="Searchbar d-none d-sm-block">
+        <div className="Searchbar">
           <input type="text" placeholder="Search Student" />
           <button>
             <IoSearch color="white" />

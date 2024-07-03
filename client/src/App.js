@@ -3,7 +3,8 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 
 import NewRouter from "./components/common/NewRouter";
-import { logout,fetchCSRFToken } from "./redux/slices/authSlice";
+import { logout,fetchCSRFToken, UserData } from "./redux/slices/authSlice";
+import axios from "axios";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -22,12 +23,20 @@ export default function App() {
       }
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload)
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('beforeunload', handleBeforeUnload)
     };
   }, [rememberMe, dispatch])
+
+  useEffect(() => {
+    const userFromLocalStorage = JSON.parse(localStorage.getItem('user'))
+    
+    if (userFromLocalStorage && userFromLocalStorage.token) {
+      dispatch(UserData())
+    }
+  }, [dispatch]);
 
   return (
     <div>

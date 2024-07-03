@@ -8,16 +8,18 @@
     background-color: rgba(0,0,0,0.1);
 }
 .previewImgDiv {
-    width: 100px;
-    height: 56px;
+    min-width: 100px;
+    min-height: 56px;
+    max-width: 100px;
+    max-height: 56px;
     margin: 0px 5px;
     position: relative;
     overflow: hidden;
 }
 
 .previewImgDiv img {
-    width: 100%;
-    height: 100%;
+    width: 100px;
+    height: 56px;
     object-fit: cover; 
     border-radius: 0.5rem;
 }
@@ -38,10 +40,8 @@
     padding-right: 10px;
     padding-left: 5px;
     padding-top: 5px;
-    line-height-step: 2;
 }
 .playlistItemDiv .info h6{
-    white-space: wrap;
     font-size: 14px;
     font-family: "Roboto", "Arial", sans-serif;
     font-weight: bold;

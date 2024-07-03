@@ -75,7 +75,7 @@ export default function Login() {
             />
             <div className="rememberMe">
               <input onClick={()=>{dispatch(toggleRememberMe())}} name="rememberMe" type="checkbox" checked={rememberMe} />
-              <p style={pStyles}>Remember me?</p>
+              <p>Remember me?</p>
             </div>
             {localLoading ? (
               <div className="errorDiv" style={{backgroundColor: "rgba(58, 54, 54, 0.45)"}}>

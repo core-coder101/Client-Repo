@@ -64,6 +64,9 @@ export const login = createAsyncThunk("login", async (action, { getState, reject
 });
 
 const userFromLocalStorage = JSON.parse(localStorage.getItem("user"))
+if (userFromLocalStorage && userFromLocalStorage.token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${userFromLocalStorage.token}`
+}
 const initialState = {
   user: userFromLocalStorage || null,
   CSRFToken: "",
@@ -74,10 +77,6 @@ const initialState = {
   roles: ["Admin", "Student", "Teacher"],
   rememberMe: true,
   userData: ""
-}
-
-if(userFromLocalStorage && userFromLocalStorage.token){
-  axios.defaults.headers.common['Authorization'] = `Bearer ${userFromLocalStorage.token}`;
 }
 
 const authSlice = createSlice({

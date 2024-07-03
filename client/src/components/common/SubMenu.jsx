@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const SidebarLink = styled(Link)`
@@ -40,7 +40,7 @@ const DropdownLink = styled(Link)`
   }
 `;
 
-const SubMenu = ({ item, sidebarOpen,  }) => {
+const SubMenu = ({ item, sidebarOpen, closeSidebarForMobile }) => {
   const [subnav, setSubnav] = useState(false);
 
   useEffect(()=>{
@@ -53,6 +53,12 @@ const SubMenu = ({ item, sidebarOpen,  }) => {
     if(sidebarOpen){
       setSubnav(!subnav);
     }
+  }
+
+  const navigate = useNavigate()
+
+  const handleItemClick = (path)=>{
+    closeSidebarForMobile()
   }
 
   return (
@@ -73,7 +79,7 @@ const SubMenu = ({ item, sidebarOpen,  }) => {
       {subnav &&
         item.subNav.map((item, index) => {
           return (
-            <DropdownLink to={item.path} key={index}>
+            <DropdownLink onClick={()=>{handleItemClick(item.path)}} to={item.path} key={index}>
               {item.icon}
               <SidebarLabel>{item.title}</SidebarLabel>
             </DropdownLink>
