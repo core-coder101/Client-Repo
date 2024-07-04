@@ -1,6 +1,5 @@
 .outerTable{
     border: 1px solid #b9b9b9 !important;
-    margin: 20px;
     padding: 0px 15px 0px 15px;
     border-radius: 6px;
     height: 100vh;
@@ -15,7 +14,6 @@
 }
 .headingNavbar{
     padding: 10px;
-    margin: 15px 20px 0px 20px;
     justify-content: center;
     background-color: #11101d;
     border-radius: 10px ;
@@ -24,7 +22,10 @@
     color: rgb(255, 255, 255);
     margin: auto;
     margin-left: 20px;
-    font-size: 23px;
+    min-width: 30px;
+    max-height: 30px; 
+    max-width: 30px;
+    min-height: 30px;
 }
 .FormBorder{
     border: 1px solid rgb(46, 46, 46);

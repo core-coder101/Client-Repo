@@ -14,8 +14,9 @@ import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetTeacherByID, UpdateTeacher, createTeacher, setError, setPopup } from '../../redux/slices/CreateTeacherSlice';
+import { GetTeacherByID, UpdateTeacher, createTeacher, setError, setPopup } from '../../redux/slices/Admin/CreateTeacherSlice';
 import CustomPopup from "./../common/CustomPopup"
+import LoadingOverlay from '../common/LoadingOverlay';
 
 
 export default function CreateTeacher() {    
@@ -239,6 +240,8 @@ function scrollToElement(ref){
 
 
     return (
+        <>
+        <LoadingOverlay loading={localLoading} />
         <div className='createClass'>
             <div className='mt-2 mb-4'>
                 <div className='headingNavbar d-flex justify-content-center'>
@@ -417,11 +420,6 @@ function scrollToElement(ref){
                         />
                     </div>
                     <CustomPopup
-                        Visible={localLoading}
-                        OnClose={() => {}}
-                        errorMessage={error}
-                    />
-                    <CustomPopup
                         Visible={popup}
                         OnClose={() => {dispatch(setPopup(false)); setTimeout(()=>{dispatch(setError(""))},400)}}
                         errorMessage={error}
@@ -434,5 +432,6 @@ function scrollToElement(ref){
                 </form>
             </div>
         </div>
+        </>
     )
 }

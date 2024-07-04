@@ -8,13 +8,9 @@
     padding: 5px 0px;
     align-self: left;
 }
-
-/* .studentAttendanceMainDiv{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-} */
+.studentAttendanceMainDiv{
+    padding: 15px 20px;
+}
 
 .attendacnceDiv{
     box-shadow: rgba(0, 0, 0, 0.122) 0px 0px 5px 5px;
@@ -27,6 +23,8 @@
     background-color: transparent;
     -webkit-text-fill-color: rgb(255, 255, 255) !important;
     color: rgb(255, 255, 255);
+    width: 100%;
+    min-width: 80px;
 }
 .searchInput:-webkit-autofill,
 .searchInput:-webkit-autofill:hover,

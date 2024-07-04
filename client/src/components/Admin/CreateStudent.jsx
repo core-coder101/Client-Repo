@@ -14,11 +14,12 @@ import Chip from '@mui/material/Chip';
 import { useParams } from 'react-router-dom';
 import smoothscroll from 'smoothscroll-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetClasses, setError, setPopup } from '../../redux/slices/UploadLecture';
-import { setError as setStudentError, setPopup as setStudentPopup } from '../../redux/slices/CreateStudent';
+import { GetClasses, setError, setPopup } from '../../redux/slices/Admin/UploadLecture';
+import { setError as setStudentError, setPopup as setStudentPopup } from '../../redux/slices/Admin/CreateStudent';
 import CustomPopup from '../common/CustomPopup';
-import { GetStudentData, UpdateStudent, Createstudent } from '../../redux/slices/CreateStudent';
+import { GetStudentData, UpdateStudent, Createstudent } from '../../redux/slices/Admin/CreateStudent';
 import { handleError } from '../../redux/errorHandler';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 
 export default function CreateStudent() {
@@ -319,6 +320,9 @@ export default function CreateStudent() {
   };
 
   return (
+    <>
+    <LoadingOverlay loading={localLoading} />
+    <LoadingOverlay loading={studentLocalLoading} />
     <div className="createClass">
       <div className="mt-2 mb-4">
         <div className="headingNavbar d-flex justify-content-center">
@@ -658,12 +662,6 @@ export default function CreateStudent() {
                 }}
               errorMessage = {error}
               />
-
-            <CustomPopup 
-              Visible={localLoading}
-              OnClose={() => {}}
-              errorMessage={error}
-              />
               <CustomPopup 
               Visible={studentPopup}
               OnClose={() => {
@@ -673,12 +671,6 @@ export default function CreateStudent() {
                   }, 400);
                 }}
               errorMessage = {studentError}
-              />
-
-            <CustomPopup 
-              Visible={studentLocalLoading}
-              OnClose={() => {}}
-              errorMessage={studentError}
               />
               <div className="d-flex flex-column ">
                 <button className="btn btn-primary" type="submit">
@@ -690,5 +682,6 @@ export default function CreateStudent() {
         </div>
       </form>
     </div>
+  </>
   );
 }

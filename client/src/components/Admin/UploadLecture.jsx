@@ -6,25 +6,31 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdUpload } from "react-icons/md";
-import { createPlaylist, getPlaylist, setError, setPopup, uploadLecture } from "../../redux/slices/UploadLecture";
+import {
+  createPlaylist,
+  getPlaylist,
+  setError,
+  setPopup,
+  uploadLecture,
+} from "../../redux/slices/Admin/UploadLecture";
 import { Tooltip } from "@mui/material";
-import { GetClasses } from "../../redux/slices/UploadLecture";
+import { GetClasses } from "../../redux/slices/Admin/UploadLecture";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { ProgressBar } from 'react-bootstrap';
-import CustomPopup from "../common/CustomPopup";
+import { ProgressBar } from "react-bootstrap";
+import LoadingOverlay from "../common/LoadingOverlay";
 
 export default function UploadLecture() {
   const navigate = useNavigate();
-  const { popup, classesData, loading, error, playlistData, progress } = useSelector((state) => state.uploadLecture)
-  const dispatch = useDispatch()
+  const { popup, classesData, loading, error, playlistData, progress } =
+    useSelector((state) => state.uploadLecture);
+  const dispatch = useDispatch();
 
-  const topRef = useRef(null)
-  const videoRef = useRef(null)
-  const canvasRef = useRef(null)
-
+  const topRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
   // moving it to the top cuz I need it in a state declaration. . .
   const names = [
@@ -40,21 +46,21 @@ export default function UploadLecture() {
     "Islamiat",
   ];
 
-  const maxTitleLength = 100 // same as youtube
-  const maxDescriptionLength = 1000 // youtube does 5000 💀
+  const maxTitleLength = 100; // same as youtube
+  const maxDescriptionLength = 1000; // youtube does 5000 💀
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [imgClass, setImgClass] = useState("")
+  const [imgClass, setImgClass] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [PlaylistPopup, setPlaylistPopup] = useState(false);
   const [Playlist, setPlaylist] = useState(false);
   const [clickable, setClickable] = useState("clickable");
-  const [filteredPlaylist, setFilteredPlaylist] = useState([])
-  
+  const [filteredPlaylist, setFilteredPlaylist] = useState([]);
+
   const [filterQuery, setFilterQuery] = useState({
     ClassRank: "",
     subject: names[0],
-  })
+  });
 
   const [formData, setFormData] = useState({
     VideoTitle: "",
@@ -62,10 +68,10 @@ export default function UploadLecture() {
     VideoPlaylistID: null,
     video: null,
     thumbnail: null,
-    VideoLength: ""
+    VideoLength: "",
   });
 
-  const [playlistID, setPlaylistID] = useState(null)
+  const [playlistID, setPlaylistID] = useState(null);
 
   const [playlistFormData, setPlaylistFormData] = useState({
     PlaylistTitle: "",
@@ -74,25 +80,25 @@ export default function UploadLecture() {
     playlistCategory: "",
   });
 
-    // using the redux loading state directly does not work properly
-    const [localLoading, setLocalLoading] = useState(false)
-    useEffect(()=>{
-      setLocalLoading(loading)
-    }, [loading])
+  // using the redux loading state directly does not work properly
+  const [localLoading, setLocalLoading] = useState(false);
+  useEffect(() => {
+    setLocalLoading(loading);
+  }, [loading]);
 
   const scrollToElement = (ref) => {
-    if(ref.current){
-        ref.current.scrollIntoView({behavior: 'smooth'})
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
     }
-}
+  };
 
   const handlePlaylistData = (e) => {
     const { name, value } = e.target;
     setPlaylistFormData((prev) => {
-        return {
-          ...prev,
-          [name]: value,
-        }
+      return {
+        ...prev,
+        [name]: value,
+      };
     });
   };
 
@@ -102,8 +108,8 @@ export default function UploadLecture() {
       setFormData((prev) => {
         return {
           ...prev,
-          video: file
-        }
+          video: file,
+        };
       });
       setPreviewUrl(URL.createObjectURL(file));
     } else {
@@ -113,42 +119,42 @@ export default function UploadLecture() {
   };
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target
-    if(name == "ClassRank"){
+    const { name, value } = e.target;
+    if (name == "ClassRank") {
       setFilterQuery((prev) => {
         return {
           ...prev,
           [name]: parseInt(value),
-        }
-      })
+        };
+      });
     } else {
       setFilterQuery((prev) => {
         return {
           ...prev,
           [name]: value,
-        }
-      })
+        };
+      });
     }
-  }
-  
+  };
+
   const extractThumbnail = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const dataURL =  canvas.toDataURL("image/jpeg")
+    const dataURL = canvas.toDataURL("image/jpeg");
 
-    setFormData(prev => {
+    setFormData((prev) => {
       return {
         ...prev,
         thumbnail: dataURL,
-      }
-    })
+      };
+    });
   };
 
   useEffect(() => {
@@ -156,57 +162,51 @@ export default function UploadLecture() {
       setClickable("");
       const videoElement = document.getElementById("previewVideo");
       const previewUrl = URL.createObjectURL(formData.video);
-      
+
       videoElement.src = previewUrl;
-  
+
       videoElement.onloadedmetadata = () => {
-        const VideoLength = parseInt(videoElement.duration)
-        setFormData(prev => {
+        const VideoLength = parseInt(videoElement.duration);
+        setFormData((prev) => {
           return {
             ...prev,
-            VideoLength: VideoLength
-          }
-        })
-      }
+            VideoLength: VideoLength,
+          };
+        });
+      };
     } else {
       setClickable("clickable");
     }
   }, [previewUrl]);
 
   const handlePlaylistSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(createPlaylist(playlistFormData))
-    .unwrap(() => {
-      dispatch(getPlaylist())
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-  }
-
+      .unwrap(() => {
+        dispatch(getPlaylist());
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
-    if(Playlist){
-      setPlaylistID(formData.VideoPlaylistID)
+    if (Playlist) {
+      setPlaylistID(formData.VideoPlaylistID);
     } else {
-      setPlaylistID(null)
+      setPlaylistID(null);
     }
-  }, [Playlist])
-
-  useEffect(()=>{
-    setFormData(prev => {
-      return {
-        ...prev,
-        VideoPlaylistID: playlistID
-      }
-    })
-  }, [playlistID])
+  }, [Playlist]);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
+    const dataToSend = {
+      ...formData,
+      VideoPlaylistID: playlistID,
+    };
 
-    if (!formData.video) {
+    if (!dataToSend.video) {
       setTooltipOpen(true);
       setImgClass("uploadDivHover");
       scrollToElement(topRef);
@@ -214,29 +214,29 @@ export default function UploadLecture() {
         setTooltipOpen(false);
         setImgClass("");
       }, 1000);
-    } else if(!(formData.VideoTitle.length <= maxTitleLength)){
-      dispatch(setError("Video title too long"))
-      dispatch(setPopup(true))
-    } else if(!(formData.VideoDescription.length <= maxDescriptionLength)){
-      dispatch(setError("Video description too long"))
-      dispatch(setPopup(true))
-    } else{
-      dispatch(uploadLecture(formData))
+    } else if (!(dataToSend.VideoTitle.length <= maxTitleLength)) {
+      dispatch(setError("Video title too long"));
+      dispatch(setPopup(true));
+    } else if (!(dataToSend.VideoDescription.length <= maxDescriptionLength)) {
+      dispatch(setError("Video description too long"));
+      dispatch(setPopup(true));
+    } else {
+      dispatch(uploadLecture(dataToSend));
     }
-  }
+  };
 
   const handleClick = () => {
     document.getElementById("videoLectureInput").click();
   };
 
   useEffect(() => {
-    dispatch(GetClasses())
-    dispatch(getPlaylist())
-  }, [])
+    dispatch(GetClasses());
+    dispatch(getPlaylist());
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name === "VideoPlaylistID"){
+    if (name === "VideoPlaylistID") {
       console.log("SETTING VideoPlaylistID");
       setFormData((prev) => {
         return {
@@ -244,40 +244,40 @@ export default function UploadLecture() {
           [name]: parseInt(value),
         };
       });
-    } else if (name === "VideoTitle"){
-      if(value.length <= maxTitleLength){
+    } else if (name === "VideoTitle") {
+      if (value.length <= maxTitleLength) {
         setFormData((prev) => {
           return {
             ...prev,
             [name]: value,
-          }
-        })
+          };
+        });
       } else {
-          const shortened = value.substring(0, maxTitleLength)
-          setFormData((prev) => {
-            return {
-              ...prev,
-              [name]: shortened,
-            }
-          })
-        }
-    } else if (name === "VideoDescription"){
-        if(value.length <= maxDescriptionLength){
-          setFormData((prev) => {
-            return {
-              ...prev,
-              [name]: value,
-            }
-          })
-        } else {
-          const shortened = value.substring(0, maxDescriptionLength)
-          setFormData((prev) => {
-            return {
-              ...prev,
-              [name]: shortened,
-            }
-          })
-        }
+        const shortened = value.substring(0, maxTitleLength);
+        setFormData((prev) => {
+          return {
+            ...prev,
+            [name]: shortened,
+          };
+        });
+      }
+    } else if (name === "VideoDescription") {
+      if (value.length <= maxDescriptionLength) {
+        setFormData((prev) => {
+          return {
+            ...prev,
+            [name]: value,
+          };
+        });
+      } else {
+        const shortened = value.substring(0, maxDescriptionLength);
+        setFormData((prev) => {
+          return {
+            ...prev,
+            [name]: shortened,
+          };
+        });
+      }
     }
   };
 
@@ -292,12 +292,10 @@ export default function UploadLecture() {
     },
   };
 
-  
-
   useEffect(() => {
-    // this should only ren when there is no ID param in the api
     if (classesData && classesData.length > 0) {
-      if(Playlist){
+      if (Playlist) {
+        console.log("Setting VideoPlaylistID to: ", classesData[0].id);
         setFormData((prev) => {
           return {
             ...prev,
@@ -314,40 +312,51 @@ export default function UploadLecture() {
       setFilterQuery((prev) => {
         return {
           ...prev,
-          ClassRank: parseInt(classesData[0].ClassRank)
-        }
-      })
+          ClassRank: parseInt(classesData[0].ClassRank),
+        };
+      });
     }
   }, [classesData]);
 
-  useEffect(()=>{
-    if(playlistData && playlistData.length > 0){
-      const tempFiltered = playlistData.filter((playlist)=>{
-        return (playlist.PlaylistCategory == filterQuery.subject && playlist.PlaylistRank == filterQuery.ClassRank)
-      })
-      if(tempFiltered.length > 0){
+  useEffect(() => {
+    if (playlistData && playlistData.length > 0) {
+      const tempFiltered = playlistData.filter((playlist) => {
+        return (
+          playlist.PlaylistCategory == filterQuery.subject &&
+          playlist.PlaylistRank == filterQuery.ClassRank
+        );
+      });
+      if (tempFiltered.length > 0) {
         setFormData((prev) => {
           return {
             ...prev,
-            VideoPlaylistID: parseInt(tempFiltered[0].id)
-          }
-        })
-        setFilteredPlaylist(tempFiltered)
+            VideoPlaylistID: parseInt(tempFiltered[0].id),
+          };
+        });
+        if (Playlist) {
+          setPlaylistID(parseInt(tempFiltered[0].id));
+        }
+        setFilteredPlaylist(tempFiltered);
       } else {
+        if (Playlist) {
+          setPlaylistID(null);
+        }
         setFormData((prev) => {
           return {
             ...prev,
-            VideoPlaylistID: ""
-          }
-        })
-        setFilteredPlaylist([])
+            VideoPlaylistID: "",
+          };
+        });
+        setFilteredPlaylist([]);
       }
     }
-  }, [filterQuery, playlistData])
+  }, [filterQuery, playlistData]);
 
   return (
+    <>
+    <LoadingOverlay loading={localLoading} />
     <div className="uploadLectureMain">
-      <div className="mt-2 mb-4">
+      <div className="mb-4" style={{ width: "100%" }}>
         <div className="headingNavbar d-flex justify-content-center">
           <div className="d-flex">
             <FaRegArrowAltCircleLeft
@@ -363,36 +372,41 @@ export default function UploadLecture() {
       </div>
       <div className="uploadLecture ms-auto me-auto">
         <form onSubmit={handleSubmit}>
-          <Tooltip title={clickable ? "Upload a video" : ""} arrow open={tooltipOpen}>
+          <Tooltip
+            title={clickable ? "Upload a video" : ""}
+            arrow
+            open={tooltipOpen}
+          >
             <div
               className={"videoPreview " + clickable + " " + imgClass}
+              style={clickable ? { aspectRatio: "16/9" } : {}}
               onClick={clickable ? handleClick : null}
               onMouseEnter={() => {
-                  setTooltipOpen(true);
-                }}
-                onMouseLeave={() => {
-                  setTooltipOpen(false);
-                }}
+                setTooltipOpen(true);
+              }}
+              onMouseLeave={() => {
+                setTooltipOpen(false);
+              }}
             >
               {previewUrl ? (
                 <>
-                <video 
-                width="100%"
-                controls
-                ref={videoRef}
-                id="previewVideo"
-                onLoadedMetadata={() => {
-                  videoRef.current.currentTime = 5;
-                }}
-                onSeeked={extractThumbnail}
-                >
-                  <source src={previewUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <canvas ref={canvasRef} className="d-none" />
+                  <video
+                    width="100%"
+                    controls
+                    ref={videoRef}
+                    id="previewVideo"
+                    onLoadedMetadata={() => {
+                      videoRef.current.currentTime = 5;
+                    }}
+                    onSeeked={extractThumbnail}
+                  >
+                    <source src={previewUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <canvas ref={canvasRef} className="d-none" />
                 </>
               ) : (
-                <MdUpload className="uploadIcon "/>
+                <MdUpload className="uploadIcon " />
               )}
             </div>
           </Tooltip>
@@ -407,14 +421,23 @@ export default function UploadLecture() {
             }}
           />
           {formData.thumbnail && (
-          <div className="mb-3 d-flex w-100" style={{justifyContent: "space-between", alignContent: "center"}}>
-            <label className="form-label d-flex align-items-center">
-              Thumbnail:
-            </label>
-            <Tooltip title="Seek video to change" arrow>
-              <img style={{width: "250px", height: "auto"}} src={formData.thumbnail} />
-            </Tooltip>
-          </div>
+            <div
+              className="mb-3 d-flex w-100"
+              style={{
+                justifyContent: "space-between",
+                alignContent: "center",
+              }}
+            >
+              <label className="form-label d-flex align-items-center">
+                Thumbnail:
+              </label>
+              <Tooltip title="Seek video to change" arrow>
+                <img
+                  style={{ width: "250px", height: "auto" }}
+                  src={formData.thumbnail}
+                />
+              </Tooltip>
+            </div>
           )}
           <div className="mb-3">
             <label for="exampleFormControlInput1" className="form-label">
@@ -431,7 +454,19 @@ export default function UploadLecture() {
               required
               spellCheck={false}
             />
-            {formData.VideoTitle && <p style={{fontSize: "10px", textAlign: "right", margin: "0",marginTop: "5px"}}>{100 - formData.VideoTitle.length}/{maxTitleLength} Characters Remaining</p>}
+            {formData.VideoTitle && (
+              <p
+                style={{
+                  fontSize: "10px",
+                  textAlign: "right",
+                  margin: "0",
+                  marginTop: "5px",
+                }}
+              >
+                {100 - formData.VideoTitle.length}/{maxTitleLength} Characters
+                Remaining
+              </p>
+            )}
           </div>
           <div className="mb-3">
             <label for="exampleFormControlTextarea1" className="form-label">
@@ -447,7 +482,19 @@ export default function UploadLecture() {
               onChange={handleChange}
               spellCheck={false}
             ></textarea>
-            {formData.VideoDescription && <p style={{fontSize: "10px", textAlign: "right", margin: "0",marginTop: "5px"}}>{1000 - formData.VideoDescription.length}/{maxDescriptionLength} Characters Remaining</p>}
+            {formData.VideoDescription && (
+              <p
+                style={{
+                  fontSize: "10px",
+                  textAlign: "right",
+                  margin: "0",
+                  marginTop: "5px",
+                }}
+              >
+                {1000 - formData.VideoDescription.length}/{maxDescriptionLength}{" "}
+                Characters Remaining
+              </p>
+            )}
           </div>
 
           {Playlist ? (
@@ -514,13 +561,12 @@ export default function UploadLecture() {
                     name="VideoPlaylistID"
                     onChange={handleChange}
                     value={formData.VideoPlaylistID}
-                    
                   >
                     {filteredPlaylist?.map((playlist, index) => (
-                        <option key={index} value={playlist.id}>
-                          {playlist.PlaylistTitle}
-                        </option>
-                      ))}
+                      <option key={index} value={playlist.id}>
+                        {playlist.PlaylistTitle}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="mt-1 ms-3 p-0">
@@ -534,7 +580,7 @@ export default function UploadLecture() {
                     Add new Playlist
                   </button>
                 </div>
-              </div>{" "}
+              </div>
             </>
           ) : (
             <button
@@ -564,7 +610,7 @@ export default function UploadLecture() {
             style={{
               backgroundColor: "rgba(207, 204, 204)",
               boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
-              padding: "30px 20px"
+              padding: "30px 20px",
             }}
           >
             <div
@@ -597,7 +643,10 @@ export default function UploadLecture() {
                   />
                 </div>
                 <div className="mb-3">
-                  <label for="exampleFormControlTextarea1" className="form-label">
+                  <label
+                    for="exampleFormControlTextarea1"
+                    className="form-label"
+                  >
                     Description
                   </label>
                   <textarea
@@ -654,15 +703,6 @@ export default function UploadLecture() {
                       input={
                         <OutlinedInput id="select-multiple-chip" label="Chip" />
                       }
-                      // renderValue={(selected) => (
-                      //   <Box
-                      //     sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
-                      //   >
-                      //     {/* {selected.map((value) => ( */}
-                      //       <Chip key={value} label={value} />
-                      //     {/* ))} */}
-                      //   </Box>
-                      // )}
                       MenuProps={MenuProps}
                       required
                       name="playlistCategory"
@@ -677,7 +717,11 @@ export default function UploadLecture() {
                 </Tooltip>
               </div>
               <div>
-                <button onClick={handlePlaylistSubmit} className="btn btn-info mt-3" style={{ width: "100%" }}>
+                <button
+                  onClick={handlePlaylistSubmit}
+                  className="btn btn-info mt-3"
+                  style={{ width: "100%" }}
+                >
                   Submit
                 </button>
               </div>
@@ -706,7 +750,7 @@ export default function UploadLecture() {
               <h5 style={{ color: "white", margin: "0" }}>{error}</h5>
             </div>
           </Popup>
-          <Popup
+          {progress && <Popup
             visible={localLoading}
             onClose={() => {}}
             style={{
@@ -723,9 +767,14 @@ export default function UploadLecture() {
                 dangerouslySetInnerHTML={{ __html: error }}
                 style={{ color: "white", margin: "0" }}
               ></h5>
-              {progress ? <ProgressBar style={{height: "20px", marginTop: "15px"}} now={progress} label={`${progress}%`} /> : null}
+
+                <ProgressBar
+                  style={{ height: "20px", marginTop: "15px" }}
+                  now={progress}
+                  label={`${progress}%`}
+                />
             </div>
-          </Popup>          
+          </Popup>}
           <div>
             <button className="btn btn-primary w-100 mt-2" type="submit">
               Upload
@@ -734,5 +783,6 @@ export default function UploadLecture() {
         </form>
       </div>
     </div>
+    </>
   );
 }

@@ -7,10 +7,12 @@ import { IoExitOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
 import { MdMenu } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Navbar({ setSidebarOpen, sidebarOpen }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [selectedValue, setSelectedValue] = useState([
     {
@@ -34,7 +36,7 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
   return (
     <div className="Navbar">
       <div className="leftItems">
-        <MdMenu color="white" style={{width: "23px", height: "23px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
+        <MdMenu color="white" style={{width: "30px", height: "30px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
         <div className="Searchbar d-none d-sm-block">
           <input type="text" placeholder="Search Student" />
           <button>
@@ -59,7 +61,8 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
         <div
           className="logout"
           onClick={() => {
-            dispatch(logout());
+            dispatch(logout())
+            navigate("/login")
           }}
         >
           <p>Logout</p>

@@ -15,7 +15,8 @@
     padding-top: 70px;
     height: 100vh;
     overflow-y: auto;
-    overflow-x: hidden;    
+    overflow-x: hidden;
+    position: relative;    
 }
 .contentArea::-webkit-scrollbar{
     width: 5px; 
@@ -65,4 +66,25 @@
 .videoSideDiv{
     padding: 10px !important;
 }
+.headingNavbar h4{
+    transition: all 0.5s ease;
+    font-size: 12px !important;
+}
+.headingNavbar button{
+    font-size: 12px;
+}
+.inputsDiv{
+    flex-wrap: wrap;
+}
+.filterDataDiv{
+    margin: 10px 10px 0px 0px;
+    width: 100%;
+}
+.LoadingOverlay{
+    left: 0 !important;
+}
+}
+
+.contentArea.SidebarOpen .LoadingOverlay{
+    left: 250px;
 }

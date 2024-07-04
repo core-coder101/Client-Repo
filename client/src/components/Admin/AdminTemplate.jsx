@@ -37,7 +37,7 @@ export default function AdminTemplate() {
             <Sidebar closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} sidebarRef={sidebarRef} />
             <div className={'main ' + sidebarClass}>
                 <Navbar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
-                <div className='contentArea'>
+                <div className={'contentArea ' + (sidebarOpen ? "SidebarOpen" : "")}>
                     <Outlet />
                 </div>
             </div>

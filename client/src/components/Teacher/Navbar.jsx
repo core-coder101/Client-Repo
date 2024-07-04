@@ -6,9 +6,11 @@ import Select from "react-dropdown-select";
 import { IoExitOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   return (
     <div className="Navbar">
       <div className="leftItems">
@@ -23,7 +25,8 @@ export default function Navbar() {
         <div
           className="logout"
           onClick={() => {
-            dispatch(logout());
+            dispatch(logout())
+            navigate("/login")
           }}
         >
           <p>Logout</p>

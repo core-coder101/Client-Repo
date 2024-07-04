@@ -199,8 +199,8 @@ export const GetUserRoutes = () => {
     // console.log("filtered User: ", filtered);
     return filtered;
   } else {
-    dispatch(logout());
-    return [];
+      dispatch(logout())
+      return [];
   }
 };
 

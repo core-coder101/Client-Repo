@@ -1,11 +1,9 @@
 import React from 'react'
 import "../../assets/css/playlistItem.css"
 
-export default function PlaylistItem({ index, image, VideoLength, Title, UName, onClickFunction, highlight }) {
 
 
-  const maxTitleLengthToShow = 56 // same as youtube
-
+export const getVideoLengthMsg = (VideoLength) => {
   let lengthMsg = ""
   const lengthInSec = VideoLength
   const lengthInMin = Math.floor(lengthInSec / 60)
@@ -23,6 +21,17 @@ export default function PlaylistItem({ index, image, VideoLength, Title, UName, 
       lengthMsg = lengthInMin.toString() + ":" + remainingSeconds.toString()
     }
   }
+
+  return lengthMsg
+
+}
+
+
+export default function PlaylistItem({ index, image, VideoLength, Title, UName, onClickFunction, highlight }) {
+
+  const maxTitleLengthToShow = 56 // same as youtube
+
+  const lengthMsg = getVideoLengthMsg(VideoLength)
 
   return (
     <div className={'playlistItemDiv ' + highlight} onClick={onClickFunction}>

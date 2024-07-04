@@ -4,7 +4,7 @@ import { BsPersonFill } from "react-icons/bs";
 import { TbHexagonLetterHFilled } from "react-icons/tb";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SiGoogleclassroom } from "react-icons/si";
 import { IoAddOutline } from "react-icons/io5";
 import { FaChalkboardTeacher } from "react-icons/fa";
@@ -18,6 +18,7 @@ import SubMenu from "../common/SubMenu";
 function Sidebar({ setSidebarOpen, sidebarOpen }) {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
@@ -178,7 +179,8 @@ function Sidebar({ setSidebarOpen, sidebarOpen }) {
                 className="bx bx-log-out"
                 id="log_out"
                 onClick={() => {
-                  dispatch(logout);
+                  dispatch(logout())
+                  navigate("/login")
                 }}
               />
             </li>
