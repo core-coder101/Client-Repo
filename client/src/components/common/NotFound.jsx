@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "../../assets/css/NotFound.css"
 
-const TorchComponent = () => {
+const NotFound = () => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
@@ -38,4 +38,4 @@ const TorchComponent = () => {
   );
 };
 
-export default TorchComponent;
+export default NotFound;

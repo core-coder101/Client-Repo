@@ -10,6 +10,7 @@ import { VscGraphLine } from "react-icons/vsc";
 import Graph from './Graph';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { PieChart } from '@mui/x-charts/PieChart';
@@ -45,7 +46,7 @@ const series = [
   },
 ];
 
-export default function StudentDashboard() {
+export default function Dashboard() {
 
   const cardBackgroundIconStyles = { opacity: "20%",
     width: "80%",
@@ -60,7 +61,7 @@ export default function StudentDashboard() {
     <div className='dashboard'>
       <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
-            <div className='d-flex'><h4>Student Dashboard</h4></div>
+            <div className='d-flex'><h4>Dashboard</h4></div>
             <div className='ms-auto me-4'></div>
           </div>
         </div>
