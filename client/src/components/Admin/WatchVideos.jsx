@@ -182,7 +182,7 @@ export default function WatchVideoes() {
                   <div className="info">
                     <h6>{PlaylistData.PlaylistTitle}</h6>
                     <p>
-                      {PlaylistData.PlaylistCategory} - {index} /{" "}
+                      {PlaylistData.PlaylistCategory} - {index + 1} /{" "}
                       {PlaylistData?.videos?.length}
                     </p>
                   </div>

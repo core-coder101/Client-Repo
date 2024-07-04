@@ -20,13 +20,6 @@ export default function App() {
     const handleBeforeUnload = (event) => {
       if (!rememberMe) {
         dispatch(logout())
-        .unwrap()
-        .then(()=>{
-          <Navigate />
-        })
-        .catch(() => {
-          return
-        })
       }
     };
 

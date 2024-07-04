@@ -181,13 +181,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
                 id="log_out"
                 onClick={() => {
                   dispatch(logout())
-                  .unwrap()
-                  .then(()=>{
-                    navigate("/login")
-                  })
-                  .catch(() => {
-                    return
-                  })
+                  navigate("/login")
                 }}
               />
             </li>

@@ -62,13 +62,7 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
           className="logout"
           onClick={() => {
             dispatch(logout())
-            .unwrap()
-            .then(()=>{
-              navigate("/login")
-            })
-            .catch(() => {
-              return
-            })
+            navigate("/login")
           }}
         >
           <p>Logout</p>

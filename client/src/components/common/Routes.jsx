@@ -200,13 +200,6 @@ export const GetUserRoutes = () => {
     return filtered;
   } else {
       dispatch(logout())
-      .unwrap()
-      .then(()=>{
-        <Navigate to="/login" />
-      })
-      .catch(() => {
-        return
-      })
       return [];
   }
 };
