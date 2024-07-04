@@ -205,7 +205,7 @@ export default function ClassDetails() {
 
     
     return (
-        <div>
+        <div style={{padding: "15px 20px"}}>
             <div className='headingNavbar d-flex justify-content-center'>
                 <div className='d-flex'>
                     <FaRegArrowAltCircleLeft onClick={() => { navigate("/") }} className='arrow' />
@@ -214,7 +214,7 @@ export default function ClassDetails() {
                 <div className='ms-auto me-4'></div>
             </div>
             <form>
-                <div className='inputsDiv'>
+                <div className='inputsDiv' style={{marginBottom: "10px"}}>
                     <div className="inputDiv">
                         <p>Campus</p>
                         <select className='input' name='campus' onChange={handleChange}>

@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import "../../assets/css/Sidebar.css";
 import { BsPersonFill } from "react-icons/bs";
 import { TbHexagonLetterHFilled } from "react-icons/tb";
+import SubMenu from "../common/SubMenu";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,43 +14,18 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import SubMenu from "../common/SubMenu";
+import { GiTeacher } from "react-icons/gi";
+import { IoMdCloudUpload } from "react-icons/io";
+import { GoVideo } from "react-icons/go";
 
-function Sidebar({ setSidebarOpen, sidebarOpen }) {
+
+function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobile }) {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
-
-  const sidebarRef = useRef(null);
-  const closeBtnRef = useRef(null);
-
-  useEffect(() => {
-    const sidebar = sidebarRef.current;
-    const closeBtn = closeBtnRef.current;
-
-    const handleSidebarToggle = () => {
-      sidebar.classList.toggle("open");
-      menuBtnChange();
-    };
-
-    closeBtn.addEventListener("click", handleSidebarToggle);
-
-    function menuBtnChange() {
-      if (sidebar.classList.contains("open")) {
-        closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
-      } else {
-        closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
-      }
-    }
-
-    // Cleanup event listeners on component unmount
-    return () => {
-      closeBtn.removeEventListener("click", handleSidebarToggle);
-    };
-  }, []);
 
   const classesData = {
     title: "Classes",
@@ -125,21 +101,45 @@ function Sidebar({ setSidebarOpen, sidebarOpen }) {
       },
     ],
   };
+  const lecturesData = {
+    title: "Lectures",
+    icon: <GiTeacher />,
+    iconClosed: <RiArrowDropDownLine />,
+    iconOpened: <MdKeyboardArrowUp />,
+
+    subNav: [
+      {
+        title: "Upload Lecture",
+        path: "/uploadlecture",
+        icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
+      },
+      {
+        title: "Browse Lectures",
+        path: "/selectvideo",
+        icon: (
+          <GoVideo
+            style={{ width: "20px", height: "20px" }}
+          />
+        ),
+      },
+    ],
+  };
+
 
   return (
     <>
       <div>
-        <div className="sidebar" ref={sidebarRef}>
+        <div className={"sidebar " + (sidebarOpen ? "open" : "")} ref={sidebarRef} style={sidebarOpen ? {left: "0"} : {}}>
           <div className="logo-details">
             <TbHexagonLetterHFilled
               color="white"
               style={{ width: "30px", height: "30px", marginRight: "10px" }}
+              className={"" + (sidebarOpen ? "" : "w-0")}
             />
-            <div className="logo_name">Hustlers</div>
+            <div className="logo_name" >{sidebarOpen ? "Hustlers" : ""}</div>
             <i
-              className="bx bx-menu"
+              className={"close-btn bx " + (sidebarOpen ? "bx-menu-alt-right" : "bx-menu")}
               id="btn"
-              ref={closeBtnRef}
               onClick={() => {
                 setSidebarOpen((prev) => !prev);
               }}
@@ -155,16 +155,17 @@ function Sidebar({ setSidebarOpen, sidebarOpen }) {
             }}
           >
             <li>
-              <Link to="/">
+              <Link onClick={closeSidebarForMobile} to="/">
                 <i className="bx bx-grid-alt" />
                 <span className="links_name">Dashboard</span>
               </Link>
               <span className="tooltip">Dashboard</span>
             </li>
-            <SubMenu sidebarOpen={sidebarOpen} item={classesData} key={0} />
-            <SubMenu sidebarOpen={sidebarOpen} item={teachersData} key={1} />
-            <SubMenu sidebarOpen={sidebarOpen} item={studentsData} key={2} />
-            <li className="profile">
+            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
+            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={teachersData} key={1} />
+            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={studentsData} key={2} />
+            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={3} />
+            <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
                 <BsPersonFill
                   color="white"

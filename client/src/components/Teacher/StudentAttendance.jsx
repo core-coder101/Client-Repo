@@ -30,90 +30,14 @@ export default function StudentAttendance() {
     axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
   }
 
-  const [ApiSearchData, SetApiSearchData] = useState({
-    campus: "Main Campus",
-    ClassRank: "",
-    ClassName: "",
-  });
-
-  const GetClasses = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
-        headers: {
-          "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
-        },
-      });
-      if(response.data && response.data.data.length > 0){
-        SetClasses(response.data);
-        SetApiSearchData((prev) => {
-          return {
-            ...prev,
-            ClassRank: response.data.data[0].ClassRank,
-            ClassName: response.data.data[0].ClassName,
-          };
-          })
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Load Classes");
-      setPopup(true);
-    }
-  };
-
-  const GetStudentInformation = async () => {
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/GetStudentInformation",
-        {
-          campus: ApiSearchData.campus,
-          ClassRank: ApiSearchData.ClassRank,
-          ClassName: ApiSearchData.ClassName,
-        },
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      SetStudentInformation(response.data.data || []);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Get Student Info");
-      setPopup(true);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    SetApiSearchData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    if (name === "ClassRank") {
-      // Update ClassName based on the selected ClassRank
-      const selectedClass = Classes.data.find(
-        (Class) => Class.ClassRank === value
-      );
-      if (selectedClass) {
-        SetApiSearchData((prev) => ({
-          ...prev,
-          ClassName: selectedClass.ClassName,
-        }));
-      }
-    }
-    setErrorMessage("");
-  };
-
   const handleSubmit = async () => {
     setErrorMessage("Marking Attendance. . .");
     setLoading(true);
     try {
       let dataToSend = {
-        ...ApiSearchData,
+        ClassName: "Teacher's Class name",
+        ClassRank: "class rank of teacher's class from DB",
+        campus: "Teacher's campus from DB",
         selectedRows: selectedRows,
       };
       const response = await axios.post(
@@ -140,15 +64,33 @@ export default function StudentAttendance() {
     }
   };
 
-  useEffect(() => {
-    GetClasses();
-  }, []);
 
-  useEffect(() => {
-    if (ApiSearchData.ClassRank && ApiSearchData.ClassName) {
-      GetStudentInformation();
+  const GetStudentInformation = async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/GetStudentInformation",
+        {
+          campus: "Main Campus",
+          ClassRank: 1,
+          ClassName: "Blue",
+        },
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+      SetStudentInformation(response.data.data || []);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Get Student Info");
+      setPopup(true);
     }
-  }, [ApiSearchData]);
+  };
+
+
 
   const columns = [
     { field: "ID", headerName: "Sr no.", width: 75 },
@@ -221,45 +163,7 @@ export default function StudentAttendance() {
       </div>
       <form>
         <div className="inputsDiv">
-          <div className="inputDiv">
-            <p>Campus</p>
-            <select className="input" name="campus" onChange={handleChange}>
-              <option value="Main Campus">Main Campus</option>
-              <option value="Second Campus">Second Campus</option>
-            </select>
-          </div>
-          <div className="inputDiv">
-            <p>Class</p>
-            <select className="input" name="ClassRank" onChange={handleChange}>
-              {Classes.data &&
-                Array.from(
-                  new Set(Classes.data.map((Class) => Class.ClassRank))
-                ).map((rank) => (
-                  <option key={rank} value={rank}>
-                    {rank}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="inputDiv">
-            <p>Name</p>
-            <select
-              className="input"
-              name="ClassName"
-              value={ApiSearchData.ClassName}
-              onChange={handleChange}
-            >
-              {Classes.data &&
-                Classes.data.map(
-                  (Class, index) =>
-                    ApiSearchData.ClassRank == Class.ClassRank && (
-                      <option key={Class.id} value={Class.ClassName}>
-                        {Class.ClassName}
-                      </option>
-                    )
-                )}
-            </select>
-          </div>
+            
           <div className="filterDataDiv">
             <Tooltip title="Search on this page" arrow>
               <input

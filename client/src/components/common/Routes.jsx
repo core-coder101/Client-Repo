@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import {Route} from "react-router-dom";
 import Login from "./Login.jsx";
 import PublicRoute from "./Auth/PublicRoute.jsx";
 import AdminTemplate from "../Admin/AdminTemplate.jsx";
@@ -16,7 +11,6 @@ import Dashboard from "../Admin/Dashboard.jsx";
 import CreateStudent from "../Admin/CreateStudent.jsx";
 import StudentInformation from "../Admin/StudentInformation.jsx";
 import TeachersInformation from "../Admin/TeachersInformation.jsx";
-import StudentAttendance from "../Admin/StudentAttendance.jsx";
 import ClassDetails from "../Admin/ClassDetails.jsx";
 import UploadLecture from "../Admin/UploadLecture.jsx";
 import WatchVideos from "../Admin/WatchVideos.jsx"; // Corrected typo: WatchVideoes to WatchVideos
@@ -27,7 +21,9 @@ import StudentTemplate from "../Student/StudentTemplate.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
 import WatchVideoes from "../Admin/WatchVideos.jsx";
-import SelectVideo from '../Admin/SelectVideo.jsx'
+import SelectVideo from "../Admin/SelectVideo.jsx";
+import StudentAttendance from "../Admin/StudentAttendance.jsx";
+import StudentAttendanceForTeacher from "../Teacher/StudentAttendance.jsx"
 
 const AllRoutes = [
   {
@@ -41,13 +37,6 @@ const AllRoutes = [
     path: "",
     component: <StudentDashboard />,
     type: "Student",
-    authentication: "role",
-    default: true,
-  },
-  {
-    path: "",
-    component: <TeacherDashboard />,
-    type: "Teacher",
     authentication: "role",
     default: true,
   },
@@ -78,6 +67,12 @@ const AllRoutes = [
   {
     path: "createclass",
     component: <CreateClass />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "classdetails/:ID",
+    component: <ClassDetails />,
     type: "Admin",
     authentication: "role",
   },
@@ -159,6 +154,19 @@ const AllRoutes = [
     type: "Admin",
     authentication: "role",
   },
+  {
+    path: "studentattendance",
+    component: <StudentAttendanceForTeacher />,
+    type: "Teacher",
+    authentication: "role",
+  },
+  {
+    path: "",
+    component: <TeacherDashboard />,
+    type: "Teacher",
+    authentication: "role",
+    default: true,
+  },
 ];
 
 const AllTemplates = [
@@ -199,8 +207,8 @@ export const GetUserRoutes = () => {
     // console.log("filtered User: ", filtered);
     return filtered;
   } else {
-      dispatch(logout())
-      return [];
+    dispatch(logout());
+    return [];
   }
 };
 
