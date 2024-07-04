@@ -597,7 +597,6 @@ export default function UploadLecture() {
               </p>
             </button>
           )}
-
           <Popup
             animationDuration={400}
             visible={PlaylistPopup}
@@ -629,7 +628,7 @@ export default function UploadLecture() {
               <div>
                 <div className="mb-3 mt-4">
                   <label for="exampleFormControlInput1" className="form-label">
-                    Title{" "}
+                    Title
                   </label>
                   <input
                     type="text"
@@ -750,7 +749,7 @@ export default function UploadLecture() {
               <h5 style={{ color: "white", margin: "0" }}>{error}</h5>
             </div>
           </Popup>
-          {progress && <Popup
+          {progress ? <Popup
             visible={localLoading}
             onClose={() => {}}
             style={{
@@ -774,7 +773,7 @@ export default function UploadLecture() {
                   label={`${progress}%`}
                 />
             </div>
-          </Popup>}
+          </Popup>: null}
           <div>
             <button className="btn btn-primary w-100 mt-2" type="submit">
               Upload
