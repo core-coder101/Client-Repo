@@ -15,7 +15,8 @@
     padding-top: 70px;
     height: 100vh;
     overflow-y: auto;
-    overflow-x: hidden;    
+    overflow-x: hidden;
+    position: relative;    
 }
 .contentArea::-webkit-scrollbar{
     width: 5px; 
@@ -79,4 +80,11 @@
     margin: 10px 10px 0px 0px;
     width: 100%;
 }
+.LoadingOverlay{
+    left: 0 !important;
+}
+}
+
+.contentArea.SidebarOpen .LoadingOverlay{
+    left: 250px;
 }

@@ -4,13 +4,14 @@ import "../../assets/css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Preloader from './Preloader';
 import Popup from 'react-animated-popup';
 import { useSelector } from 'react-redux';
+import LoadingOverlay from '../common/LoadingOverlay';
+import CustomPopup from '../common/CustomPopup';
 
 export default function ManageClasses() {
 
-  const { CSRFToken, user } = useSelector((state) => state.auth)
+  const { CSRFToken } = useSelector((state) => state.auth)
 
   const [Classes , SetClasses] = useState([]);
   const [errorMessage , setErrorMessage] = useState(null);
@@ -97,6 +98,8 @@ export default function ManageClasses() {
 
 
   return (
+    <>
+    <LoadingOverlay loading={loading} />
     <div className='dashboard'>
         <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
@@ -140,17 +143,13 @@ export default function ManageClasses() {
           </tbody>
         </table>
       </div>
-        <Popup animationDuration={400} visible={popup} onClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
-            <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                <h5 style={{color: "white", margin: "0"}}>{errorMessage}</h5>
-            </div>
-        </Popup>
-        <Popup visible={loading} onClose={() => {}} style={{backgroundColor: "rgba(17, 16, 29, 0.95)", boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px", padding: "40px 20px"}}>
-            <div className='d-flex justify-content-center align-items-center' style={{width: "max-content", height: "100%", padding: "0"}}>
-                <h5 dangerouslySetInnerHTML={{ __html: errorMessage }} style={{color: "white", margin: "0"}}></h5>
-            </div>
-        </Popup>
+        <CustomPopup 
+          Visible={popup} 
+          OnClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}}
+          errorMessage={errorMessage}
+          />
       </div>
     </div>
+    </>
   )
 }

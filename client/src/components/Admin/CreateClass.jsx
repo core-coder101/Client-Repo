@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Popup from "react-animated-popup";
 import { useDispatch, useSelector } from "react-redux";
-import { GetClassDataById, GetTeachers, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/CreateClass";
+import { GetClassDataById, GetTeachers, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/Admin/CreateClass";
+import LoadingOverlay from "../common/LoadingOverlay";
 
 export default function CreateClass() {
   const { ID } = useParams();
@@ -130,6 +131,8 @@ export default function CreateClass() {
   };
 
   return (
+    <>
+    <LoadingOverlay loading={loading} />
     <div className="createClass">
       <div className="mt-2 mb-4">
         <div className="headingNavbar d-flex justify-content-center">
@@ -232,26 +235,6 @@ export default function CreateClass() {
               <h5 style={{ color: "white", margin: "0" }}>{error}</h5>
             </div>
           </Popup>
-          <Popup
-          animationDuration={400}
-            visible={loadingOpen}
-            onClose={() => {}}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5
-                dangerouslySetInnerHTML={{ __html: error }}
-                style={{ color: "white", margin: "0" }}
-              ></h5>
-            </div>
-          </Popup>
           <div>
             <button className="btn btn-primary w-100" type="submit">
               Submit
@@ -260,5 +243,6 @@ export default function CreateClass() {
         </form>
       </div>
     </div>
+    </>
   );
 }

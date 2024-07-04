@@ -11,7 +11,6 @@ import { IoPerson } from "react-icons/io5";
 import axios from "axios";
 import defaultImg from "../../assets/img/default.png";
 import Popup from "react-animated-popup";
-import Preloader from "./Preloader";
 import { Button, Tooltip } from "@mui/material";
 import { ReactBarcode } from "react-jsbarcode";
 import { FaLocationDot } from "react-icons/fa6";

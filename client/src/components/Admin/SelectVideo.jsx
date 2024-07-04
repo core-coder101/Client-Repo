@@ -2,22 +2,27 @@ import React, { useEffect, useState } from 'react'
 import '../../assets/css/selectVideo.css'
 import { RiPlayList2Fill } from "react-icons/ri";
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DefaultImg from "../../assets/img/default.png";
 import { useNavigate } from 'react-router-dom';
+import { formatDateMessage } from './WatchVideos';
+import { getVideoLengthMsg } from './PlaylistItem';
+import { GetVideoData, emptyArrays } from '../../redux/slices/Admin/SelectVideoSlice';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 
 export default function SelectVideo() {
 
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
 
-  const { CSRFToken} = useSelector((state) => state.auth)
+  const { loading, error, popup, VideosData, PlaylistData} = useSelector((state) => state.selectVideo)
 
   const [Subject,setSubject] = useState('General');
   const [Rank, SetRank] = useState(10);
-  const [VideosData , SetVideosData] = useState();
-  const [PlaylistData , SetPlaylistData] = useState();
+  const [VideosData1 , SetVideosData] = useState();
+  const [PlaylistData1 , SetPlaylistData] = useState();
 
   const names = [
     "General",
@@ -33,41 +38,18 @@ export default function SelectVideo() {
     "Islamiat",
   ];
 
-  const GetVideoData = async () =>{
-    try {
-      const response = await axios.get(
-          `http://127.0.0.1:8000/api/showvideoDataPic?Subject=${Subject}&ClassRank=${Rank}`,
-          {
-              headers: {
-                  'X-CSRF-TOKEN': CSRFToken,
-                  'Content-Type': 'application/json',
-                  'API-TOKEN': 'IT is to secret you cannot break it :)',
-              },
-          }
-      );
-      if(response.data.message == 'video'){
-        SetVideosData(response.data.data);
-        SetPlaylistData([]);
-      }
-      else{
-        SetVideosData([]);
-        SetPlaylistData(response.data.data);
-      }
-  } catch (error) {
-
-  } 
-  }
-
   useEffect(()=>{
     SetVideosData([]);
     SetPlaylistData([]);
-    GetVideoData();
-  },[Subject])
+    dispatch(emptyArrays())
+    dispatch(GetVideoData({ Subject, Rank }))
+  },[Subject]) 
 
 
 
   return (
     <>
+  <LoadingOverlay loading={loading} />
         <div class="col">
       <div class="all">
       {/* <button onClick={() =>{setSubject()}} type="button" class="btn active costom-button1 "></button> */}
@@ -99,7 +81,7 @@ export default function SelectVideo() {
             <div class="card-body costom-body">
               <h5 class="card-title customtitle">{Data.PlaylistTitle}</h5>
               <p class="card-text customchannelname">{Data.users.name}</p>
-              <p class="card-text customviews">342 veiws ,{Data.Date}</p>
+              <p class="card-text customviews">342 veiws {formatDateMessage(Data.Date) || "NAN"}</p>
             </div>
           </div>
         </div>
@@ -119,7 +101,7 @@ export default function SelectVideo() {
                               : ''
                               }
                               alt="..." />
-            <div className='Videotime'>{videoData.VideoLength}</div></div>
+            <div className='Videotime'>{getVideoLengthMsg(videoData.VideoLength) || "NAN"}</div></div>
             <img class="channelimg" src={
                             (videoData.users.images == [])
                               ? `data:image/png;base64,${videoData.users.images.data}`
@@ -129,7 +111,7 @@ export default function SelectVideo() {
             <div class="card-body costom-body">
               <h5 class="card-title customtitle">{videoData.VideoTitle}</h5>
               <p class="card-text customchannelname">{videoData.users.name}</p>
-              <p class="card-text customviews">34k veiws , {videoData.Date}</p>
+              <p class="card-text customviews">34k veiws {formatDateMessage(videoData.Date) || "NAN"}</p>
             </div>
           </div>
         </div>

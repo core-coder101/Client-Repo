@@ -27,9 +27,7 @@ export default function NewRouter() {
             {MapRoutes(GetUserRoutes())}
           </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/" />} />
-
-        {/* <Route path='*' element={<NotFound />} /> */}
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </Router>
   );

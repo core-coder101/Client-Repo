@@ -7,10 +7,12 @@ import { IoExitOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice.js";
 import { MdMenu } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Navbar({ setSidebarOpen, sidebarOpen }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [selectedValue, setSelectedValue] = useState([
     {
@@ -59,7 +61,14 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
         <div
           className="logout"
           onClick={() => {
-            dispatch(logout());
+            dispatch(logout())
+            .unwrap()
+            .then(()=>{
+              navigate("/login")
+            })
+            .catch(() => {
+              return
+            })
           }}
         >
           <p>Logout</p>

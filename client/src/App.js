@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import NewRouter from "./components/common/NewRouter";
 import { logout,fetchCSRFToken, UserData } from "./redux/slices/authSlice";
-import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -19,7 +19,14 @@ export default function App() {
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       if (!rememberMe) {
-        dispatch(logout());
+        dispatch(logout())
+        .unwrap()
+        .then(()=>{
+          <Navigate />
+        })
+        .catch(() => {
+          return
+        })
       }
     };
 

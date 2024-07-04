@@ -1,265 +1,316 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import "../../assets/css/WatchVideo.css";
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchVideoRange, getVideoInfoByID, setError, setPopup } from '../../redux/slices/WatchVideos';
-import CustomPopup from '../common/CustomPopup';
-import Comment from './Comment';
-import PlaylistItem from './PlaylistItem';
-import axios from 'axios';
-import loadingVid from "../../assets/Loading.mp4"
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchVideoRange,
+  getVideoInfoByID,
+  setError,
+  setPopup,
+} from "../../redux/slices/Admin/WatchVideos";
+import CustomPopup from "../common/CustomPopup";
+import Comment from "./Comment";
+import PlaylistItem from "./PlaylistItem";
+import axios from "axios";
+import LoadingOverlay from "../common/LoadingOverlay";
+
+export const formatDateMessage = (uploadDate) => {
+  const createdAt = new Date(uploadDate);
+  const now = new Date();
+
+  const diffTime = Math.abs(now - createdAt);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    if (diffHours < 1) {
+      const diffMinutes = Math.floor(diffTime / (1000 * 60));
+      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+    } else {
+      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    }
+  } else if (diffDays === 1) {
+    return "Yesterday";
+  } else if (diffDays < 7) {
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+  } else if (diffDays < 365) {
+    const months = Math.floor(diffDays / 30);
+    return `${months} month${months > 1 ? "s" : ""} ago`;
+  } else {
+    const years = Math.floor(diffDays / 365);
+    return `${years} year${years > 1 ? "s" : ""} ago`;
+  }
+};
 
 export default function WatchVideoes() {
+  const { CSRFToken } = useSelector((state) => state.auth);
 
-  const { CSRFToken } = useSelector((state) => state.auth)
-  
   const { ID } = useParams();
-  
-  const { loading, error, popup, videoInfo, file  } = useSelector(state => state.watchVideos);
-  
+
+  const { loading, error, popup, videoInfo, file } = useSelector(
+    (state) => state.watchVideos
+  );
+
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [showMore, setShowMore] = useState(false)
+  const [showMore, setShowMore] = useState(false);
 
-  const [PlaylistData,SetPlaylistData] = useState([]);
+  const [PlaylistData, SetPlaylistData] = useState([]);
 
-  const [comment , setcomment] = useState('');
+  const [comment, setcomment] = useState("");
 
   const videoRef = React.useRef(null);
 
-
-  const GetplaylistData = async () =>{
+  const GetplaylistData = async () => {
     try {
       const response = await axios.get(
-          `http://127.0.0.1:8000/api/GetplaylistData?PlaylistID=${videoInfo.VideoPlaylistID}`,
-          {
-              headers: {
-                  'X-CSRF-TOKEN': CSRFToken,
-                  'Content-Type': 'application/json',
-                  'API-TOKEN': 'IT is to secret you cannot break it :)',
-              },
-          }
+        `http://127.0.0.1:8000/api/GetplaylistData?PlaylistID=${videoInfo.VideoPlaylistID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
       );
-        SetPlaylistData(response.data.data);
-  } catch (error) {
+      SetPlaylistData(response.data.data);
+    } catch (error) {}
+  };
 
-  } 
-  }
-
-
-
-
-
-  const SubmitComment = async () =>{
+  const SubmitComment = async () => {
     try {
       const response = await axios.post(
-          `http://127.0.0.1:8000/api/UploadComment`,{
-            VideoID : ID,
-            Comment : comment
+        `http://127.0.0.1:8000/api/UploadComment`,
+        {
+          VideoID: ID,
+          Comment: comment,
+        },
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
           },
-          {
-              headers: {
-                  'X-CSRF-TOKEN': CSRFToken,
-                  'Content-Type': 'application/json',
-                  'API-TOKEN': 'IT is to secret you cannot break it :)',
-              },
-          }
+        }
       );
-        // SetPlaylistData(response.data.data);
-  } catch (error) {
-
-  } 
-  }
-
-
-
-
+      // SetPlaylistData(response.data.data);
+    } catch (error) {}
+  };
 
   useEffect(() => {
-    
     if (ID) {
-      dispatch(fetchVideoRange({ ID, startByte: 0 , endByte: 83886080})) // 83,886,080 bits == 10MB
-      dispatch(getVideoInfoByID(ID))
+      dispatch(fetchVideoRange({ ID, startByte: 0, endByte: 83886080 })); // 83,886,080 bits == 10MB
+      dispatch(getVideoInfoByID(ID));
     }
   }, [ID]);
-  useEffect(()=>{
-    if(videoInfo){
-      if(videoInfo.VideoPlaylistID != null){
-        GetplaylistData()
+  useEffect(() => {
+    if (videoInfo) {
+      if (videoInfo.VideoPlaylistID != null) {
+        GetplaylistData();
       }
     }
-  },[videoInfo])
+  }, [videoInfo]);
 
-    // using the redux loading state directly does not work properly
-    const [localLoading, setLocalLoading] = useState(false)
-    useEffect(()=>{
-      setLocalLoading(loading)
-    }, [loading])
-
-
+  // using the redux loading state directly does not work properly
+  const [localLoading, setLocalLoading] = useState(false);
+  useEffect(() => {
+    setLocalLoading(loading);
+  }, [loading]);
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent the default form submission behavior
-        SubmitComment();
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default form submission behavior
+      SubmitComment();
     }
   };
 
-  let index = null
-  if(PlaylistData?.videos){
-    PlaylistData.videos.filter((video, i) =>{
-      if(videoInfo.id == video.id){
-        index = i
-        return true
+  let index = null;
+  if (PlaylistData?.videos) {
+    PlaylistData.videos.filter((video, i) => {
+      if (videoInfo.id == video.id) {
+        index = i;
+        return true;
       } else {
-        return false
+        return false;
       }
-    })
+    });
   }
   const handleEnded = () => {
-    if(Number.isInteger(index) && (PlaylistData.videos.length > (index + 1))){
-      navigate("/watchvideo/" + (PlaylistData.videos[index + 1].id).toString())
+    if (Number.isInteger(index) && PlaylistData.videos.length > index + 1) {
+      navigate("/watchvideo/" + PlaylistData.videos[index + 1].id.toString());
     }
-  }
+  };
 
-  function formatDateMessage(uploadDate) {
-    const createdAt = new Date(uploadDate);
-    const now = new Date();
-  
-    const diffTime = Math.abs(now - createdAt);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) {
-      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-      if (diffHours < 1) {
-        const diffMinutes = Math.floor(diffTime / (1000 * 60));
-        return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
-      } else {
-        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-      }
-    } else if (diffDays === 1) {
-      return "Yesterday";
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    } else if (diffDays < 30) {
-      const weeks = Math.floor(diffDays / 7);
-      return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
-    } else if (diffDays < 365) {
-      const months = Math.floor(diffDays / 30);
-      return `${months} month${months > 1 ? 's' : ''} ago`;
-    } else {
-      const years = Math.floor(diffDays / 365);
-      return `${years} year${years > 1 ? 's' : ''} ago`;
-    }
-  }
-  
-  let dateMsg = ""
-  if(videoInfo?.created_at){
-    const createdAt = new Date(videoInfo.created_at)
-    dateMsg = formatDateMessage(createdAt)
+  let dateMsg = "";
+  if (videoInfo?.created_at) {
+    const createdAt = new Date(videoInfo.created_at);
+    dateMsg = formatDateMessage(createdAt);
   } else {
-    dateMsg = "NAN"
+    dateMsg = "NAN";
   }
 
   return (
     <>
-      <div className='row m-0 p-0'>
-        <div className='col-lg-8 videoSideDiv'>
-          <div className='videodiv'>
-            {file ? 
-           
-            <video ref={videoRef} autoPlay muted src={file} className='video' controls onEnded={handleEnded}>
-              <source type="video/mp4" />
-              Your browser does not support the video tag.
-            </video> : 
-            
-            <video ref={videoRef} autoPlay muted src={loadingVid} className='video'>
-              <source type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>}
+    <LoadingOverlay loading={localLoading} />
+      <div className="row m-0 p-0">
+        <div className="col-lg-8 videoSideDiv">
+          <div className="videodiv">
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                src={file}
+                className="video"
+                controls
+                onEnded={handleEnded}
+              >
+                <source type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
           </div>
-          <div className='Playlist d-block d-md-block d-lg-none' style={{marginTop: "10px"}}>
-        <div className='playlistItems'>
-            <div className='fixedTopDiv'>
-                <div className='info'>
-                <h6>{PlaylistData.PlaylistTitle}</h6>
-                <p>{PlaylistData.PlaylistCategory} - {index} / {(PlaylistData?.videos?.length)}</p>
-                
+          {PlaylistData && PlaylistData.videos && (
+            <div
+              className="Playlist d-block d-md-block d-lg-none"
+              style={{ marginTop: "10px" }}
+            >
+              <div className="playlistItems">
+                <div className="fixedTopDiv">
+                  <div className="info">
+                    <h6>{PlaylistData.PlaylistTitle}</h6>
+                    <p>
+                      {PlaylistData.PlaylistCategory} - {index} /{" "}
+                      {PlaylistData?.videos?.length}
+                    </p>
+                  </div>
                 </div>
-            </div>
-            <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
-                {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
-                  let highlight = ""
-                  if(ID == video.id){
-                    highlight = "highlight"
-                  }
+                <div
+                  className="overflowDiv"
+                  style={{ width: "100%", overflowY: "auto", zIndex: "0" }}
+                >
+                  {PlaylistData.videos.map((video, index) => {
+                    let highlight = "";
+                    if (ID == video.id) {
+                      highlight = "highlight";
+                    }
 
-                  return (<PlaylistItem
-                  index={index+1}
-                  key = {video.id}
-                  Title = {video.VideoTitle}
-                  VideoLength = {video.VideoLength}
-                  image = {video.images.data}
-                  UName = "Ahmad"
-                  onClickFunction = {() => {navigate("/watchvideo/" + video.id.toString())}}
-                  highlight = {highlight}
-                  />);
-                })}
-                
-            </div>
-        </div>
-    </div>
-          <div className='video-Details'>
-          <h4 className='Video-Title roboto-black-italic'>{videoInfo ? videoInfo.VideoTitle :""}</h4>
-
-            <div className='description'>
-              <div>
-                <p style={{fontWeight: "bold", margin: "0", marginBottom: "5px"}}>{dateMsg}</p>
+                    return (
+                      <PlaylistItem
+                        index={index + 1}
+                        key={video.id}
+                        Title={video.VideoTitle}
+                        VideoLength={video.VideoLength}
+                        image={video.images.data}
+                        UName="Ahmad"
+                        onClickFunction={() => {
+                          navigate("/watchvideo/" + video.id.toString());
+                        }}
+                        highlight={highlight}
+                      />
+                    );
+                  })}
+                </div>
               </div>
-              {showMore ? (videoInfo ? videoInfo.VideoDescription: "") : (videoInfo ? videoInfo.VideoDescription.substring(0, 100): "")}
+            </div>
+          )}
+          <div className="video-Details">
+            <h4 className="Video-Title roboto-black-italic">
+              {videoInfo ? videoInfo.VideoTitle : ""}
+            </h4>
+
+            <div className="description">
+              <div>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    margin: "0",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {dateMsg}
+                </p>
+              </div>
+              {showMore
+                ? videoInfo
+                  ? videoInfo.VideoDescription
+                  : ""
+                : videoInfo
+                ? videoInfo.VideoDescription.substring(0, 100)
+                : ""}
               {/* <br /> */}
-              {videoInfo?.VideoDescription.length > 100 && <button className='morebutton' onClick={()=>{setShowMore(prev=>!prev)}}>{showMore ? " . . .show less" : " . . .show more"}</button>}
+              {videoInfo?.VideoDescription.length > 100 && (
+                <button
+                  className="morebutton"
+                  onClick={() => {
+                    setShowMore((prev) => !prev);
+                  }}
+                >
+                  {showMore ? " . . .show less" : " . . .show more"}
+                </button>
+              )}
             </div>
             <hr />
             <div>
-              <h5 className='comments_num'>13 Comments {comment}</h5>
-              <input name='comment' onKeyDown={handleKeyDown} id='comment' onChange={(e)=>{setcomment(e.target.value)}} className='commentinput mb-3' placeholder='Add a comment' />
+              <h5 className="comments_num">13 Comments {comment}</h5>
+              <input
+                name="comment"
+                onKeyDown={handleKeyDown}
+                id="comment"
+                onChange={(e) => {
+                  setcomment(e.target.value);
+                }}
+                className="commentinput mb-3"
+                placeholder="Add a comment"
+              />
               <Comment />
             </div>
           </div>
         </div>
-        <div className='Playlist col-lg-4 d-lg-block d-none'>
-        <div className='playlistItems'>
-            <div className='fixedTopDiv'>
-                <div className='info'>
-                <h6>{PlaylistData.PlaylistTitle}</h6>
-                <p>{PlaylistData.PlaylistCategory} - {index + 1} / {(PlaylistData?.videos?.length)}</p>
+        {PlaylistData && PlaylistData.videos && (
+          <div className="Playlist col-lg-4 d-lg-block d-none">
+            <div className="playlistItems">
+              <div className="fixedTopDiv">
+                <div className="info">
+                  <h6>{PlaylistData.PlaylistTitle}</h6>
+                  <p>
+                    {PlaylistData.PlaylistCategory} - {index + 1} /{" "}
+                    {PlaylistData?.videos?.length}
+                  </p>
                 </div>
-            </div>
-            <div className='overflowDiv' style={{width: "100%", overflowY: "auto", zIndex: "0"}}>
-            {PlaylistData && PlaylistData.videos && PlaylistData.videos.map((video,index)=>{
-
-              let highlight = ""
-                  if(ID == video.id){
-                    highlight = "highlight"
+              </div>
+              <div
+                className="overflowDiv"
+                style={{ width: "100%", overflowY: "auto", zIndex: "0" }}
+              >
+                {PlaylistData.videos.map((video, index) => {
+                  let highlight = "";
+                  if (ID == video.id) {
+                    highlight = "highlight";
                   }
 
-                  return (<PlaylistItem
-                  index={index+1}
-                  key = {video.id}
-                  Title = {video.VideoTitle}
-                  VideoLength = {video.VideoLength}
-                  image = {video.images.data}
-                  UName = "Ahmad"
-                  onClickFunction = {() => {navigate("/watchvideo/" + video.id.toString())}}
-                  highlight = {highlight}
-                  />);
+                  return (
+                    <PlaylistItem
+                      index={index + 1}
+                      key={video.id}
+                      Title={video.VideoTitle}
+                      VideoLength={video.VideoLength}
+                      image={video.images.data}
+                      UName="Ahmad"
+                      onClickFunction={() => {
+                        navigate("/watchvideo/" + video.id.toString());
+                      }}
+                      highlight={highlight}
+                    />
+                  );
                 })}
+              </div>
             </div>
-        </div>
-    </div>
-        </div>
+          </div>
+        )}
+      </div>
 
       <CustomPopup
         Visible={popup}
@@ -271,12 +322,6 @@ export default function WatchVideoes() {
         }}
         errorMessage={error}
       />
-
-      {/* <CustomPopup 
-        Visible={localLoading}
-        OnClose={() => {}}
-        errorMessage={error}
-      /> */}
     </>
   );
 }
