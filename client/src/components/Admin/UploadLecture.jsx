@@ -95,12 +95,48 @@ export default function UploadLecture() {
 
   const handlePlaylistData = (e) => {
     const { name, value } = e.target;
+    if(name === "PlaylistTitle"){
+      if (value.length <= maxTitleLength) {
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: value,
+          };
+        });
+      } else {
+        const shortened = value.substring(0, maxTitleLength);
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: shortened,
+          };
+        });
+    }
+   } else if(name === "PlaylistDescription"){
+      if (value.length <= maxDescriptionLength) {
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: value,
+          };
+        });
+      } else {
+        const shortened = value.substring(0, maxDescriptionLength);
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: shortened,
+          };
+        });
+    }
+  } else {
     setPlaylistFormData((prev) => {
       return {
         ...prev,
         [name]: value,
       };
     });
+    }
   };
 
   const handleFileChange = (e) => {
@@ -681,6 +717,19 @@ export default function UploadLecture() {
                       onChange={handlePlaylistData}
                       required
                     />
+                    {playlistFormData.PlaylistTitle && (
+                      <p
+                        style={{
+                          fontSize: "10px",
+                          textAlign: "right",
+                          margin: "0",
+                          marginTop: "5px",
+                        }}
+                      >
+                        {100 - playlistFormData.PlaylistTitle.length}/{maxTitleLength} Characters
+                        Remaining
+                      </p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label
@@ -698,6 +747,19 @@ export default function UploadLecture() {
                       value={playlistFormData.PlaylistDescription}
                       onChange={handlePlaylistData}
                     ></textarea>
+                    {playlistFormData.PlaylistDescription && (
+                      <p
+                        style={{
+                          fontSize: "10px",
+                          textAlign: "right",
+                          margin: "0",
+                          marginTop: "5px",
+                        }}
+                      >
+                        {1000 - playlistFormData.PlaylistDescription.length}/{maxDescriptionLength} Characters
+                        Remaining
+                      </p>
+                    )}
                   </div>
                   <label for="lectureClassRank">PlayList Class Rank</label>
                   <div className="d-flex ">
