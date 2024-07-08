@@ -24,7 +24,7 @@ export const GetTeacherClassinfo = createAsyncThunk("GetTeacherClassinfo", async
     }
 });
 export const SubmitAttendance = createAsyncThunk("SubmitAttendance", async (selectedRows,{ getState , rejectWithValue  }) => {
-    const state = getState()
+  const state = getState()
     const { teacherData } = state.studentAttendanceTeacher
     if(!teacherData.classes){
       return rejectWithValue("No teacher info")
@@ -56,41 +56,6 @@ export const SubmitAttendance = createAsyncThunk("SubmitAttendance", async (sele
       return rejectWithValue(handleError(error))
     }
 });
-
-// const handleSubmit = async () => {
-//   setErrorMessage("Marking Attendance. . .");
-//   setLoading(true);
-//   try {
-//     let dataToSend = {
-//       ClassName: "Teacher's Class name",
-//       ClassRank: "class rank of teacher's class from DB",
-//       campus: "Teacher's campus from DB",
-//       selectedRows: selectedRows,
-//     };
-//     const response = await axios.post(
-//       "http://127.0.0.1:8000/api/studentattendance",
-//       dataToSend,
-//       {
-//         headers: {
-//           "X-CSRF-TOKEN": CSRFToken,
-//           "Content-Type": "application/json",
-//           "API-TOKEN": "IT is to secret you cannot break it :)",
-//         },
-//       }
-//     );
-//     if (response.data.success == true) {
-//       setErrorMessage(response.data.message);
-//       setPopup(true);
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     setErrorMessage(error.message);
-//     setPopup(true);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
 
 export const GetStudentInformation = createAsyncThunk("GetStudentInformation", async (_,{ getState , rejectWithValue  }) => {
     const state = getState()
@@ -147,13 +112,8 @@ const initialState = {
       setPopup: (state, action) => {
         state.popup = !!action.payload
       },
-      setUser: (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload))
-      },
-      toggleRememberMe: (state) => {
-        state.rememberMe = !state.rememberMe
+      setLoading: (state, action) => {
+        state.loading = !!action
       }
     },
     extraReducers: (builder) => {
@@ -202,11 +162,9 @@ const initialState = {
   })
   
   export const {
-    logout,
-    setUser,
     setError,
     setPopup,
-    toggleRememberMe,
+    setLoading,
   } = studentAttendanceSliceTeacher.actions;
   
   export default studentAttendanceSliceTeacher.reducer;

@@ -5,25 +5,24 @@ import "../../assets/css/Teacher.css";
 import "../../assets/css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
 import "../../assets/css/studentInformation/all.min.css";
-import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import "../../assets/css/StudentAttendance.css";
 import CustomFooter from "../Admin/CustomFooter";
 import { Tooltip } from "@mui/material";
-import Popup from "react-animated-popup";
 import { useDispatch, useSelector } from "react-redux";
-import { GetStudentInformation, GetTeacherClassinfo, SubmitAttendance, setError, setPopup } from "../../redux/slices/Teacher/StudentAttendance";
+import { GetStudentInformation, GetTeacherClassinfo, SubmitAttendance, setError, setLoading, setPopup } from "../../redux/slices/Teacher/StudentAttendance";
 import CustomPopup from "../common/CustomPopup";
+import LoadingOverlay from "../common/LoadingOverlay";
+import axios from "axios";
 
 export default function StudentAttendance() {
   const navigate = useNavigate();
 
   const [filteredRows, setFilteredRows] = useState([]);
-  const [Classes, SetClasses] = useState([]);
   const [search, setSearch] = useState("");
 
-  const { CSRFToken } = useSelector((state) => state.auth);
   const { teacherData, studentsData, loading, popup, error } = useSelector((state) => state.studentAttendanceTeacher);
+  const { CSRFToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch()
 
   const [localLoading, setLocalLoading] = useState(false)
@@ -44,12 +43,8 @@ export default function StudentAttendance() {
     dispatch(SubmitAttendance(selectedRows))
   }
 
-
-
-
   useEffect(()=>{
     if(teacherData){
-      console.log("teacherData true: ", teacherData);
       dispatch(GetStudentInformation())
     }
   }, [teacherData])
@@ -110,6 +105,8 @@ export default function StudentAttendance() {
   }, [search, rows]);
 
   return (
+    <>
+      <LoadingOverlay loading={localLoading} />
     <div className="studentAttendanceMainDiv">
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
@@ -188,5 +185,6 @@ export default function StudentAttendance() {
         </div>
       </div>
     </div>
+  </>
   );
 }
