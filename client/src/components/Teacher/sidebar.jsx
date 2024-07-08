@@ -27,26 +27,29 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
 
-  const classesData = {
-    title: "Classes",
-    icon: <SiGoogleclassroom />,
+  const lecturesData = {
+    title: "Lectures",
+    icon: <GiTeacher />,
     iconClosed: <RiArrowDropDownLine />,
     iconOpened: <MdKeyboardArrowUp />,
 
     subNav: [
       {
-        title: "Create Class",
-        path: "/createclass",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
+        title: "Upload Lecture",
+        path: "/uploadlecture",
+        icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
       },
       {
-        title: "Manage Classes",
-        path: "/manageclasses",
-        icon: <SiGoogleclassroom />,
+        title: "Browse Lectures",
+        path: "/selectvideo",
+        icon: (
+          <GoVideo
+            style={{ width: "20px", height: "20px" }}
+          />
+        ),
       },
     ],
   };
-
 
   return (
     <>
@@ -94,7 +97,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
               </Link>
               <span className="tooltip">Mark Attendance</span>
             </li>
-            {/* <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} /> */}
+            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={0} />
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
                 <BsPersonFill

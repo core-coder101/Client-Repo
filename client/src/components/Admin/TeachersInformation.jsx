@@ -17,6 +17,7 @@ import { ReactBarcode } from "react-jsbarcode";
 import converter from 'number-to-words'
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
+import LoadingOverlay from "../common/LoadingOverlay";
 
 export default function TeachersInformation() {
   const navigate = useNavigate();
@@ -227,8 +228,15 @@ export default function TeachersInformation() {
     }
   };
 
+  const [localLoading, setLocalLoading] = useState(false)
+  useEffect(()=>{
+    setLocalLoading(loading)
+  }, [loading])
+
   return (
-    <div>
+    <>
+      <LoadingOverlay loading={localLoading} />
+    <div style={{padding: "15px 20px"}}>
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
           <FaRegArrowAltCircleLeft
@@ -509,27 +517,9 @@ export default function TeachersInformation() {
               <h5 style={{ color: "white", margin: "0" }}>{errorMessage}</h5>
             </div>
           </Popup>
-          <Popup
-            visible={loading}
-            onClose={() => {}}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5
-                dangerouslySetInnerHTML={{ __html: errorMessage }}
-                style={{ color: "white", margin: "0" }}
-              ></h5>
-            </div>
-          </Popup>
         </div>
       </div>
     </div>
+    </>
   );
 }

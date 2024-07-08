@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import NewRouter from "./components/common/NewRouter";
 import { logout,fetchCSRFToken, UserData } from "./redux/slices/authSlice";
 import { Navigate } from "react-router-dom";
+import { GetTeacherClassinfo } from "./redux/slices/Teacher/StudentAttendance";
 
 export default function App() {
   const dispatch = useDispatch();
-  const { CSRFToken, rememberMe } = useSelector((state) => state.auth);
+  const { CSRFToken, rememberMe, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if(!CSRFToken){
@@ -35,6 +36,9 @@ export default function App() {
     
     if (userFromLocalStorage && userFromLocalStorage.token) {
       dispatch(UserData())
+      if(userFromLocalStorage.Role === "Teacher"){
+        dispatch(GetTeacherClassinfo())
+      }
     }
   }, [dispatch]);
 
