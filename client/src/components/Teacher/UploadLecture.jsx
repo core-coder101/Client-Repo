@@ -598,44 +598,6 @@ export default function UploadLecture() {
               </p>
             </button>
           )}
-          
-
-          <CustomPopup 
-            Visible={popup}
-            OnClose={() => {
-              dispatch(setPopup(false));
-              setTimeout(() => {
-                dispatch(setError(null));
-              }, 400);
-            }}
-            errorMessage={error}
-          />
-          {progress ? <Popup
-            visible={localLoading}
-            onClose={() => {}}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-column-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5
-                dangerouslySetInnerHTML={{ __html: error }}
-                style={{ color: "white", margin: "0" }}
-              ></h5>
-
-                <ProgressBar
-                  style={{ height: "20px", marginTop: "15px" }}
-                  now={progress}
-                  label={`${progress}%`}
-                />
-            </div>
-          </Popup> : null}
-          <div>
           <div className="popup">
             <Popup
               animationDuration={400}
@@ -650,7 +612,6 @@ export default function UploadLecture() {
                 backgroundColor: "rgba(207, 204, 204)",
                 boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
                 padding: "30px 20px",
-                position: "fixed"
               }}
             >
               <div
@@ -768,6 +729,45 @@ export default function UploadLecture() {
               </div>
             </Popup>
           </div>
+
+          <CustomPopup 
+            Visible={popup}
+            OnClose={() => {
+              dispatch(setPopup(false));
+              setTimeout(() => {
+                dispatch(setError(null));
+              }, 400);
+            }}
+            errorMessage={error}
+          />
+          <div className="popup">
+            {progress ? <Popup
+              visible={localLoading}
+              onClose={() => {}}
+              style={{
+                backgroundColor: "rgba(17, 16, 29, 0.95)",
+                boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
+                padding: "40px 20px",
+              }}
+            >
+              <div
+                className="d-column-flex justify-content-center align-items-center"
+                style={{ width: "max-content", height: "100%", padding: "0" }}
+              >
+                <h5
+                  dangerouslySetInnerHTML={{ __html: error }}
+                  style={{ color: "white", margin: "0" }}
+                ></h5>
+
+                  <ProgressBar
+                    style={{ height: "20px", marginTop: "15px" }}
+                    now={progress}
+                    label={`${progress}%`}
+                  />
+              </div>
+            </Popup> : null}
+          </div>
+          <div>
             <button className="btn btn-primary w-100 mt-2" type="submit">
               Upload
             </button>

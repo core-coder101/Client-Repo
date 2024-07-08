@@ -24,8 +24,15 @@ import WatchVideoes from "../Admin/WatchVideos.jsx";
 import SelectVideo from "../Admin/SelectVideo.jsx";
 import StudentAttendance from "../Admin/StudentAttendance.jsx";
 import StudentAttendanceForTeacher from "../Teacher/StudentAttendance.jsx"
+import UploadLectureForTeacher from "../Teacher/UploadLecture.jsx"
 
 const AllRoutes = [
+  {
+    path: "login",
+    component: <Login />,
+    type: "Public",
+    authentication: "none",
+  },
   {
     path: "",
     component: <Dashboard />,
@@ -39,12 +46,6 @@ const AllRoutes = [
     type: "Student",
     authentication: "role",
     default: true,
-  },
-  {
-    path: "login",
-    component: <Login />,
-    type: "Public",
-    authentication: "none",
   },
   {
     path: "manageclasses",
@@ -166,6 +167,24 @@ const AllRoutes = [
     type: "Teacher",
     authentication: "role",
     default: true,
+  },
+  {
+    path: "uploadlecture",
+    component: <UploadLectureForTeacher />,
+    type: "Teacher",
+    authentication: "role",
+  },
+  {
+    path: "SelectVideo",
+    component: <SelectVideo />,
+    type: "Teacher",
+    authentication: "role",
+  },
+  {
+    path: "watchvideo/:ID",
+    component: <WatchVideoes />,
+    type: "Teacher",
+    authentication: "role",
   },
 ];
 

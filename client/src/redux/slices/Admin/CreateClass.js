@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleError } from "../../errorHandler";
+import { handleResponse } from "../../responseHandler";
 
 export const GetClassDataById = createAsyncThunk(
   "GetClassDataById",
@@ -83,9 +84,9 @@ export const createClass = createAsyncThunk(
         }
       );
       if (data.success == true) {
-        return;
+        return
       } else {
-        return rejectWithValue(data?.message || "Failed to create class");
+        return rejectWithValue(handleResponse(data))
       }
     } catch (error) {
       console.log(error.message);
@@ -192,6 +193,7 @@ const createClassSlice = createSlice({
         state.popup = true;
       })
       .addCase(GetTeachers.pending, (state) => {
+        state.popup = false
         state.error = "Loading teachers' data. . .";
         state.loading = true;
       })

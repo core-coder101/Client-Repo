@@ -7,6 +7,7 @@ import Popup from "react-animated-popup";
 import { useDispatch, useSelector } from "react-redux";
 import { GetClassDataById, GetTeachers, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/Admin/CreateClass";
 import LoadingOverlay from "../common/LoadingOverlay";
+import CustomPopup from "../common/CustomPopup";
 
 export default function CreateClass() {
   const { ID } = useParams();
@@ -19,6 +20,12 @@ export default function CreateClass() {
     ClassTeacherID: "",
     ClassID: "",
   });
+
+  const [localPopup, setLocalPopup] = useState(false)
+
+  useEffect(()=>{
+    setLocalPopup(popup)
+  }, [popup])
 
   const [filteredTeachers, setFilteredTeachers] = useState([])
 
@@ -36,6 +43,12 @@ export default function CreateClass() {
       dispatch(setPopup(true))
     } else {
       setFilteredTeachers(filtered)
+      setFormData(prev => {
+        return {
+          ...prev,
+          ClassTeacherID: filtered[0].id
+        }
+      })
     }
 
   }, [teachersData])
@@ -66,22 +79,13 @@ export default function CreateClass() {
   }, [ID]);
 
   useEffect(() => {
-    dispatch(GetTeachers()).unwrap().then((result)=>{
-      setFormData((prev) => ({
-        ...prev,
-        ClassTeacherID: JSON.stringify(result[0].id),
-      }))
-      return
-    }).catch(()=>{
-      return
-    })
+    dispatch(GetTeachers())
   }, [])
 
   // using the redux loading state directly does not work properly
-  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [localLoading, setLocalloading] = useState(false)
   useEffect(()=>{
-    console.log("createClass loading: ",loading);
-    setLoadingOpen(loading)
+    setLocalloading(loading)
   }, [loading])
 
   const handleChange = (e) => {
@@ -95,16 +99,18 @@ export default function CreateClass() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.ClassID == ""){
-      dispatch(createClass(formData)).unwrap().then( (result) => {
-        setFormData((prev) => {
-          return {
-            ...prev,
+      dispatch(createClass(formData)).unwrap().then( () => {
+        const filtered = filteredTeachers.filter((teacher) => {
+          return teacher.id != formData.ClassTeacherID
+        })
+        setFilteredTeachers(filtered)
+        setFormData({
             ClassName: "",
             ClassRank: "",
             ClassFloor: "",
+            ClassTeacherID: filtered[0],
             ClassID: "",
-          };
-        });
+        })
         return
       }).catch(()=>{
         return
@@ -132,7 +138,7 @@ export default function CreateClass() {
 
   return (
     <>
-    <LoadingOverlay loading={loading} />
+    <LoadingOverlay loading={localLoading} />
     <div className="createClass">
       <div className="mt-2 mb-4">
         <div className="headingNavbar d-flex justify-content-center">
@@ -213,28 +219,16 @@ export default function CreateClass() {
                 })}
             </select>
           </div>
-          <Popup
-            animationDuration={400}
-            visible={popup}
-            onClose={() => {
+          <CustomPopup
+            Visible={localPopup}
+            OnClose={() => {
               dispatch(setPopup(false))
               setTimeout(() => {
                 dispatch(setError(null))
               }, 400);
             }}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5 style={{ color: "white", margin: "0" }}>{error}</h5>
-            </div>
-          </Popup>
+            errorMessage={error}
+          />
           <div>
             <button className="btn btn-primary w-100" type="submit">
               Submit
