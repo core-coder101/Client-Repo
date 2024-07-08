@@ -27,6 +27,7 @@ export default function UploadLecture() {
   const navigate = useNavigate();
   const { popup, classesData, loading, error, playlistData, progress } =
     useSelector((state) => state.uploadLecture);
+  const { teacherData } = useSelector(state => state.studentAttendanceTeacher) 
   const dispatch = useDispatch();
 
   const topRef = useRef(null);
@@ -60,7 +61,7 @@ export default function UploadLecture() {
 
   const [filterQuery, setFilterQuery] = useState({
     ClassRank: "",
-    subject: names[0],
+    subject: "",
   });
 
   const [formData, setFormData] = useState({
@@ -95,12 +96,48 @@ export default function UploadLecture() {
 
   const handlePlaylistData = (e) => {
     const { name, value } = e.target;
+    if(name === "PlaylistTitle"){
+      if (value.length <= maxTitleLength) {
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: value,
+          };
+        });
+      } else {
+        const shortened = value.substring(0, maxTitleLength);
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: shortened,
+          };
+        });
+    }
+   } else if(name === "PlaylistDescription"){
+      if (value.length <= maxDescriptionLength) {
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: value,
+          };
+        });
+      } else {
+        const shortened = value.substring(0, maxDescriptionLength);
+        setPlaylistFormData((prev) => {
+          return {
+            ...prev,
+            [name]: shortened,
+          };
+        });
+    }
+  } else {
     setPlaylistFormData((prev) => {
       return {
         ...prev,
         [name]: value,
       };
     });
+    }
   };
 
   const handleFileChange = (e) => {
@@ -157,6 +194,43 @@ export default function UploadLecture() {
       };
     });
   };
+
+  useEffect(()=>{
+    if(teacherData && teacherData.users.subjects.length > 0){
+      setFilterQuery(prev => {
+        return {
+          ...prev,
+          subject: teacherData.users.subjects[0].SubjectName,
+        }
+    })
+  }
+}, [teacherData])
+
+  useEffect(()=>{
+    if(teacherData && teacherData.classes.length > 0){
+      setFilterQuery(prev => {
+        return {
+          ...prev,
+          ClassRank: teacherData.classes[0].ClassRank,
+        }
+      })
+      setPlaylistFormData((prev) => {
+        return {
+          ...prev,
+          PlaylistRank: parseInt(teacherData.classes[0].ClassRank),
+        };
+      });
+      
+      if (Playlist) {
+        setFormData((prev) => {
+          return {
+            ...prev,
+            VideoPlaylistID: classesData[0].id,
+          };
+        });
+      }
+  }
+}, [teacherData])
 
   useEffect(() => {
     if (previewUrl) {
@@ -238,7 +312,6 @@ export default function UploadLecture() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "VideoPlaylistID") {
-      console.log("SETTING VideoPlaylistID");
       setFormData((prev) => {
         return {
           ...prev,
@@ -292,32 +365,6 @@ export default function UploadLecture() {
       },
     },
   };
-
-  useEffect(() => {
-    if (classesData && classesData.length > 0) {
-      if (Playlist) {
-        console.log("Setting VideoPlaylistID to: ", classesData[0].id);
-        setFormData((prev) => {
-          return {
-            ...prev,
-            VideoPlaylistID: classesData[0].id,
-          };
-        });
-      }
-      setPlaylistFormData((prev) => {
-        return {
-          ...prev,
-          PlaylistRank: parseInt(classesData[0].ClassRank),
-        };
-      });
-      setFilterQuery((prev) => {
-        return {
-          ...prev,
-          ClassRank: parseInt(classesData[0].ClassRank),
-        };
-      });
-    }
-  }, [classesData]);
 
   useEffect(() => {
     if (playlistData && playlistData.length > 0) {
@@ -525,9 +572,9 @@ export default function UploadLecture() {
                     value={filterQuery.ClassRank}
                     onChange={handleFilterChange}
                   >
-                    {classesData &&
+                    {teacherData && teacherData.classes &&
                       Array.from(
-                        new Set(classesData.map((Class) => Class.ClassRank))
+                        new Set(teacherData.classes.map((Class) => Class.ClassRank))
                       ).map((rank) => (
                         <option key={rank} value={rank}>
                           {rank}
@@ -544,13 +591,13 @@ export default function UploadLecture() {
                     onChange={handleFilterChange}
                     required
                   >
-                    {names.map((subject, index) => {
+                    {teacherData ? teacherData.users.subjects.map((subject, index) => {
                       return (
-                        <option key={index} value={subject}>
-                          {subject}
+                        <option key={index} value={subject.SubjectName}>
+                          {subject.SubjectName}
                         </option>
                       );
-                    })}
+                    }) : null}
                   </select>
                 </div>
               </div>
@@ -642,6 +689,19 @@ export default function UploadLecture() {
                       onChange={handlePlaylistData}
                       required
                     />
+                    {playlistFormData.PlaylistTitle && (
+                      <p
+                        style={{
+                          fontSize: "10px",
+                          textAlign: "right",
+                          margin: "0",
+                          marginTop: "5px",
+                        }}
+                      >
+                        {100 - playlistFormData.PlaylistTitle.length}/{maxTitleLength} Characters
+                        Remaining
+                      </p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label
@@ -659,6 +719,19 @@ export default function UploadLecture() {
                       value={playlistFormData.PlaylistDescription}
                       onChange={handlePlaylistData}
                     ></textarea>
+                    {playlistFormData.PlaylistDescription && (
+                      <p
+                        style={{
+                          fontSize: "10px",
+                          textAlign: "right",
+                          margin: "0",
+                          marginTop: "5px",
+                        }}
+                      >
+                        {1000 - playlistFormData.PlaylistDescription.length}/{maxDescriptionLength} Characters
+                        Remaining
+                      </p>
+                    )}
                   </div>
                   <label for="lectureClassRank">PlayList Class Rank</label>
                   <div className="d-flex ">
@@ -669,9 +742,9 @@ export default function UploadLecture() {
                       value={playlistFormData.PlaylistRank}
                       onChange={handlePlaylistData}
                     >
-                      {classesData &&
+                      {teacherData && teacherData.classes &&
                         Array.from(
-                          new Set(classesData.map((Class) => Class.ClassRank))
+                          new Set(teacherData.classes.map((Class) => Class.ClassRank))
                         ).map((rank) => (
                           <option key={rank} value={parseInt(rank)}>
                             {rank}
@@ -708,9 +781,9 @@ export default function UploadLecture() {
                         required
                         name="playlistCategory"
                       >
-                        {names.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
+                        {teacherData && teacherData.users.subjects.map((Subject) => (
+                          <MenuItem key={Subject.SubjectName} value={Subject.SubjectName}>
+                            {Subject.SubjectName}
                           </MenuItem>
                         ))}
                       </Select>

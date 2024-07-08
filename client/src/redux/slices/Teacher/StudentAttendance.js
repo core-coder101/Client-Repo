@@ -15,7 +15,7 @@ export const GetTeacherClassinfo = createAsyncThunk("GetTeacherClassinfo", async
         },
       });
       if(data.success == true){
-        return data.data
+        return data.data[0]
       } else{
         return rejectWithValue(handleResponse(data.message) || "Failed to fetch User Data")
       }
@@ -60,7 +60,7 @@ export const SubmitAttendance = createAsyncThunk("SubmitAttendance", async (sele
 export const GetStudentInformation = createAsyncThunk("GetStudentInformation", async (_,{ getState , rejectWithValue  }) => {
     const state = getState()
     const { teacherData } = state.studentAttendanceTeacher
-    if(!teacherData.classes.length > 0){
+    if(!teacherData.classes?.length > 0){
       return rejectWithValue("You are not assigned a class yet")
     }
     try {

@@ -46,84 +46,6 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
       },
     ],
   };
-  const studentsData = {
-    title: "Students",
-    icon: <PiStudentFill />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Add Student",
-        path: "/addstudent",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Students Information",
-        path: "/studentsinformation",
-        icon: (
-          <IoInformationCircleOutline
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-      {
-        title: "Students Attendance",
-        path: "/studentattendance",
-        icon: (
-          <IoIosCheckmarkCircleOutline
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
-  const teachersData = {
-    title: "Teachers",
-    icon: <FaChalkboardTeacher />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Add Teacher",
-        path: "/addteacher",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Teachers Information",
-        path: "/teachersinformation",
-        icon: (
-          <IoInformationCircleOutline
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
-  const lecturesData = {
-    title: "Lectures",
-    icon: <GiTeacher />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Upload Lecture",
-        path: "/uploadlecture",
-        icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Browse Lectures",
-        path: "/selectvideo",
-        icon: (
-          <GoVideo
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
 
 
   return (
@@ -161,10 +83,18 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
               </Link>
               <span className="tooltip">Dashboard</span>
             </li>
+            <li>
+              <Link onClick={closeSidebarForMobile} to="/selectvideo">
+                <i className="bx" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                <GoVideo
+                  style={{ width: "20px", height: "20px" }}
+                />
+                </i>
+                <span className="links_name">Browse Lectures</span>
+              </Link>
+              <span className="tooltip">Browse Lectures</span>
+            </li>
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={teachersData} key={1} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={studentsData} key={2} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={3} />
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
                 <BsPersonFill

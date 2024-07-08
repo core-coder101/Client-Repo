@@ -186,6 +186,12 @@ const AllRoutes = [
     type: "Teacher",
     authentication: "role",
   },
+  {
+    path: "SelectVideo",
+    component: <SelectVideo />,
+    type: "Student",
+    authentication: "role",
+  },
 ];
 
 const AllTemplates = [
