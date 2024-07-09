@@ -10,12 +10,12 @@ export const GetClassDataById = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/GetClassData?ID=${ID}`,
+        `${import.meta.env.VITE_HOST}api/GetClassData?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -39,12 +39,12 @@ export const GetTeachers = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/GetTeacher`,
+        `${import.meta.env.VITE_HOST}api/GetTeacher`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -73,20 +73,20 @@ export const createClass = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/CreateClass`,
+        `${import.meta.env.VITE_HOST}api/CreateClass`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
       if (data.success == true) {
-        return
+        return;
       } else {
-        return rejectWithValue(handleResponse(data))
+        return rejectWithValue(handleResponse(data));
       }
     } catch (error) {
       console.log(error.message);
@@ -105,13 +105,13 @@ export const UpdateClass = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/UpdateClass`,
+        `${import.meta.env.VITE_HOST}api/UpdateClass`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -193,7 +193,7 @@ const createClassSlice = createSlice({
         state.popup = true;
       })
       .addCase(GetTeachers.pending, (state) => {
-        state.popup = false
+        state.popup = false;
         state.error = "Loading teachers' data. . .";
         state.loading = true;
       })

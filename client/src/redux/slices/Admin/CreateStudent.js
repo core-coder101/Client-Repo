@@ -71,13 +71,13 @@ export const Createstudent = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/CreateStudent`,
+        `${import.meta.env.VITE_HOST}api/CreateStudent`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -104,13 +104,13 @@ export const UpdateStudent = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/UpdateStudent`,
+        `${import.meta.env.VITE_HOST}api/UpdateStudent`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
