@@ -5,92 +5,49 @@ import "../../assets/css/Teacher.css";
 import "../../assets/css/studentInformation.css";
 import { CiSearch } from "react-icons/ci";
 import "../../assets/css/studentInformation/all.min.css";
-import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import "../../assets/css/StudentAttendance.css";
 import CustomFooter from "../Admin/CustomFooter";
 import { Tooltip } from "@mui/material";
-import Popup from "react-animated-popup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { GetStudentInformation, GetTeacherClassinfo, SubmitAttendance, setError, setLoading, setPopup } from "../../redux/slices/Teacher/StudentAttendance";
+import CustomPopup from "../common/CustomPopup";
+import LoadingOverlay from "../common/LoadingOverlay";
+import axios from "axios";
 
 export default function StudentAttendance() {
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
-  const [Classes, SetClasses] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [popup, setPopup] = useState(false);
-  const [StudentInformation, SetStudentInformation] = useState(null);
   const [search, setSearch] = useState("");
 
-  const { CSRFToken, user } = useSelector((state) => state.auth);
+  const { teacherData, studentsData, loading, popup, error } = useSelector((state) => state.studentAttendanceTeacher);
+  const { CSRFToken } = useSelector((state) => state.auth);
+  const dispatch = useDispatch()
 
-  if (user.token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+  const [localLoading, setLocalLoading] = useState(false)
+  const [localPopup, setLocalPopup] = useState(false)
+
+  useEffect(()=>{
+    setLocalLoading(loading)
+    setLocalPopup(popup)
+  }, [loading, popup])
+
+  useEffect(()=>{
+    if(!teacherData){
+      dispatch(GetTeacherClassinfo()) 
+    }
+  }, [])
+
+  const handleSubmit = () => {
+    dispatch(SubmitAttendance(selectedRows))
   }
 
-  const handleSubmit = async () => {
-    setErrorMessage("Marking Attendance. . .");
-    setLoading(true);
-    try {
-      let dataToSend = {
-        ClassName: "Teacher's Class name",
-        ClassRank: "class rank of teacher's class from DB",
-        campus: "Teacher's campus from DB",
-        selectedRows: selectedRows,
-      };
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/studentattendance",
-        dataToSend,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      if (response.data.success == true) {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(error.message);
-      setPopup(true);
-    } finally {
-      setLoading(false);
+  useEffect(()=>{
+    if(teacherData){
+      dispatch(GetStudentInformation())
     }
-  };
-
-
-  const GetStudentInformation = async () => {
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/GetStudentInformation",
-        {
-          campus: "Main Campus",
-          ClassRank: 1,
-          ClassName: "Blue",
-        },
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-      SetStudentInformation(response.data.data || []);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Get Student Info");
-      setPopup(true);
-    }
-  };
-
-
+  }, [teacherData])
 
   const columns = [
     { field: "ID", headerName: "Sr no.", width: 75 },
@@ -120,8 +77,8 @@ export default function StudentAttendance() {
 
   const [rows, setRows] = useState([]);
   useEffect(() => {
-    if (StudentInformation && StudentInformation.length > 0) {
-      let mapped = StudentInformation.map((student, index) => ({
+    if (studentsData && studentsData.length > 0) {
+      let mapped = studentsData.map((student, index) => ({
         id: student.users.id,
         ID: index + 1,
         StudentName: student.users.name,
@@ -134,7 +91,7 @@ export default function StudentAttendance() {
       setRows(mapped);
       setFilteredRows(mapped);
     }
-  }, [StudentInformation]);
+  }, [studentsData]);
   const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
@@ -148,6 +105,8 @@ export default function StudentAttendance() {
   }, [search, rows]);
 
   return (
+    <>
+      <LoadingOverlay loading={localLoading} />
     <div className="studentAttendanceMainDiv">
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
@@ -163,25 +122,22 @@ export default function StudentAttendance() {
       </div>
       <form>
         <div className="inputsDiv">
-            
-          <div className="filterDataDiv">
-            <Tooltip title="Search on this page" arrow>
-              <input
-                type="text"
-                className="searchInput"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-                placeholder="Search Student"
-              ></input>
-            </Tooltip>
-            <Tooltip title="Search the Database" arrow>
-              <button type="button" onClick={GetStudentInformation}>
-                <CiSearch color="white" />
-              </button>
-            </Tooltip>
-          </div>
+          <Tooltip title="Search students from your class" arrow>
+            <div className="filterDataDiv">
+                <input
+                  type="text"
+                  className="searchInput"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                  placeholder="Search Student"
+                ></input>
+                <button type="button">
+                  <CiSearch color="white" />
+                </button>
+            </div>
+          </Tooltip>
         </div>
       </form>
       <div className="tableDiv attendacnceDiv">
@@ -193,47 +149,16 @@ export default function StudentAttendance() {
             flexDirection: "column",
           }}
         >
-          <Popup
-            animationDuration={400}
-            visible={popup}
-            onClose={() => {
-              setPopup(false);
+          <CustomPopup
+            Visible={localPopup}
+            OnClose={() => {
+              dispatch(setPopup(false))
               setTimeout(() => {
-                setErrorMessage("");
+                dispatch(setError(""))
               }, 400);
             }}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5 style={{ color: "white", margin: "0" }}>{errorMessage}</h5>
-            </div>
-          </Popup>
-          <Popup
-            visible={loading}
-            onClose={() => {}}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5
-                dangerouslySetInnerHTML={{ __html: errorMessage }}
-                style={{ color: "white", margin: "0" }}
-              ></h5>
-            </div>
-          </Popup>
+            errorMessage={error}
+          />
           <DataGrid
             rows={filteredRows}
             columns={columns}
@@ -260,5 +185,6 @@ export default function StudentAttendance() {
         </div>
       </div>
     </div>
+  </>
   );
 }

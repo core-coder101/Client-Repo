@@ -27,6 +27,7 @@ export default function UploadLecture() {
   const navigate = useNavigate();
   const { popup, classesData, loading, error, playlistData, progress } =
     useSelector((state) => state.uploadLecture);
+  const { teacherData } = useSelector(state => state.studentAttendanceTeacher) 
   const dispatch = useDispatch();
 
   const topRef = useRef(null);
@@ -60,7 +61,7 @@ export default function UploadLecture() {
 
   const [filterQuery, setFilterQuery] = useState({
     ClassRank: "",
-    subject: names[0],
+    subject: "",
   });
 
   const [formData, setFormData] = useState({
@@ -194,6 +195,43 @@ export default function UploadLecture() {
     });
   };
 
+  useEffect(()=>{
+    if(teacherData && teacherData.users.subjects.length > 0){
+      setFilterQuery(prev => {
+        return {
+          ...prev,
+          subject: teacherData.users.subjects[0].SubjectName,
+        }
+    })
+  }
+}, [teacherData])
+
+  useEffect(()=>{
+    if(teacherData && teacherData.classes.length > 0){
+      setFilterQuery(prev => {
+        return {
+          ...prev,
+          ClassRank: teacherData.classes[0].ClassRank,
+        }
+      })
+      setPlaylistFormData((prev) => {
+        return {
+          ...prev,
+          PlaylistRank: parseInt(teacherData.classes[0].ClassRank),
+        };
+      });
+      
+      if (Playlist) {
+        setFormData((prev) => {
+          return {
+            ...prev,
+            VideoPlaylistID: classesData[0].id,
+          };
+        });
+      }
+  }
+}, [teacherData])
+
   useEffect(() => {
     if (previewUrl) {
       setClickable("");
@@ -274,7 +312,6 @@ export default function UploadLecture() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "VideoPlaylistID") {
-      console.log("SETTING VideoPlaylistID");
       setFormData((prev) => {
         return {
           ...prev,
@@ -328,32 +365,6 @@ export default function UploadLecture() {
       },
     },
   };
-
-  useEffect(() => {
-    if (classesData && classesData.length > 0) {
-      if (Playlist) {
-        console.log("Setting VideoPlaylistID to: ", classesData[0].id);
-        setFormData((prev) => {
-          return {
-            ...prev,
-            VideoPlaylistID: classesData[0].id,
-          };
-        });
-      }
-      setPlaylistFormData((prev) => {
-        return {
-          ...prev,
-          PlaylistRank: parseInt(classesData[0].ClassRank),
-        };
-      });
-      setFilterQuery((prev) => {
-        return {
-          ...prev,
-          ClassRank: parseInt(classesData[0].ClassRank),
-        };
-      });
-    }
-  }, [classesData]);
 
   useEffect(() => {
     if (playlistData && playlistData.length > 0) {
@@ -561,9 +572,9 @@ export default function UploadLecture() {
                     value={filterQuery.ClassRank}
                     onChange={handleFilterChange}
                   >
-                    {classesData &&
+                    {teacherData && teacherData.classes &&
                       Array.from(
-                        new Set(classesData.map((Class) => Class.ClassRank))
+                        new Set(teacherData.classes.map((Class) => Class.ClassRank))
                       ).map((rank) => (
                         <option key={rank} value={rank}>
                           {rank}
@@ -580,13 +591,13 @@ export default function UploadLecture() {
                     onChange={handleFilterChange}
                     required
                   >
-                    {names.map((subject, index) => {
+                    {teacherData ? teacherData.users.subjects.map((subject, index) => {
                       return (
-                        <option key={index} value={subject}>
-                          {subject}
+                        <option key={index} value={subject.SubjectName}>
+                          {subject.SubjectName}
                         </option>
                       );
-                    })}
+                    }) : null}
                   </select>
                 </div>
               </div>
@@ -634,44 +645,6 @@ export default function UploadLecture() {
               </p>
             </button>
           )}
-          
-
-          <CustomPopup 
-            Visible={popup}
-            OnClose={() => {
-              dispatch(setPopup(false));
-              setTimeout(() => {
-                dispatch(setError(null));
-              }, 400);
-            }}
-            errorMessage={error}
-          />
-          {progress ? <Popup
-            visible={localLoading}
-            onClose={() => {}}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-column-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5
-                dangerouslySetInnerHTML={{ __html: error }}
-                style={{ color: "white", margin: "0" }}
-              ></h5>
-
-                <ProgressBar
-                  style={{ height: "20px", marginTop: "15px" }}
-                  now={progress}
-                  label={`${progress}%`}
-                />
-            </div>
-          </Popup> : null}
-          <div>
           <div className="popup">
             <Popup
               animationDuration={400}
@@ -686,7 +659,6 @@ export default function UploadLecture() {
                 backgroundColor: "rgba(207, 204, 204)",
                 boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
                 padding: "30px 20px",
-                position: "fixed"
               }}
             >
               <div
@@ -770,9 +742,9 @@ export default function UploadLecture() {
                       value={playlistFormData.PlaylistRank}
                       onChange={handlePlaylistData}
                     >
-                      {classesData &&
+                      {teacherData && teacherData.classes &&
                         Array.from(
-                          new Set(classesData.map((Class) => Class.ClassRank))
+                          new Set(teacherData.classes.map((Class) => Class.ClassRank))
                         ).map((rank) => (
                           <option key={rank} value={parseInt(rank)}>
                             {rank}
@@ -809,9 +781,9 @@ export default function UploadLecture() {
                         required
                         name="playlistCategory"
                       >
-                        {names.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
+                        {teacherData && teacherData.users.subjects.map((Subject) => (
+                          <MenuItem key={Subject.SubjectName} value={Subject.SubjectName}>
+                            {Subject.SubjectName}
                           </MenuItem>
                         ))}
                       </Select>
@@ -830,6 +802,45 @@ export default function UploadLecture() {
               </div>
             </Popup>
           </div>
+
+          <CustomPopup 
+            Visible={popup}
+            OnClose={() => {
+              dispatch(setPopup(false));
+              setTimeout(() => {
+                dispatch(setError(null));
+              }, 400);
+            }}
+            errorMessage={error}
+          />
+          <div className="popup">
+            {progress ? <Popup
+              visible={localLoading}
+              onClose={() => {}}
+              style={{
+                backgroundColor: "rgba(17, 16, 29, 0.95)",
+                boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
+                padding: "40px 20px",
+              }}
+            >
+              <div
+                className="d-column-flex justify-content-center align-items-center"
+                style={{ width: "max-content", height: "100%", padding: "0" }}
+              >
+                <h5
+                  dangerouslySetInnerHTML={{ __html: error }}
+                  style={{ color: "white", margin: "0" }}
+                ></h5>
+
+                  <ProgressBar
+                    style={{ height: "20px", marginTop: "15px" }}
+                    now={progress}
+                    label={`${progress}%`}
+                  />
+              </div>
+            </Popup> : null}
+          </div>
+          <div>
             <button className="btn btn-primary w-100 mt-2" type="submit">
               Upload
             </button>

@@ -78,7 +78,7 @@ export default function ManageClasses() {
           return !(Class.id == id)
         }))
       })
-      setErrorMessage(response.data.message)
+      setErrorMessage("Class Deleted Successfully")
       setPopup(true)
   } catch (error) {
       console.error(error);

@@ -162,7 +162,6 @@ export default function WatchVideoes() {
               <video
                 ref={videoRef}
                 autoPlay
-                muted
                 src={file}
                 className="video"
                 controls

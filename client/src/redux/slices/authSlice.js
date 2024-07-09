@@ -20,7 +20,8 @@ export const fetchCSRFToken = createAsyncThunk("fetchCSRFToken", async (_ ,{ rej
 export const UserData = createAsyncThunk("UserData", async (_ ,{ getState , rejectWithValue  }) => {
   const state = getState()
   try {
-    const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/user`,{
+    const { data } = await axios.get(`${process.env.REACT_APP_HOST}api/user`,
+      {
       headers: {
         "X-CSRF-TOKEN": state.auth.CSRFToken,
         "Content-Type": "application/json",

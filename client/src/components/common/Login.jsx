@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../assets/css/Login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { UserData, login, toggleRememberMe } from "../../redux/slices/authSlice";
+import { GetTeacherClassinfo } from "../../redux/slices/Teacher/StudentAttendance";
 
 
 export default function Login() {
@@ -27,12 +28,23 @@ export default function Login() {
     .unwrap()
     .then(()=>{
       dispatch(UserData())
+      .unwrap()
+      .then((result)=>{
+        if(result.data.role === "Teacher"){
+          dispatch(GetTeacherClassinfo())
+        }
+        return
+      })
+      .catch(()=>{
+        return
+      })
       return
     })
     .catch(()=>{
       return
     })
   }
+
 
   // using the redux loading state directly does not work properly
   const [localLoading, setLocalLoading] = useState(false)

@@ -47,6 +47,12 @@
     z-index: 1000;
 }
 
+.contentArea.SidebarOpen .LoadingOverlay{
+    left: 250px;
+}
+.popup > div{
+    position: fixed !important;
+}
 
 @media (max-width : 576px) {
 .sidebar{
@@ -83,8 +89,5 @@
 .LoadingOverlay{
     left: 0 !important;
 }
-}
 
-.contentArea.SidebarOpen .LoadingOverlay{
-    left: 250px;
 }

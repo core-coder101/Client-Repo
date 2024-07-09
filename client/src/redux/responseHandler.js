@@ -6,6 +6,10 @@ export const handleResponse = (data) => {
         return "No error message from server";
     }
 
+    if(data.message.ClassName){
+      return data.message.ClassName[0]
+    }
+
     if (typeof data.message === 'string') {
         if (data.message.includes("[2002]")) {
           console.error("DATABASE DOWN");

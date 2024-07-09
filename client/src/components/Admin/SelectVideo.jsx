@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatDateMessage } from './WatchVideos';
 import { getVideoLengthMsg } from './PlaylistItem';
 import { GetVideoData, emptyArrays, setError, setPopup } from '../../redux/slices/Admin/SelectVideoSlice';
+import { setError as setCreateStudentError, setPopup as setCreateStudentPopup } from '../../redux/slices/Admin/CreateStudent';
 import LoadingOverlay from '../common/LoadingOverlay';
 import CustomPopup from '../common/CustomPopup';
 import { GetClasses } from '../../redux/slices/Admin/CreateStudent';
@@ -154,6 +155,11 @@ export default function SelectVideo() {
         Visible={popup}
         errorMessage={error}
         OnClose={()=>{dispatch(setPopup(false)); setTimeout(()=>setError(""), 400)}}
+      />
+      <CustomPopup 
+        Visible={createStudentPopup}
+        errorMessage={createStudentError}
+        OnClose={()=>{dispatch(setCreateStudentPopup(false)); setTimeout(()=>setCreateStudentError(""), 400)}}
       />
     </>
   )
