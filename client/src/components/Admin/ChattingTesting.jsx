@@ -5,6 +5,25 @@ import echo from './Echo';
 import { useParams } from 'react-router-dom';
 import '../../assets/css/ChatBox.scss';
 import defaultImg from "../../assets/img/default.png";
+import { MdNotificationsActive } from "react-icons/md";
+import { formatDateMessage } from './WatchVideos';
+
+
+
+export function formatTime(dateString) {
+  const date = new Date(dateString);
+
+  let hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  const minutesStr = minutes < 10 ? `0${minutes}`: minutes;
+
+  return `${hours}:${minutesStr} ${ampm}`;
+}
+
 
 export default function ChattingTesting() {
 
@@ -80,6 +99,7 @@ useEffect(() => {
     const [username, setusername] = useState('username');
     const [messages,setmessages] = useState([]);
     const [message,setmessage] = useState('');
+    const [UnreadMessage,setUnreadMessage] = useState([]);
 
 
 
@@ -111,11 +131,16 @@ useEffect(() => {
                   'Message': event.message,
                   'Receiving_id': event.receiver_id
                 }]);
-              }
+                }
+                else{
+                  setUnreadMessage((prevunread) => [...prevunread, {
+                    Sending_id: event.senderId
+                  }]);
+                }
             });
 
             channel.error((error) => {
-                console.error('Channel error:', error);
+              console.error('Channel error:', error);
             });
             return () => {
                 channel.stopListening('PrivateMessageSent');
@@ -133,9 +158,9 @@ useEffect(() => {
 
     //     channel.listen('PrivateMessageSent', (event) => {
     //         console.log('Message received:', event.receiver_id);
-    //         UsersData.forEach(Data => {
+    //         if(ID != event.receiver_id){
               
-    //         });
+    //         }
     //         // setmessages((prevMessages) => [...prevMessages, {
     //         //   'Sending_id':  event.senderId,
     //         //   'Message': event.message,
@@ -201,6 +226,7 @@ useEffect(() => {
             }
         );
         setUsersData(response.data.data);
+        setID(response.data.data[0]?.sender.id);
     } catch (error) {
 
     } 
@@ -224,7 +250,8 @@ useEffect(() => {
           );
           console.log('Response:', response.data);
           setmessages((prevMessages) => [...prevMessages, {
-            'Message':message
+            'Message':message,
+            'created_at': new Date()
           }]);
           setmessage('');
       } catch (error) {
@@ -243,21 +270,36 @@ useEffect(() => {
               <a href="javascript:;" className="search" />
             </div>
             <ul className="people">
-            {UsersData.map((user,index) =>{
-              return(
-                <li className="person" onClick={()=>{setID(user.sender.id)}} data-chat={`person${index}`}>
-    <img src={
-        user.sender.images[0]
-          ? `data:image/png;base64,${user.sender.images[0].data}`
-          : defaultImg
-      } alt="" />
-    <span className="name">{user.sender.name}</span>
-    <span className="time">2:09 PM</span>
+            {UsersData.map((user, index) => {
+  return (
+    <li 
+      className="person notification" 
+      onClick={() => { setID(user.sender.id);  setUnreadMessage(prevMessages => 
+          prevMessages.filter(message => message.Sending_id !== user.sender.id)
+        );}} 
+      data-chat={`person${index}`} 
+      key={user.sender.id} // Add a unique key for each item
+    >
+      <img 
+        src={
+          user.sender.images[0]
+            ? `data:image/png;base64,${user.sender.images[0].data}`
+            : defaultImg
+        } 
+        alt="" 
+      />
+      <span className="name">{user.sender.name}</span>
+      <span>
+      {UnreadMessage.some(message => message.Sending_id === user.sender.id) && (
+        <MdNotificationsActive className='notification' />
+      )}
+      </span>
+      <span className="time">{formatTime(user.created_at)}</span>
     <span className="preview">{user.Message}</span>
     </li>
-              );
-            })}
-            </ul>
+  );
+})}
+        </ul>
           </div>
           <div className="right ">
             <div className="top"><span>To: <span className="name">Dog Woofson</span></span></div>
@@ -265,12 +307,11 @@ useEffect(() => {
             {UsersData.map((user,index) =>{
               return(
             <div className="chat" data-chat={`person${index}`}>
-              <div className="conversation-start">
-                <span>Today, 6:48 AM</span>
-              </div>
               {messages.map((msg, index) => (
                 <>
-              
+              <div className="conversation-start">
+                <span>{formatDateMessage(msg.created_at)}, {formatTime(msg.created_at)}</span>
+              </div>
                 {((msg.Sending_id == ID) ?
                 <div key={index} className="bubble you">
                     {msg.Message}

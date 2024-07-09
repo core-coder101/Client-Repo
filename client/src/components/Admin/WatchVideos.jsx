@@ -15,6 +15,7 @@ import axios from "axios";
 import LoadingOverlay from "../common/LoadingOverlay";
 
 export const formatDateMessage = (uploadDate) => {
+  console.log(uploadDate)
   const createdAt = new Date(uploadDate);
   const now = new Date();
 
