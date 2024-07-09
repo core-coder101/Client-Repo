@@ -21,13 +21,6 @@ const series = [
 ];
 
 export default function Dashboard() {
-  const cardBackgroundIconStyles = {
-    opacity: "20%",
-    width: "80%",
-    height: "80%",
-    position: "absolute",
-    right: "-40px",
-  };
   const [itemData, setItemData] = useState();
 
   const presentPercentage = (
@@ -48,72 +41,95 @@ export default function Dashboard() {
           <div className="ms-auto me-4"></div>
         </div>
       </div>
-      <div className="d-flex justify-content-evenly align-items-cente flex-wrap">
-        <div
-          style={{ position: "relative", width: "350px", height: "250px" }}
-          className="attendanceOuterDiv"
-        >
-          <PieChart
-            colors={["rgb(1, 128, 35)", "rgb(199, 14, 33)"]}
-            series={series}
-            width={350}
-            height={250}
-            slotProps={{
-              legend: { hidden: true },
+      <div>
+        <div className="timeTableMainDiv">
+
+        </div>
+        <div className="d-flex flex-wrap itemsContainer">
+          <div
+            className="attendanceMAINDIV"
+            style={{
+              margin: "5px",
+              boxShadow: "rgba(0, 0, 0, 0.122) 0px 0px 5px 5px",
+              border: "1px solid rgb(218, 207, 207)",
             }}
-            onItemClick={(event, d) => setItemData(d)}
-          />
-          <div className="percentageDiv">{`${presentPercentage}%`}</div>
-            <ul style={{ display: "flex", listStyle: "none", padding: 0, width: "max-content", position: "relative", right: "25px" }}>
-              <li
+          >
+            <h2 style={{ textAlign: "center", margin: "0", margin: "5px 0px" }}>
+              Attendance
+            </h2>
+            <div className="attendanceOuterDiv">
+              <PieChart
+                colors={["rgb(1, 128, 35)", "rgb(199, 14, 33)"]}
+                series={series}
+                width={350}
+                height={250}
+                slotProps={{
+                  legend: { hidden: true },
+                }}
+                onItemClick={(event, d) => setItemData(d)}
+              />
+              <div className="percentageDiv">{`${presentPercentage}%`}</div>
+              <ul
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  marginRight: "10px",
+                  listStyle: "none",
+                  padding: 0,
+                  width: "max-content",
+                  position: "relative",
+                  right: "25px",
                 }}
               >
-                <span
+                <li
                   style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "green",
-                    borderRadius: "50%",
-                    display: "inline-block",
-                    marginRight: "5px",
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: "10px",
                   }}
-                ></span>
-                Present
-              </li>
-              <li style={{ display: "flex", alignItems: "center" }}>
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "red",
-                    borderRadius: "50%",
-                    display: "inline-block",
-                    marginRight: "5px",
-                  }}
-                ></span>
-                Absent
-              </li>
-            </ul>
-        </div>
-        <div className="calendarDiv">
-          <Calendar
-            style={{ height: 500 }}
-            tileClassName={({ date, view }) => {
-              if (
-                present.find((x) => x === moment(date).format("DD-MM-YYYY"))
-              ) {
-                return "present";
-              } else if (
-                absent.find((x) => x === moment(date).format("DD-MM-YYYY"))
-              ) {
-                return "absent";
-              }
-            }}
-          ></Calendar>
+                >
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "green",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                      marginRight: "5px",
+                    }}
+                  ></span>
+                  Present
+                </li>
+                <li style={{ display: "flex", alignItems: "center" }}>
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                      marginRight: "5px",
+                    }}
+                  ></span>
+                  Absent
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="calendarDiv" style={{ margin: "5px" }}>
+            <Calendar
+              tileClassName={({ date, view }) => {
+                if (
+                  present.find((x) => x === moment(date).format("DD-MM-YYYY"))
+                ) {
+                  return "present";
+                } else if (
+                  absent.find((x) => x === moment(date).format("DD-MM-YYYY"))
+                ) {
+                  return "absent";
+                }
+              }}
+            ></Calendar>
+          </div>
+          <div></div>
         </div>
       </div>
     </div>
