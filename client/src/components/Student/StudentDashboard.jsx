@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/css/dashboard.css";
 import "../../assets/css/student/calender.css";
 import Calendar from "react-calendar";
@@ -21,7 +21,38 @@ const series = [
 ];
 
 export default function Dashboard() {
-  const [itemData, setItemData] = useState();
+  const [itemData, setItemData] = useState()
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [timetable, setTimeTable] = useState([
+    {
+      subject: "Physics",
+      start: "14:40:00",
+      end: "15:20:00",
+    },
+    {
+      subject: "Chemistry",
+      start: "15:20:00",
+      end: "16:00:00",
+    },
+    {
+      subject: "Maths",
+      start: "16:00:00",
+      end: "16:40:00",
+    },
+    {
+      subject: "Urdu",
+      start: "16:40:00",
+      end: "17:20:00",
+    },
+  ])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+}, []);
 
   const presentPercentage = (
     (data[0].value / (data[0].value + data[1].value)) *
@@ -41,11 +72,37 @@ export default function Dashboard() {
           <div className="ms-auto me-4"></div>
         </div>
       </div>
-      <div>
+      <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
         <div className="timeTableMainDiv">
-
+          <h3 style={{textAlign: "center", margin: 0, marginTop: "5px"}}>Timetable</h3>
+          {timetable.map(lecture => {
+            let ongoing = false;
+            let start = lecture.start;
+            let end = lecture.end;
+            let [startHours, startMinutes, startSeconds] = start.split(":");
+            let [endHours, endMinutes, endSeconds] = end.split(":");
+            
+            let currentSeconds = currentTime.getSeconds();
+            let currentTimeInSeconds = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentSeconds;
+            let startTimeInSeconds = parseInt(startHours) * 3600 + parseInt(startMinutes) * 60 + parseInt(startSeconds);
+            let endTimeInSeconds = parseInt(endHours) * 3600 + parseInt(endMinutes) * 60 + parseInt(endSeconds);
+            
+            if (currentTimeInSeconds >= startTimeInSeconds && currentTimeInSeconds < endTimeInSeconds) {
+                ongoing = true;
+            }
+            
+            const startMessage = new Date("2024-09-11T" + start).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
+            const endMessage = new Date("2024-09-11T" + end).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
+            
+            return (
+                <div key={lecture.subject} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
+                    <h6>{lecture.subject}</h6>
+                    <p>{`${startMessage} - ${endMessage}`}</p>
+                </div>
+            );
+          })}
         </div>
-        <div className="d-flex flex-wrap itemsContainer">
+        <div className="d-flex flex-wrap itemsContainer justify-content-center justify-content-md-start">
           <div
             className="attendanceMAINDIV"
             style={{
