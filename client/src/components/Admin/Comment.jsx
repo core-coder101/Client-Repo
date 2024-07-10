@@ -8,8 +8,9 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
 import { CiFlag1 } from "react-icons/ci";
 import Reply from './Reply';
+import { formatDateMessage } from './WatchVideos';
 
-export default function Comment() {
+export default function Comment({Comment}) {
 
     const [optionsOpen, setOptionsOpen] = useState(false)
     const [repliesOpen, setRepliesOpen] = useState(false)
@@ -17,35 +18,21 @@ export default function Comment() {
   return (
     <>
     <div className='commentMainDiv'>
+
         <div className='comment'>
             <div className='imgDiv'>
                 <img src={defaultImg} />
             </div>
             <div className='contentDiv'>
                 <div className='title'>
-                    <h6>@username</h6>
-                    <p>5 months ago</p>
+                    <h6>@{Comment.users.name}</h6>
+                    <p>{formatDateMessage(Comment.created_at)}</p>
                 </div>
                 <div className='commentMessage'>
-                Listening to this masterpiece at midnight while looking out the open window and breathing the cold air just feels like a different universe
-                </div>
-                <div className='commentButtons'>
-                    <FaThumbsUp />
-                    <p>546</p>
-                    <FaThumbsDown style={{webkitTransform:"scale(-1, 1)"}} />
-                    <button>Reply</button>
+                {Comment.Comment}
                 </div>
                 {/* conditionally render "Replies" */}
-                <div className='replies' onClick={() => {setRepliesOpen(prev=>!prev)}}>
-                    {repliesOpen ? <MdKeyboardArrowUp style={{width: "23px", height: "23px"}} /> : <RiArrowDropDownLine style={{width: "25px", height: "25px"}} />}
-                    <p>2 replies</p>
-                </div>
-                {repliesOpen ? <div className='repliesDiv' style={{display: "flex", flexDirection: "column"}}>
-                    <Reply />
-                    <Reply />
-                    <Reply />
-                    <Reply />
-                </div> : null}
+               
             </div>
             <div className='optionsButtonDiv'>
                 <BsThreeDotsVertical className='optionsButton' onClick={() => {setOptionsOpen(prev=>!prev)}} />

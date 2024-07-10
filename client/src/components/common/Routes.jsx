@@ -26,6 +26,7 @@ import StudentAttendance from "../Admin/StudentAttendance.jsx";
 import StudentAttendanceForTeacher from "../Teacher/StudentAttendance.jsx"
 import UploadLectureForTeacher from "../Teacher/UploadLecture.jsx"
 import SelectVideoStudent from "../Student/SelectVideo.jsx";
+import ChattingTesting from "../Admin/ChattingTesting.jsx";
 
 const AllRoutes = [
   {
@@ -188,8 +189,32 @@ const AllRoutes = [
     authentication: "role",
   },
   {
+    path: "watchvideo/:ID",
+    component: <WatchVideoes />,
+    type: "Student",
+    authentication: "role",
+  },
+  {
     path: "SelectVideo",
     component: <SelectVideoStudent />,
+    type: "Student",
+    authentication: "role",
+  },
+  {
+    path: "Chating",
+    component: <ChattingTesting />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "Chating",
+    component: <ChattingTesting />,
+    type: "Teacher",
+    authentication: "role",
+  },
+  {
+    path: "Chating",
+    component: <ChattingTesting />,
     type: "Student",
     authentication: "role",
   },

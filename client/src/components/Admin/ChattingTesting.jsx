@@ -5,10 +5,29 @@ import echo from './Echo';
 import { useParams } from 'react-router-dom';
 import '../../assets/css/ChatBox.scss';
 import defaultImg from "../../assets/img/default.png";
+import { MdNotificationsActive } from "react-icons/md";
+import { formatDateMessage } from './WatchVideos';
+
+
+
+export function formatTime(dateString) {
+  const date = new Date(dateString);
+
+  let hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  const minutesStr = minutes < 10 ? `0${minutes}`: minutes;
+
+  return `${hours}:${minutesStr} ${ampm}`;
+}
+
 
 export default function ChattingTesting() {
 
-    const [ID , setID] = useState(23);
+    const [ID , setID] = useState(0);
 
     const { CSRFToken, user , userData } = useSelector((state) => state.auth)
 
@@ -21,7 +40,7 @@ export default function ChattingTesting() {
 
 
 useEffect(()=>{
-  GetStudentDataFORChat();
+  GetEachStoredMessages();
 },[])
 
 
@@ -80,6 +99,7 @@ useEffect(() => {
     const [username, setusername] = useState('username');
     const [messages,setmessages] = useState([]);
     const [message,setmessage] = useState('');
+    const [UnreadMessage,setUnreadMessage] = useState([]);
 
 
 
@@ -105,24 +125,59 @@ useEffect(() => {
 
             channel.listen('PrivateMessageSent', (event) => {
                 console.log('Message received:', event.message); // Debugging line
+                if(event.receiver_id == ID){
                 setmessages((prevMessages) => [...prevMessages, {
                   'Sending_id':  event.senderId,
                   'Message': event.message,
                   'Receiving_id': event.receiver_id
                 }]);
+                }
+                else{
+                  setUnreadMessage((prevunread) => [...prevunread, {
+                    Sending_id: event.senderId
+                  }]);
+                }
             });
 
             channel.error((error) => {
-                console.error('Channel error:', error); // Debugging line
+              console.error('Channel error:', error);
             });
-
             return () => {
                 channel.stopListening('PrivateMessageSent');
                 echo.leaveChannel(`private-chat.${userData.id}`);
-            };
+          };
         }
         
     }, [userData,ID]);
+
+
+    // useEffect(() => {
+    //   if (userData?.id) {
+    //     console.log(`Subscribing to private-chat.${userData.id}`); 
+    //     const channel = echo.private(`private-chat.${userData.id}`);
+
+    //     channel.listen('PrivateMessageSent', (event) => {
+    //         console.log('Message received:', event.receiver_id);
+    //         if(ID != event.receiver_id){
+              
+    //         }
+    //         // setmessages((prevMessages) => [...prevMessages, {
+    //         //   'Sending_id':  event.senderId,
+    //         //   'Message': event.message,
+    //         //   'Receiving_id': event.receiver_id
+    //         // }]);
+    //     });
+    //     channel.error((error) => {
+    //         console.error('Channel error:', error); // Debugging line
+    //     });
+    //     return () => {
+    //         channel.stopListening('PrivateMessageSent');
+    //         echo.leaveChannel(`private-chat.${userData.id}`);
+    //     };
+    // }
+    // }, [userData,ID])
+
+
 
     useEffect(()=>{
       setmessages([]);
@@ -131,24 +186,6 @@ useEffect(() => {
 
 
 
-
-    const GetStudentDataFORChat = async () =>{
-      try {
-        const response = await axios.get(
-            'http://127.0.0.1:8000/api/GetStudentDataFORChat',
-            {
-                headers: {
-                    'X-CSRF-TOKEN': CSRFToken,
-                    'Content-Type': 'application/json',
-                    'API-TOKEN': 'IT is to secret you cannot break it :)',
-                },
-            }
-        );
-        setUsersData(response.data.data);
-    } catch (error) {
-
-    } 
-    }
 
 
 
@@ -173,9 +210,27 @@ useEffect(() => {
         setmessages(response.data);
     } catch (error) {
 
-    } 
+    }
     }
 
+    const GetEachStoredMessages = async () =>{
+      try {
+        const response = await axios.get(
+            'http://127.0.0.1:8000/api/GetEachStoredMessages',
+            {
+                headers: {
+                    'X-CSRF-TOKEN': CSRFToken,
+                    'Content-Type': 'application/json',
+                    'API-TOKEN': 'IT is to secret you cannot break it :)',
+                },
+            }
+        );
+        setUsersData(response.data.data);
+        setID(response.data.data[0]?.sender.id);
+    } catch (error) {
+
+    } 
+    }
 
     const Submit = async (e) => {
       try {
@@ -195,34 +250,18 @@ useEffect(() => {
           );
           console.log('Response:', response.data);
           setmessages((prevMessages) => [...prevMessages, {
-            'Message':message
+            'Message':message,
+            'created_at': new Date()
           }]);
           setmessage('');
       } catch (error) {
-          console.error('Error sending message:', error); // Debugging line
+          console.error('Error sending message:', error);
       }
   }
 
 
   return (
     <>
-    {/* <div className='row m-0 p-0'>
-        <div className='col-3'>
-        <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Enter UserName</label>
-            <input type="text" name='username' value={username} onChange={e => setusername(e.target.value)} class="form-control" id="exampleFormControlInput1" placeholder="UserName" />
-        </div>
-        </div>
-        <div className='col-9'>
-        {messages.map((msg, index) => (
-                    <p key={index}>{msg}</p>
-                ))}
-        <div class="mb-3">
-            <input type="text" name='message' value={message} onChange={e => setmessage(e.target.value)} class="form-control" id="exampleFormControlInput1" placeholder="Enter message" />
-            <button onClick={Submit}>Send message</button>
-        </div>
-        </div>
-    </div>  */}
     <div className="wrapper">
         <div className="container">
           <div className="left">
@@ -231,54 +270,36 @@ useEffect(() => {
               <a href="javascript:;" className="search" />
             </div>
             <ul className="people">
-            {UsersData.map((user,index) =>{
-              return(
-                <li className="person" onClick={()=>{setID(user.users.id)}} data-chat={`person${index}`}>
-    <img src={
-                            user.users.images[0]
-                              ? `data:image/png;base64,${user.users.images[0].data}`
-                              : defaultImg
-                          } alt="" />
-    <span className="name">{user.users.name}</span>
-    <span className="time">2:09 PM</span>
-    <span className="preview">I was wondering...</span>
-                </li>
-
-              );
-            })}
-
-              {/* <li className="person" data-chat="person2">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/dog.png" alt="" />
-                <span className="name">Dog Woofson</span>
-                <span className="time">1:44 PM</span>
-                <span className="preview">I've forgotten how it felt before</span>
-              </li>
-              <li className="person" data-chat="person3">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/louis-ck.jpeg" alt="" />
-                <span className="name">Louis CK</span>
-                <span className="time">2:09 PM</span>
-                <span className="preview">But we’re probably gonna need a new carpet.</span>
-              </li>
-              <li className="person" data-chat="person4">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/bo-jackson.jpg" alt="" />
-                <span className="name">Bo Jackson</span>
-                <span className="time">2:09 PM</span>
-                <span className="preview">It’s not that bad...</span>
-              </li>
-              <li className="person" data-chat="person5">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/michael-jordan.jpg" alt="" />
-                <span className="name">Michael Jordan</span>
-                <span className="time">2:09 PM</span>
-                <span className="preview">Wasup for the third time like is 
-                  you blind bitch</span>
-              </li>
-              <li className="person" data-chat="person6">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/382994/drake.jpg" alt="" />
-                <span className="name">Drake</span>
-                <span className="time">2:09 PM</span>
-                <span className="preview">howdoyoudoaspace</span>
-              </li> */}
-            </ul>
+            {UsersData.map((user, index) => {
+  return (
+    <li 
+      className="person notification" 
+      onClick={() => { setID(user.sender.id);  setUnreadMessage(prevMessages => 
+          prevMessages.filter(message => message.Sending_id !== user.sender.id)
+        );}} 
+      data-chat={`person${index}`} 
+      key={user.sender.id} // Add a unique key for each item
+    >
+      <img 
+        src={
+          user.sender.images[0]
+            ? `data:image/png;base64,${user.sender.images[0].data}`
+            : defaultImg
+        } 
+        alt="" 
+      />
+      <span className="name">{user.sender.name}</span>
+      <span>
+      {UnreadMessage.some(message => message.Sending_id === user.sender.id) && (
+        <MdNotificationsActive className='notification' />
+      )}
+      </span>
+      <span className="time">{formatTime(user.created_at)}</span>
+    <span className="preview">{user.Message}</span>
+    </li>
+  );
+})}
+        </ul>
           </div>
           <div className="right ">
             <div className="top"><span>To: <span className="name">Dog Woofson</span></span></div>
@@ -286,12 +307,11 @@ useEffect(() => {
             {UsersData.map((user,index) =>{
               return(
             <div className="chat" data-chat={`person${index}`}>
-              <div className="conversation-start">
-                <span>Today, 6:48 AM</span>
-              </div>
               {messages.map((msg, index) => (
                 <>
-              
+              <div className="conversation-start">
+                <span>{formatDateMessage(msg.created_at)}, {formatTime(msg.created_at)}</span>
+              </div>
                 {((msg.Sending_id == ID) ?
                 <div key={index} className="bubble you">
                     {msg.Message}
@@ -307,113 +327,7 @@ useEffect(() => {
           );
         })}
         </div>
-            {/* <div className="chat" data-chat="person2">
-              <div className="conversation-start">
-                <span>Today, 5:38 PM</span>
-              </div>
-              <div className="bubble you">
-                Hello, can you hear me?
-              </div>
-              <div className="bubble you">
-                I'm in California dreaming
-              </div>
-              <div className="bubble me">
-                ... about who we used to be.
-              </div>
-              <div className="bubble me">
-                Are you serious?
-              </div>
-              <div className="bubble you">
-                When we were younger and free...
-              </div>
-              <div className="bubble you">
-                I've forgotten how it felt before
-              </div>
-            </div>
-            <div className="chat chatbox" data-chat="person3">
-              <div className="conversation-start">
-                <span>Today, 3:38 AM</span>
-              </div>
-              <div className="bubble you">
-                Hey human!
-              </div>
-              <div className="bubble you">
-                Umm... Someone took a shit in the hallway.
-              </div>
-              <div className="bubble me">
-                ... what.
-              </div>
-              <div className="bubble me">
-                Are you serious?
-              </div>
-              <div className="bubble you">
-                I mean...
-              </div>
-              <div className="bubble you">
-                It’s not that bad...
-              </div>
-              <div className="bubble you">
-                But we’re probably gonna need a new carpet.
-              </div>
-            </div>
-            <div className="chat" data-chat="person4">
-              <div className="conversation-start">
-                <span>Yesterday, 4:20 PM</span>
-              </div>
-              <div className="bubble me">
-                Hey human!
-              </div>
-              <div className="bubble me">
-                Umm... Someone took a shit in the hallway.
-              </div>
-              <div className="bubble you">
-                ... what.
-              </div>
-              <div className="bubble you">
-                Are you serious?
-              </div>
-              <div className="bubble me">
-                I mean...
-              </div>
-              <div className="bubble me">
-                It’s not that bad...
-              </div>
-            </div>
-            <div className="chat" data-chat="person5">
-              <div className="conversation-start">
-                <span>Today, 6:28 AM</span>
-              </div>
-              <div className="bubble you">
-                Wasup
-              </div>
-              <div className="bubble you">
-                Wasup
-              </div>
-              <div className="bubble you">
-                Wasup for the third time like is <br />you blind bitch
-              </div>
-            </div>
-            <div className="chat" data-chat="person6">
-              <div className="conversation-start">
-                <span>Monday, 1:27 PM</span>
-              </div>
-              <div className="bubble you">
-                So, how's your new phone?
-              </div>
-              <div className="bubble you">
-                You finally have a smartphone :D
-              </div>
-              <div className="bubble me">
-                Drake?
-              </div>
-              <div className="bubble me">
-                Why aren't you answering?
-              </div>
-              <div className="bubble you">
-                howdoyoudoaspace
-              </div>
-            </div> */}
-            <div className="write">
+          <div className="write">
               <a href="javascript:;" className="write-link attach" />
               <input type="text" name='message' value={message} onChange={e => setmessage(e.target.value)} class="form-control" id="exampleFormControlInput1" placeholder="Enter message"  />
               <a href="javascript:;" className="write-link smiley" />

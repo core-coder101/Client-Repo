@@ -15,6 +15,7 @@ import axios from "axios";
 import LoadingOverlay from "../common/LoadingOverlay";
 
 export const formatDateMessage = (uploadDate) => {
+  console.log(uploadDate)
   const createdAt = new Date(uploadDate);
   const now = new Date();
 
@@ -84,7 +85,7 @@ export default function WatchVideoes() {
   const SubmitComment = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/UploadComment`,
+        `http://127.0.0.1:8000/api/StoreComment`,
         {
           VideoID: ID,
           Comment: comment,
@@ -97,7 +98,7 @@ export default function WatchVideoes() {
           },
         }
       );
-      // SetPlaylistData(response.data.data);
+
     } catch (error) {}
   };
 
@@ -125,6 +126,7 @@ export default function WatchVideoes() {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission behavior
       SubmitComment();
+      setcomment('');
     }
   };
 
@@ -253,18 +255,26 @@ export default function WatchVideoes() {
             </div>
             <hr />
             <div>
-              <h5 className="comments_num">13 Comments {comment}</h5>
+              <h5 className="comments_num">13 Comments</h5>
               <input
                 name="comment"
                 onKeyDown={handleKeyDown}
                 id="comment"
+                value={comment}
                 onChange={(e) => {
                   setcomment(e.target.value);
                 }}
                 className="commentinput mb-3"
                 placeholder="Add a comment"
               />
-              <Comment />
+              {videoInfo?.comments.map((comment) =>{
+                return (
+                  <Comment
+              Comment={comment}
+              />
+                )
+              })}
+              
             </div>
           </div>
         </div>
