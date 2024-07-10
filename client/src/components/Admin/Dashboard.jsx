@@ -16,25 +16,15 @@ import Chart from "react-apexcharts";
 import { PieChart } from "@mui/x-charts/PieChart";
 
 const data2 = [
-  { label: 'Present', value: 20},
-  { label: 'Absent', value: 10 },
+  { label: "Present", value: 17 },
+  { label: "Absent", value: 3 },
 ];
-
-
+const displayMessage = `${data2[0].value} / ${data2[0].value + data2[1].value}`;
 const series = [
-  
-  {
-    innerRadius: 0,
-    outerRadius: 80,
-    id: 'series-1',
-    data: data1,
-    arcLabel: (text) => `Present Staff`,
-    arcLabelMinAngle: 45,
-  },
   {
     innerRadius: 110,
-    outerRadius: 140,
-    id: 'series-2',
+    outerRadius: 120,
+    id: "series-2",
     data: data2,
   },
 ];
@@ -169,51 +159,35 @@ export default function Dashboard() {
             More Info <FaArrowCircleRight />
           </button>
         </div>
-        <div className='d-flex' style={{marginTop:"70px"}}>
-        <div className='ms-auto me-auto'>
-        <center><h2 className='protest-revolution-regular mb-4'>Fee Generated and Submitted</h2></center>
-        <Graph className="mt-1" />
+      </div>
+      <div className="d-flex" style={{ marginTop: "70px" }}>
+        <div className="ms-auto me-auto">
+          <center>
+            <h2 className="protest-revolution-regular mb-4">
+              Fee Generated and Submitted
+            </h2>
+          </center>
+          <Chart
+            options={data.options}
+            series={data.series}
+            width="600"
+            type="area"
+          />
         </div>
-      <div>
-      <h2 className='protest-revolution-regular mb-4'>Today Present Staff</h2>
-        <Stack
-      direction={{ xs: 'column', md: 'row' }}
-      spacing={{ xs: 0, md: 4 }}
-      sx={{ width: '100%' }}
-    >
-      <Box sx={{ flexGrow: 1 }}>
-        <PieChart
-          colors={['#03a459','#dc493b']}
-          series={series}
-          
-          width={400}
-          height={300}
-          slotProps={{
-            legend: { hidden: true },
-          }}
-          onItemClick={(event, d) => setItemData(d)}
-        />{' '}
-      </Box>
-
-      <Stack direction="column" sx={{ width: { xs: '100%', md: '40%' } }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <IconButton
-            aria-label="reset"
-            size="small"
-            onClick={() => {
-              setItemData(null);
-            }}
-          >
-          </IconButton>
-        </Box>
-      </Stack>
-    </Stack>
+        <div>
+          <h2 className="protest-revolution-regular mb-4">
+            Today Present Staff
+          </h2>
+          <div>
+            <div style={{ position: "relative" }}>
+              <Chart
+                options={pieData.options}
+                series={pieData.series}
+                type="donut"
+                width="380"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
