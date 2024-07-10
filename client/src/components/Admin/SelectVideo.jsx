@@ -10,7 +10,7 @@ import { GetVideoData, emptyArrays, setError, setPopup } from '../../redux/slice
 import { setError as setCreateStudentError, setPopup as setCreateStudentPopup } from '../../redux/slices/Admin/CreateStudent';
 import LoadingOverlay from '../common/LoadingOverlay';
 import CustomPopup from '../common/CustomPopup';
-import { GetClasses } from '../../redux/slices/Admin/CreateStudent';
+import { GetClasses } from '../../redux/slices/Admin/UploadLecture';
 import { Tooltip } from "@mui/material";
 
 
@@ -21,7 +21,8 @@ export default function SelectVideo() {
 
 
   const { loading, error, popup, VideosData, PlaylistData} = useSelector((state) => state.selectVideo)
-  const { loading: createStudentLoading, error: createStudentError, popup: createStudentPopup, classesData} = useSelector((state) => state.createStudent)
+  const { loading: createStudentLoading, error: createStudentError, popup: createStudentPopup} = useSelector((state) => state.createStudent)
+  const { classesData} = useSelector((state) => state.uploadLecture)
 
   const [Subject, setSubject] = useState('General');
   const [Rank, SetRank] = useState(null);

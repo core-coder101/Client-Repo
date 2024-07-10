@@ -1,36 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleError } from "../../errorHandler";
-
-export const GetClasses = createAsyncThunk(
-  "GetClasses",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState();
-    const CSRFToken = state.auth.CSRFToken;
-    try {
-      const { data } = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
-        headers: {
-          "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
-        },
-      });
-      if (data.success == true) {
-        if (!data.data.length > 0) {
-          return rejectWithValue("Please create a class first");
-        } else {
-          return data.data;
-        }
-      } else {
-        return rejectWithValue(data.message || "Failed to get classes' data");
-      }
-    } catch (error) {
-      console.log(error);
-      return rejectWithValue(handleError(error));
-      // return rejectWithValue(error.response?.data?.message || error.message || "Error fetching classes' data")
-    }
-  }
-);
+import { handleResponse } from "../../responseHandler";
 
 export const GetStudentData = createAsyncThunk(
   "GetStudentData",
@@ -54,7 +25,7 @@ export const GetStudentData = createAsyncThunk(
         }
         return data.data;
       } else {
-        return rejectWithValue(data.message || "Failed to get student data");
+        return rejectWithValue(handleResponse(data) || "Failed to get student data");
       }
     } catch (error) {
       console.log(error);
@@ -84,7 +55,7 @@ export const Createstudent = createAsyncThunk(
       if (data.success == true) {
         return data;
       } else {
-        return rejectWithValue(data.message || "Failed to Create student");
+        return rejectWithValue(handleResponse(data) || "Failed to Create student");
       }
     } catch (error) {
       // if (error.response.data.message.includes("users_email_unique")){
@@ -117,7 +88,7 @@ export const UpdateStudent = createAsyncThunk(
       if (data.success == true) {
         return data;
       } else {
-        return rejectWithValue(data.message || "Failed to Updated Student");
+        return rejectWithValue(handleResponse(data) || "Failed to Updated Student");
       }
     } catch (error) {
       // if (error.response.data.message.includes("users_email_unique")){
@@ -156,19 +127,6 @@ const ClassSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(GetClasses.pending, (state) => {
-        state.error = "Loading Classes' Data";
-        state.loading = true;
-      })
-      .addCase(GetClasses.fulfilled, (state, action) => {
-        state.classesData = action.payload;
-        state.loading = false;
-      })
-      .addCase(GetClasses.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error";
-        state.loading = false;
-        state.popup = true;
-      })
       .addCase(GetStudentData.pending, (state) => {
         state.error = "Loading student Data";
         state.loading = true;
