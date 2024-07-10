@@ -19,6 +19,7 @@ import { IoMail } from "react-icons/io5";
 import { toPng } from "html-to-image";
 import converter from "number-to-words";
 import { useSelector } from "react-redux";
+import CustomPopup from "../common/CustomPopup";
 
 export default function StudentInformation() {
   const navigate = useNavigate();
@@ -449,188 +450,163 @@ export default function StudentInformation() {
                   </td>
                 </tr>
               )}
-              {popupInput && (
-                <Popup
-                  visible={idPopup}
-                  animationDuration={400}
-                  onClose={() => {
-                    setIdPopup(false);
-                    setTimeout(() => {
-                      setPopupInput(null);
-                    }, 400);
-                  }}
-                  style={{
-                    backgroundColor: "#11101de9",
-                    boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-                    padding: "40px 20px",
-                    width: "700px",
-                    height: "600px",
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div
-                    ref={pngElementRef}
-                    className="studentIdCardDiv"
-                    style={{
-                      backgroundColor: "white",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      borderRadius: "1rem",
-                      padding: "15px 20px",
-                      boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px",
-                      whiteSpace: "nowrap",
-                      width: "300px",
-                      height: "460px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <h4 style={{ margin: "0", padding: "0" }}>
-                        {popupInput.users.name}
-                      </h4>
-                      <ReactBarcode
-                        style={{ backgroundColor: "transparent" }}
-                        value={
-                          ApiSearchData.campus.slice(0, 1) +
-                          "-" +
-                          JSON.stringify(popupInput.users.id)
-                        }
-                        options={{ format: "code128" }}
-                        displayValue={false}
-                        renderer="image"
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "100%",
-                        }}
-                      >
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>Class: </span>
-                          {converter.toWords(ApiSearchData.ClassRank)}
-                        </h6>
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>Campus: </span>
-                          {ApiSearchData.campus}
-                        </h6>
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>Student ID: </span>
-                          {popupInput.id}
-                        </h6>
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>Full Name: </span>
-                          {popupInput.users.name}
-                        </h6>
-                        <h6 style={{ paddingBottom: "50px", fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>
-                            Emergency Contact:{" "}
-                          </span>
-                          {popupInput.parents.GuardiansPhoneNumber}
-                        </h6>
-                      </div>
-                      <div style={{ display: "flex", width: "100%" }}>
-                        <FaLocationDot
-                          style={{ marginRight: "5px" }}
-                          color="#5b8beb"
-                        />
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>
-                            Faisalabad, Kohinoor City
-                          </span>
-                        </h6>
-                      </div>
-                      <div style={{ display: "flex", width: "100%" }}>
-                        <BsFillTelephoneFill
-                          style={{ marginRight: "5px" }}
-                          color="#5b8beb"
-                        />
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>
-                            +921234567890
-                          </span>
-                        </h6>
-                      </div>
-                      <div style={{ display: "flex", width: "100%" }}>
-                        <IoMail
-                          style={{ marginRight: "5px" }}
-                          color="#5b8beb"
-                        />
-                        <h6 style={{ fontSize: "14px" }}>
-                          <span style={{ color: "#5b8beb" }}>
-                            HustlersUniversity@gmail.com
-                          </span>
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      htmlToPng(popupInput.users.name);
-                    }}
-                    style={{ marginTop: "20px" }}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Download
-                  </Button>
-                </Popup>
-              )}
-              <Popup
-                visible={popup}
-                onClose={() => {
-                  setPopup(false);
-                  setTimeout(() => {
-                    setErrorMessage("");
-                  }, 400);
-                }}
-                style={{
-                  backgroundColor: "#11101de9",
-                  boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-                  padding: "40px 20px",
-                }}
-              >
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ width: "max-content", height: "100%", padding: "0" }}
-                >
-                  <h5 style={{ color: "white", margin: "0" }}>
-                    {errorMessage}
-                  </h5>
-                </div>
-              </Popup>
-              <Popup
-                visible={loading}
-                onClose={() => {}}
-                style={{
-                  backgroundColor: "rgba(17, 16, 29, 0.95)",
-                  boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-                  padding: "40px 20px",
-                }}
-              >
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ width: "max-content", height: "100%", padding: "0" }}
-                >
-                  <h5
-                    dangerouslySetInnerHTML={{ __html: errorMessage }}
-                    style={{ color: "white", margin: "0" }}
-                  ></h5>
-                </div>
-              </Popup>
             </tbody>
           </table>
         </div>
       </div>
+      <CustomPopup
+        Visible={popup}
+        OnClose={() => {
+          setPopup(false);
+          setTimeout(() => {
+            setErrorMessage("");
+          }, 400);
+        }}
+        errorMessage={errorMessage}
+        />
+      <CustomPopup
+        Visible={loading}
+        OnClose={() => {}}
+        errorMessage={errorMessage}
+        />
+      {popupInput && (
+        <div className="popup">
+          <Popup
+            visible={idPopup}
+            animationDuration={400}
+            onClose={() => {
+              setIdPopup(false);
+              setTimeout(() => {
+                setPopupInput(null);
+              }, 400);
+            }}
+            style={{
+              backgroundColor: "#11101de9",
+              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
+              padding: "40px 20px",
+              width: "700px",
+              height: "600px",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              ref={pngElementRef}
+              className="studentIdCardDiv"
+              style={{
+                backgroundColor: "white",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "1rem",
+                padding: "15px 20px",
+                boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px",
+                whiteSpace: "nowrap",
+                width: "300px",
+                height: "460px",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <h4 style={{ margin: "0", padding: "0" }}>
+                  {popupInput.users.name}
+                </h4>
+                <ReactBarcode
+                  style={{ backgroundColor: "transparent" }}
+                  value={
+                    ApiSearchData.campus.slice(0, 1) +
+                    "-" +
+                    JSON.stringify(popupInput.users.id)
+                  }
+                  options={{ format: "code128" }}
+                  displayValue={false}
+                  renderer="image"
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                  }}
+                >
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>Class: </span>
+                    {converter.toWords(ApiSearchData.ClassRank)}
+                  </h6>
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>Campus: </span>
+                    {ApiSearchData.campus}
+                  </h6>
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>Student ID: </span>
+                    {popupInput.id}
+                  </h6>
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>Full Name: </span>
+                    {popupInput.users.name}
+                  </h6>
+                  <h6 style={{ paddingBottom: "50px", fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>
+                      Emergency Contact:{" "}
+                    </span>
+                    {popupInput.parents.GuardiansPhoneNumber}
+                  </h6>
+                </div>
+                <div style={{ display: "flex", width: "100%" }}>
+                  <FaLocationDot
+                    style={{ marginRight: "5px" }}
+                    color="#5b8beb"
+                  />
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>
+                      Faisalabad, Kohinoor City
+                    </span>
+                  </h6>
+                </div>
+                <div style={{ display: "flex", width: "100%" }}>
+                  <BsFillTelephoneFill
+                    style={{ marginRight: "5px" }}
+                    color="#5b8beb"
+                  />
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>
+                      +921234567890
+                    </span>
+                  </h6>
+                </div>
+                <div style={{ display: "flex", width: "100%" }}>
+                  <IoMail
+                    style={{ marginRight: "5px" }}
+                    color="#5b8beb"
+                  />
+                  <h6 style={{ fontSize: "14px" }}>
+                    <span style={{ color: "#5b8beb" }}>
+                      HustlersUniversity@gmail.com
+                    </span>
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <Button
+              onClick={() => {
+                htmlToPng(popupInput.users.name);
+              }}
+              style={{ marginTop: "20px" }}
+              variant="contained"
+              color="primary"
+            >
+              Download
+            </Button>
+          </Popup>
+        </div>
+      )}
     </div>
   );
 }
