@@ -210,7 +210,7 @@ useEffect(() => {
         setmessages(response.data);
     } catch (error) {
 
-    } 
+    }
     }
 
     const GetEachStoredMessages = async () =>{
@@ -255,7 +255,7 @@ useEffect(() => {
           }]);
           setmessage('');
       } catch (error) {
-          console.error('Error sending message:', error); // Debugging line
+          console.error('Error sending message:', error);
       }
   }
 
