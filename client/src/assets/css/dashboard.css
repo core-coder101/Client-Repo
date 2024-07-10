@@ -34,3 +34,101 @@
 .card h6{
     margin: 0 0 10px 20px;
 }
+.attendanceOuterDiv{
+    transition: all 0.25s ease;
+    position: relative;
+    width: 350px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    left: 40px;
+}
+.percentageDiv{
+    transition: all 0.25s ease;
+    position: absolute;
+    top: 43%;
+    left: 41%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+}
+.itemsContainer{
+    justify-content: left;
+}
+.timeTableMainDiv {
+    box-shadow: rgba(0, 0, 0, 0.122) 0px 0px 5px 5px;
+    border: 1px solid rgb(218, 207, 207);
+    margin: 5px;
+    width: 100%;
+    min-width: 280px;
+    max-width: 470px;
+    max-height: 620px;
+}
+
+.timetable p {
+    font-size: 12px;
+    text-align: right;
+    margin: 0;
+    position: relative;
+    z-index: 3;
+}
+
+.timetable h6 {
+    margin: 0;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 3;
+}
+
+.timetable {
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.onGoingLecture {
+    background-color: white;
+    color: white;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    border: none;
+}
+
+.onGoingLecture p::after {
+    content: " (Ongoing)";
+}
+
+.onGoingLecture::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff); /* Replace with your desired gradient */
+    background-size: 400% 400%; /* Ensures the gradient animates smoothly */
+    animation: gradientBorder 10s ease infinite; /* Customize animation duration and timing function */
+}
+
+
+
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}

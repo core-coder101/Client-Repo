@@ -42,7 +42,8 @@ export default function CreateStudent() {
     }, [loading])
     const [studentLocalLoading, setStudentLocalLoading] = useState(false)
     useEffect(()=>{
-      setStudentLocalLoading(loading)
+      console.log("studentLocalLoading: ", studentLocalLoading);
+      setStudentLocalLoading(studentLoading)
     }, [studentLoading])
     
     if (user.token) {
@@ -95,19 +96,6 @@ export default function CreateStudent() {
       reader.readAsDataURL(file);
     }
   };
-
-  // useEffect(() => {
-  //   dispatch(GetClasses()).unwrap().then(()=>{
-  //     if(classesData.length > 0){
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         StudentClassID: JSON.stringify(classesData[0].id),
-  //       }));
-  //     }
-  //   }).catch(()=>{
-  //     return
-  //   })
-  // }, [])
 
   useEffect(() => {
     dispatch(GetClasses())
@@ -166,7 +154,7 @@ export default function CreateStudent() {
           StudentDOB: "",
           StudentGender: "Male",
           StudentCNIC: "",
-          StudentClassID: JSON.stringify(classesData[0].StudentClassID),
+          StudentClassID: JSON.stringify(classesData[0].id),
           StudentPhoneNumber: "",
           StudentHomeAddress: "",
           StudentReligion: "Islam",
@@ -192,7 +180,7 @@ export default function CreateStudent() {
           StudentDOB: "",
           StudentGender: "Male",
           StudentCNIC: "",
-          StudentClassID: "",
+          StudentClassID: JSON.stringify(classesData[0].id),
           StudentPhoneNumber: "",
           StudentHomeAddress: "",
           StudentReligion: "Islam",
@@ -321,8 +309,7 @@ export default function CreateStudent() {
 
   return (
     <>
-    <LoadingOverlay loading={localLoading} />
-    <LoadingOverlay loading={studentLocalLoading} />
+    <LoadingOverlay loading={localLoading || studentLocalLoading} />
     <div className="createClass">
       <div className="mt-2 mb-4">
         <div className="headingNavbar d-flex justify-content-center">
