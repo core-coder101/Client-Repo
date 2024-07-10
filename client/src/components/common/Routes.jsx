@@ -189,6 +189,12 @@ const AllRoutes = [
     authentication: "role",
   },
   {
+    path: "watchvideo/:ID",
+    component: <WatchVideoes />,
+    type: "Student",
+    authentication: "role",
+  },
+  {
     path: "SelectVideo",
     component: <SelectVideoStudent />,
     type: "Student",
