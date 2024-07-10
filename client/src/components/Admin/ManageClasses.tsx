@@ -130,9 +130,9 @@ export default function ManageClasses() {
               <td data-title="Name">{Class.ClassName}</td>
               <td data-title="TeacherName">{Class.teachers ? Class.teachers.users.name : "none"}</td>
               <td data-title="Floor">{Class.ClassFloor}</td>
-              <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  class="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} class="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} class="btn btn-danger">Delete</button></td>
+              <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  className="btn btn-info">Details</button></td>
+              <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} className="btn btn-warning">Edit</button></td>
+              <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} className="btn btn-danger">Delete</button></td>
             </tr>
           );
             }) :
