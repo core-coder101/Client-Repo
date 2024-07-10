@@ -65,7 +65,7 @@
     width: 100%;
     min-width: 280px;
     max-width: 470px;
-    max-height: 620px;
+    height: 620px;
 }
 
 .timetable p {
@@ -85,7 +85,7 @@
 
 .timetable {
     margin: 5px;
-    padding: 5px;
+    padding: 10px 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -119,6 +119,17 @@
     animation: gradientBorder 10s ease infinite; /* Customize animation duration and timing function */
 }
 
+/* this makes gradient div into a border */
+/* .onGoingLecture::before{
+    content: "";
+    position: absolute;
+    z-index: 1;
+    background-color: white;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+} */
 
 
 @keyframes gradientBorder {

@@ -44,6 +44,26 @@ export default function Dashboard() {
       start: "16:40:00",
       end: "17:20:00",
     },
+    {
+      subject: "Computer",
+      start: "17:20:00",
+      end: "18:00:00",
+    },
+    {
+      subject: "English",
+      start: "18:00:00",
+      end: "18:40:00",
+    },
+    {
+      subject: "Islamiat",
+      start: "18:40:00",
+      end: "19:20:00",
+    },
+    {
+      subject: "Tarjama-tul-Quran",
+      start: "19:20:00",
+      end: "19:40:00",
+    },
   ])
 
   useEffect(() => {
@@ -74,7 +94,7 @@ export default function Dashboard() {
       </div>
       <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
         <div className="timeTableMainDiv">
-          <h3 style={{textAlign: "center", margin: 0, marginTop: "5px"}}>Timetable</h3>
+          <h2 style={{textAlign: "center", margin: 0, marginTop: "5px"}}>Timetable</h2>
           {timetable.map(lecture => {
             let ongoing = false;
             let start = lecture.start;
