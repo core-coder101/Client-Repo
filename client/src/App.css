@@ -102,4 +102,7 @@
 .itemsContainer{
     justify-content: center;
 }
+.timeTableMainDiv{
+    width: 280px !important;
+}
 }
