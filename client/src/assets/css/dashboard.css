@@ -35,14 +35,17 @@
     margin: 0 0 10px 20px;
 }
 .attendanceOuterDiv{
+    transition: all 0.25s ease;
     position: relative;
     width: 350px;
     height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    left: 40px;
 }
 .percentageDiv{
+    transition: all 0.25s ease;
     position: absolute;
     top: 43%;
     left: 41%;
@@ -51,4 +54,10 @@
     font-weight: bold;
     color: #000;
     text-align: center;
+}
+.itemsContainer{
+    justify-content: left;
+}
+.timeTableMainDiv{
+    
 }

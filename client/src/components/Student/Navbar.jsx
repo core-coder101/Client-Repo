@@ -38,23 +38,10 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
       <div className="leftItems">
         <MdMenu color="white" style={{width: "30px", height: "30px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
         <div className="Searchbar d-none d-sm-block">
-          <input type="text" placeholder="Search Student" />
+          <input type="text" placeholder="Search Lecture" spellCheck={false} />
           <button>
             <IoSearch color="white" />
           </button>
-        </div>
-        <div className="campus">
-          <FaHome color="white" style={{ marginRight: "5px" }} />
-          <Select
-            options={options}
-            onChange={(values) => {
-              setSelectedValue(values);
-            }}
-            values={selectedValue}
-            style={{ outline: "none", border: "none", textDecoration: "none" }}
-            searchable={false}
-            className="dropDown"
-          />
         </div>
       </div>
       <div className="rightItems">

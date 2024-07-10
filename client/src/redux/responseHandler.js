@@ -33,8 +33,8 @@ export const handleResponse = (data) => {
           return data.message;
         }
 
-      } else if (JSON.parse(data.message).email) {
-        return JSON.parse(data.message).email[0];
+      } else if (data.message.email) {
+        return data.message.email[0];
     }
 
     return "An unknown error occurred";

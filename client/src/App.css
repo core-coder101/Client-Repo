@@ -89,5 +89,17 @@
 .LoadingOverlay{
     left: 0 !important;
 }
-
+.calendarDiv{
+    width: 280px !important;
+    margin-top: 10px;
+}
+.attendanceMAINDIV{
+    width: 280px !important;
+}
+.attendanceOuterDiv{
+    left: 3px !important;
+}
+.itemsContainer{
+    justify-content: center;
+}
 }

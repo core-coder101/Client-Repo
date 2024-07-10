@@ -22,7 +22,7 @@ export const GetClasses = createAsyncThunk(
         if (!data.data.length > 0) {
           return rejectWithValue("Please create a class first");
         } else {
-          return data;
+          return data.data
         }
       } else {
         return rejectWithValue(data.message || "Failed to get classes' data");
@@ -161,7 +161,7 @@ const ClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(GetClasses.fulfilled, (state, action) => {
-        state.classesData = action.payload.data;
+        state.classesData = action.payload;
         state.loading = false;
       })
       .addCase(GetClasses.rejected, (state, action) => {
