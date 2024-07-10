@@ -4,26 +4,22 @@ import "../../assets/css/playlistItem.css"
 
 
 export const getVideoLengthMsg = (VideoLength) => {
-  let lengthMsg = ""
-  const lengthInSec = VideoLength
-  const lengthInMin = Math.floor(lengthInSec / 60)
-  const remainingSeconds = lengthInSec - (lengthInMin * 60)
-  if(lengthInMin < 1){
-    if(remainingSeconds < 10){
-      lengthMsg = "0:0" + remainingSeconds.toString()
-    } else {
-      lengthMsg = "0:" + remainingSeconds.toString()
-    }
+  let lengthMsg = "";
+  const lengthInSec = VideoLength;
+  const lengthInMin = Math.floor(lengthInSec / 60);
+  const lengthInHour = Math.floor(lengthInMin / 60);
+  const remainingSeconds = lengthInSec % 60;
+  const remainingMinutes = lengthInMin % 60;
+
+  if (lengthInHour > 0) {
+    lengthMsg = `${lengthInHour}:${remainingMinutes < 10 ? '0' : ''}${remainingMinutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  } else if (lengthInMin > 0) {
+    lengthMsg = `${lengthInMin}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   } else {
-    if(remainingSeconds < 10){
-      lengthMsg = lengthInMin.toString() + ":0" + remainingSeconds.toString()
-    } else {
-      lengthMsg = lengthInMin.toString() + ":" + remainingSeconds.toString()
-    }
+    lengthMsg = `0:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   }
 
-  return lengthMsg
-
+  return lengthMsg;
 }
 
 
