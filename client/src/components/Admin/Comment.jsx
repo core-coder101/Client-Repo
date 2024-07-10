@@ -9,6 +9,7 @@ import { MdKeyboardArrowUp } from "react-icons/md";
 import { CiFlag1 } from "react-icons/ci";
 import Reply from './Reply';
 import { formatDateMessage } from './WatchVideos';
+import { TbBorderRadius } from 'react-icons/tb';
 
 export default function Comment({Comment}) {
 
@@ -21,7 +22,10 @@ export default function Comment({Comment}) {
 
         <div className='comment'>
             <div className='imgDiv'>
-                <img src={defaultImg} />
+                <img style={{borderRadius:'50%', objectFit: "cover", height:'50px', width:'50px'}} src={(Comment.users.images[0].data)
+                              ? `data:image/png;base64,${Comment.users.images[0].data}`
+                              : defaultImg
+                          } />
             </div>
             <div className='contentDiv'>
                 <div className='title'>

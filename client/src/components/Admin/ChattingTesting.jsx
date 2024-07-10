@@ -274,28 +274,28 @@ useEffect(() => {
   return (
     <li 
       className="person notification" 
-      onClick={() => { setID(user.sender.id);  setUnreadMessage(prevMessages => 
-          prevMessages.filter(message => message.Sending_id !== user.sender.id)
+      onClick={() => { setID(user.id);  setUnreadMessage(prevMessages => 
+          prevMessages.filter(message => message.Sending_id !== user.id)
         );}} 
       data-chat={`person${index}`} 
-      key={user.sender.id} // Add a unique key for each item
+      key={user.id} // Add a unique key for each item
     >
       <img 
         src={
-          user.sender.images[0]
-            ? `data:image/png;base64,${user.sender.images[0].data}`
+          user.images[0]
+            ? `data:image/png;base64,${user.images[0].data}`
             : defaultImg
         } 
         alt="" 
       />
-      <span className="name">{user.sender.name}</span>
+      <span className="name">{user.name}</span>
       <span>
-      {UnreadMessage.some(message => message.Sending_id === user.sender.id) && (
+      {UnreadMessage.some(message => message.Sending_id === user.id) && (
         <MdNotificationsActive className='notification' />
       )}
       </span>
       <span className="time">{formatTime(user.created_at)}</span>
-    <span className="preview">{user.Message}</span>
+    {/* <span className="preview">{user.sent_messages[0]?.Message}</span> */}
     </li>
   );
 })}
