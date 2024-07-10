@@ -47,6 +47,16 @@
     z-index: 1000;
 }
 
+.contentArea.SidebarOpen .LoadingOverlay{
+    left: 250px;
+}
+.popup{
+    width: 0 !important;
+    height: 0 !important;
+}
+.popup > div{
+    position: fixed !important;
+}
 
 @media (max-width : 576px) {
 .sidebar{
@@ -83,11 +93,20 @@
 .LoadingOverlay{
     left: 0 !important;
 }
+.calendarDiv{
+    width: 280px !important;
+    margin-top: 10px;
 }
-
-.contentArea.SidebarOpen .LoadingOverlay{
-    left: 250px;
+.attendanceMAINDIV{
+    width: 280px !important;
 }
-.popup > div{
-    position: fixed !important;
+.attendanceOuterDiv{
+    left: 3px !important;
+}
+.itemsContainer{
+    justify-content: center;
+}
+.timeTableMainDiv{
+    width: 280px !important;
+}
 }

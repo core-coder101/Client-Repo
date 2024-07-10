@@ -12,21 +12,21 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-
+import Chart from "react-apexcharts";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-const data1 = [{ label: "Present Staff", value: 20 }];
-
 const data2 = [
-  { label: "Present", value: 20 },
-  { label: "Absent", value: 10 },
+  { label: 'Present', value: 20},
+  { label: 'Absent', value: 10 },
 ];
 
+
 const series = [
+  
   {
     innerRadius: 0,
     outerRadius: 80,
-    id: "series-1",
+    id: 'series-1',
     data: data1,
     arcLabel: (text) => `Present Staff`,
     arcLabelMinAngle: 45,
@@ -34,7 +34,7 @@ const series = [
   {
     innerRadius: 110,
     outerRadius: 140,
-    id: "series-2",
+    id: 'series-2',
     data: data2,
   },
 ];
@@ -48,6 +48,67 @@ export default function Dashboard() {
     right: "-40px",
   };
   const [itemData, setItemData] = useState();
+
+  const pieData = {
+    options: {
+      labels: ["Present", "Absent"],
+      legend: {
+        show: true,
+        position: 'bottom'
+      },
+      colors: ["#179c13", "#cc1d28"]
+    },
+    series: [17, 3],
+  };
+
+  const series = {
+    monthDataSeries1: {
+      prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
+      dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
+    }
+  }
+
+  const data = {
+          
+    series: [{
+      name: "STOCK ABC",
+      data: series.monthDataSeries1.prices
+    }],
+    options: {
+      chart: {
+        type: 'area',
+        height: 350,
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'straight'
+      },
+      
+      title: {
+        text: 'Fundamental Analysis of Stocks',
+        align: 'left'
+      },
+      subtitle: {
+        text: 'Price Movements',
+        align: 'left'
+      },
+      labels: series.monthDataSeries1.dates,
+      xaxis: {
+        type: 'datetime',
+      },
+      yaxis: {
+        opposite: true
+      },
+      legend: {
+        horizontalAlign: 'left'
+      }
+    },
+  }
 
   return (
     <div className="dashboard">
@@ -108,56 +169,51 @@ export default function Dashboard() {
             More Info <FaArrowCircleRight />
           </button>
         </div>
-      </div>
-      <div className="d-flex" style={{ marginTop: "70px" }}>
-        <div className="ms-auto me-auto">
-          <center>
-            <h2 className="protest-revolution-regular mb-4">
-              Fee Generated and Submitted
-            </h2>
-          </center>
-          <Graph className="mt-1" />
+        <div className='d-flex' style={{marginTop:"70px"}}>
+        <div className='ms-auto me-auto'>
+        <center><h2 className='protest-revolution-regular mb-4'>Fee Generated and Submitted</h2></center>
+        <Graph className="mt-1" />
         </div>
-        <div>
-          <h2 className="protest-revolution-regular mb-4">
-            Today Present Staff
-          </h2>
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={{ xs: 0, md: 4 }}
-            sx={{ width: "100%" }}
-          >
-            <Box sx={{ flexGrow: 1 }}>
-              <PieChart
-                colors={["#03a459", "#dc493b"]}
-                series={series}
-                width={400}
-                height={300}
-                slotProps={{
-                  legend: { hidden: true },
-                }}
-                onItemClick={(event, d) => setItemData(d)}
-              />{" "}
-            </Box>
+      <div>
+      <h2 className='protest-revolution-regular mb-4'>Today Present Staff</h2>
+        <Stack
+      direction={{ xs: 'column', md: 'row' }}
+      spacing={{ xs: 0, md: 4 }}
+      sx={{ width: '100%' }}
+    >
+      <Box sx={{ flexGrow: 1 }}>
+        <PieChart
+          colors={['#03a459','#dc493b']}
+          series={series}
+          
+          width={400}
+          height={300}
+          slotProps={{
+            legend: { hidden: true },
+          }}
+          onItemClick={(event, d) => setItemData(d)}
+        />{' '}
+      </Box>
 
-            <Stack direction="column" sx={{ width: { xs: "100%", md: "40%" } }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <IconButton
-                  aria-label="reset"
-                  size="small"
-                  onClick={() => {
-                    setItemData(null);
-                  }}
-                ></IconButton>
-              </Box>
-            </Stack>
-          </Stack>
+      <Stack direction="column" sx={{ width: { xs: '100%', md: '40%' } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <IconButton
+            aria-label="reset"
+            size="small"
+            onClick={() => {
+              setItemData(null);
+            }}
+          >
+          </IconButton>
+        </Box>
+      </Stack>
+    </Stack>
         </div>
       </div>
     </div>

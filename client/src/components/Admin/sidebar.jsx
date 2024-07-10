@@ -17,6 +17,7 @@ import { logout } from "../../redux/slices/authSlice";
 import { GiTeacher } from "react-icons/gi";
 import { IoMdCloudUpload } from "react-icons/io";
 import { GoVideo } from "react-icons/go";
+import { FaMoneyCheckAlt } from "react-icons/fa";
 
 
 function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobile }) {
@@ -124,6 +125,29 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
       },
     ],
   };
+  const feeData = {
+    title: "Fee",
+    icon: <FaMoneyCheckAlt />,
+    iconClosed: <RiArrowDropDownLine />,
+    iconOpened: <MdKeyboardArrowUp />,
+
+    subNav: [
+      {
+        title: "Upload Lecture",
+        path: "/uploadlecture",
+        icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
+      },
+      {
+        title: "Browse Lectures",
+        path: "/selectvideo",
+        icon: (
+          <GoVideo
+            style={{ width: "20px", height: "20px" }}
+          />
+        ),
+      },
+    ],
+  };
 
 
   return (
@@ -165,6 +189,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={teachersData} key={1} />
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={studentsData} key={2} />
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={3} />
+            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={feeData} key={4} />
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
                 <BsPersonFill
