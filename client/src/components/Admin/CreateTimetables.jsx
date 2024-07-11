@@ -40,8 +40,8 @@ export default function CreateTimetables() {
 
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     const [formData, setFormData] = useState({
-        classId: Number,
-        teacherId: Number,
+        classId: null,
+        teacherId: null,
         startTime: null,
         endTime: null,
         day: days[0],
@@ -76,13 +76,12 @@ export default function CreateTimetables() {
         console.log("dataToSend: ", dataToSend);
         dispatch(submitTimetableLecture(dataToSend)).unwrap().then(()=>{
             setSubject("")
-            setFormData({
-                classId: Number,
-                teacherId: Number,
-                startTime: null,
-                endTime: null,
+            setFormData(prev => ({
+                ...prev,
+                classId: null,
+                teacherId: null,
                 day: days[0],
-            })
+            }))
             return
         }).catch(()=>{
             return
