@@ -3,7 +3,11 @@ export const handleError = (error) => {
   console.log("Error received: ", error)
   
     if (!error.response) {
-      return error.message || "Network error";
+      if(typeof error.message === 'string'){
+        return error.message || "Network error";
+      } else {
+        return "Cannot display error message"
+      }
     }
 
     const { data } = error.response;
