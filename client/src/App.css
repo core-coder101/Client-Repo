@@ -50,6 +50,10 @@
 .contentArea.SidebarOpen .LoadingOverlay{
     left: 250px;
 }
+.popup{
+    width: 0 !important;
+    height: 0 !important;
+}
 .popup > div{
     position: fixed !important;
 }
