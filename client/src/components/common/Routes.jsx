@@ -73,6 +73,12 @@ const AllRoutes = [
     authentication: "role",
   },
   {
+    path: "createclass/:ID",
+    component: <CreateClass />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
     path: "classdetails/:ID",
     component: <ClassDetails />,
     type: "Admin",
