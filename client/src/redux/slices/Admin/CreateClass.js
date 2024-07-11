@@ -38,8 +38,9 @@ export const GetTeachers = createAsyncThunk(
     const state = getState();
     const CSRFToken = state.auth.CSRFToken;
     try {
-      const { data } = await axios.get(
+      const { data } = await axios.post(
         `${import.meta.env.VITE_HOST}api/GetTeacher`,
+        { query: query },
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
