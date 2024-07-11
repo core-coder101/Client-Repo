@@ -78,8 +78,10 @@ export default function CreateClass() {
     }
   }, [ID]);
 
+  const query = ['classes', 'users']
+
   useEffect(() => {
-    dispatch(GetTeachers())
+    dispatch(GetTeachers(query))
   }, [])
 
   // using the redux loading state directly does not work properly

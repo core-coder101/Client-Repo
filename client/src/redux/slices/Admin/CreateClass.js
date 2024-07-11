@@ -34,12 +34,13 @@ export const GetClassDataById = createAsyncThunk(
 );
 export const GetTeachers = createAsyncThunk(
   "GetTeachers",
-  async (_, { getState, rejectWithValue }) => {
+  async (query, { getState, rejectWithValue }) => {
     const state = getState();
     const CSRFToken = state.auth.CSRFToken;
     try {
-      const { data } = await axios.get(
+      const { data } = await axios.post(
         `${process.env.REACT_APP_HOST}api/GetTeacher`,
+        {query: query},
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
