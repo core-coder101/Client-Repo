@@ -313,16 +313,15 @@ function scrollToElement(ref){
                     </div>
                     <InputLabel className='mb-1 mt-2' id="demo-multiple-chip-label">Subjects</InputLabel>
                     <Tooltip 
-                        title="Subjects that the Teacher will teach" 
+                        title="Subject of the Teacher" 
                         arrow
-                        placement="bottom"
+                        placement="top"
                         size="lg"
                         variant="filled"
                     >
                         <Select
                             labelId="demo-multiple-chip-label"
                             id="demo-multiple-chip"
-                            multiple
                             value={formData.subjects}
                             onChange={handleSelectChange}
                             input={<OutlinedInput id="select-multiple-chip" label="Chip" />}

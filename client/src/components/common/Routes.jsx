@@ -26,6 +26,9 @@ import StudentAttendance from "../Admin/StudentAttendance.jsx";
 import StudentAttendanceForTeacher from "../Teacher/StudentAttendance.jsx"
 import UploadLectureForTeacher from "../Teacher/UploadLecture.jsx"
 import SelectVideoStudent from "../Student/SelectVideo.jsx";
+import CreateTimetables from "../Admin/CreateTimetables.jsx";
+import Timetable from "../Admin/Timetable.jsx";
+import ChattingTesting from "../Admin/ChattingTesting.jsx";
 
 const AllRoutes = [
   {
@@ -68,6 +71,12 @@ const AllRoutes = [
   },
   {
     path: "createclass",
+    component: <CreateClass />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "createclass/:ID",
     component: <CreateClass />,
     type: "Admin",
     authentication: "role",
@@ -157,6 +166,18 @@ const AllRoutes = [
     authentication: "role",
   },
   {
+    path: "testing",
+    component: <Timetable />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "timetable",
+    component: <CreateTimetables />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
     path: "studentattendance",
     component: <StudentAttendanceForTeacher />,
     type: "Teacher",
@@ -188,8 +209,32 @@ const AllRoutes = [
     authentication: "role",
   },
   {
+    path: "watchvideo/:ID",
+    component: <WatchVideoes />,
+    type: "Student",
+    authentication: "role",
+  },
+  {
     path: "SelectVideo",
     component: <SelectVideoStudent />,
+    type: "Student",
+    authentication: "role",
+  },
+  {
+    path: "Chating",
+    component: <ChattingTesting />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "Chating",
+    component: <ChattingTesting />,
+    type: "Teacher",
+    authentication: "role",
+  },
+  {
+    path: "Chating",
+    component: <ChattingTesting />,
     type: "Student",
     authentication: "role",
   },

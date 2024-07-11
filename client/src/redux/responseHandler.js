@@ -35,6 +35,10 @@ export const handleResponse = (data) => {
 
       } else if (data.message.email) {
         return data.message.email[0];
+    } else if(data.message.endTime){
+        return (data.message.endTime[0])
+    } else if(data.message.startTime){
+      return (data.message.startTime[0])
     }
 
     return "An unknown error occurred";

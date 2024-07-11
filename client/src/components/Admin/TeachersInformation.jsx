@@ -325,7 +325,7 @@ export default function TeachersInformation() {
                 <th>Class</th>
                 <th>Class Name</th>
                 <th>Campus</th>
-                <th>Parent Phone</th>
+                <th>Teacher Salary</th>
                 <th>ID Card</th>
                 <th>Reset Password</th>
                 <th>Profile</th>
