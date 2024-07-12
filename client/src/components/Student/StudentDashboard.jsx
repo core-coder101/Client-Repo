@@ -44,7 +44,7 @@ export default function Dashboard() {
     {
       subject: "Physics",
       start: "14:40:00",
-      end: "15:20:00",
+      end: "16:20:00",
     },
     {
       subject: "Chemistry",
