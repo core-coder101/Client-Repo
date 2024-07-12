@@ -91,6 +91,7 @@ export default function CreateTimetables() {
   return (
     <>
         <LoadingOverlay loading={loading || createClassLoading || createTimeTableLoading} />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div className="dashboard">
             <div className="mt-2 mb-4">
                 <div className="headingNavbar d-flex justify-content-center">
@@ -121,12 +122,8 @@ export default function CreateTimetables() {
                             </MenuItem>
                         })}
                         </Select>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <TimePicker value={FormData.startTime} required className="mt-3" name="startTime" onChange={(newValue)=>{setFormData(prev=>({...prev, startTime: newValue}))}} label="Start Time" />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <TimePicker value={FormData.endTime} required className="mt-3" name="endTime" onChange={(newValue)=>{setFormData(prev=>({...prev, endTime: newValue}))}} label="End Time" />
-                        </LocalizationProvider>
                         <InputLabel id="timetableTeacher">Select Teacher</InputLabel>
                         <Select
                             labelId="timetableTeacher"
@@ -217,6 +214,7 @@ export default function CreateTimetables() {
             }}
             errorMessage={createTimeTableError}
         />
+        </LocalizationProvider>
     </>
   );
 }

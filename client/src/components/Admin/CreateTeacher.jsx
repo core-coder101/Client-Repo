@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "../../assets/css/Teacher.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import defaultImg from "../../assets/img/default.png"
 import { Tooltip } from "@mui/material"
@@ -334,7 +333,7 @@ function scrollToElement(ref){
                             )}
                             MenuProps={MenuProps}
                             required
-                            >
+                        >
                             {names.map((name) => (
                                 <MenuItem
                                 key={name}
