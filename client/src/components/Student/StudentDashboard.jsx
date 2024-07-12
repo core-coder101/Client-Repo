@@ -44,7 +44,7 @@ export default function Dashboard() {
     {
       subject: "Physics",
       start: "14:40:00",
-      end: "15:20:00",
+      end: "16:20:00",
     },
     {
       subject: "Chemistry",
@@ -126,7 +126,7 @@ export default function Dashboard() {
         </div>
         <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
           <div className="timeTableMainDiv">
-            <h2 style={{textAlign: "center", margin: 0, marginTop: "5px"}}>Timetable</h2>
+            <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
             {timetable.map(lecture => {
               let ongoing = false;
               let start = lecture.start;

@@ -9,25 +9,26 @@ export const GetVideoData = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/showvideoDataPic?Subject=${Subject}&ClassRank=${Rank}`,
+        `${
+          import.meta.env.VITE_HOST
+        }api/showvideoDataPic?Subject=${Subject}&ClassRank=${Rank}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
-      if(data.message == 'video'){
+      if (data.message == "video") {
         return {
-            data: data.data,
-            type: 'video'
+          data: data.data,
+          type: "video",
         };
-      }
-      else{
+      } else {
         return {
-            data: data.data,
-            type: 'playlist'
+          data: data.data,
+          type: "playlist",
         };
       }
     } catch (error) {
@@ -56,9 +57,9 @@ const createSelectVideoSlice = createSlice({
       // even though we will only pass true or false to this but I'm still writing '!!' to ensure this stays as a boolean type state
     },
     emptyArrays: (state) => {
-      state.VideosData = []
-      state.PlaylistData = []
-    }
+      state.VideosData = [];
+      state.PlaylistData = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -67,10 +68,10 @@ const createSelectVideoSlice = createSlice({
         state.loading = true;
       })
       .addCase(GetVideoData.fulfilled, (state, action) => {
-        if(action.payload.type === 'video'){
-            state.VideosData = action.payload.data
+        if (action.payload.type === "video") {
+          state.VideosData = action.payload.data;
         } else {
-            state.PlaylistData = action.payload.data
+          state.PlaylistData = action.payload.data;
         }
         state.loading = false;
       })
@@ -78,10 +79,11 @@ const createSelectVideoSlice = createSlice({
         state.error = action.payload || "An Unknown Error Occurred";
         state.loading = false;
         state.popup = true;
-      })
+      });
   },
 });
 
-export const { setError, setPopup, emptyArrays } = createSelectVideoSlice.actions;
+export const { setError, setPopup, emptyArrays } =
+  createSelectVideoSlice.actions;
 
 export default createSelectVideoSlice.reducer;

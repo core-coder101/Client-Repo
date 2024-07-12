@@ -10,12 +10,12 @@ export const GetStudentAttendance = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/GetStudentAttendance`,
+        `${import.meta.env.VITE_HOST}api/GetStudentAttendance`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -33,12 +33,12 @@ export const GetStudentAttendance = createAsyncThunk(
 );
 
 const initialState = {
-    attendanceData: [],
-    presentCount: 0,
-    absentCount: 0,
-    loading: false,
-    error: null,
-    popup: false,
+  attendanceData: [],
+  presentCount: 0,
+  absentCount: 0,
+  loading: false,
+  error: null,
+  popup: false,
 };
 
 const studentDashboardSlice = createSlice({
@@ -56,7 +56,7 @@ const studentDashboardSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(GetStudentAttendance.pending, (state) => {
-        state.popup = false
+        state.popup = false;
         state.error = "Loading Attendance Data";
         state.loading = true;
       })
@@ -70,7 +70,7 @@ const studentDashboardSlice = createSlice({
         state.error = action.payload || "An Unknown Error Occurred";
         state.loading = false;
         state.popup = true;
-      })
+      });
   },
 });
 

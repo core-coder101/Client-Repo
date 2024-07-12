@@ -10,12 +10,12 @@ export const GetTeacherByID = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/GetTeacherData?ID=${ID}`,
+        `${import.meta.env.VITE_HOST}api/GetTeacherData?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -39,13 +39,13 @@ export const createTeacher = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/CreateTeacher`,
+        `${import.meta.env.VITE_HOST}api/CreateTeacher`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -70,13 +70,13 @@ export const UpdateTeacher = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/UpdateTeacher`,
+        `${import.meta.env.VITE_HOST}api/UpdateTeacher`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
