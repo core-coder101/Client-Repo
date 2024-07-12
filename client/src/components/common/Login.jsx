@@ -64,7 +64,7 @@ export default function Login() {
         <div className="Main">
           <h1
             className="protest-revolution-regular mt-5 mb-5"
-            style={{ whiteSpace: "nowrap", color: "white" }}
+            style={{ whiteSpace: "nowrap", color: "white", textAlign: "center" }}
           >
             Hustler's University
           </h1>

@@ -9,12 +9,12 @@ export const GetClasses = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/GetClasses`,
+        `${import.meta.env.VITE_HOST}api/GetClasses`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -42,13 +42,13 @@ export const createPlaylist = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/Create-playlist`,
+        `${import.meta.env.VITE_HOST}api/Create-playlist`,
         playlistData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -72,12 +72,12 @@ export const getPlaylist = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/PlaylistData`,
+        `${import.meta.env.VITE_HOST}api/PlaylistData`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -101,13 +101,13 @@ export const uploadLecture = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/upload-video`,
+        `${import.meta.env.VITE_HOST}api/upload-video`,
         formData,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "multipart/form-data",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
           onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round(

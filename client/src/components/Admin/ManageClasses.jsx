@@ -1,16 +1,14 @@
 import React , {useEffect,useState} from 'react'
-import "../../assets/css/table.less"
 import "../../assets/css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingOverlay from '../common/LoadingOverlay';
 import CustomPopup from '../common/CustomPopup';
 import { GetClasses } from '../../redux/slices/Admin/UploadLecture';
 import { DeleteClass, setError as manageClassesSetError, setPopup as manageClassesSetPopup } from '../../redux/slices/Admin/ManageClasses';
 import { setError, setPopup } from '../../redux/slices/Admin/UploadLecture';
-import { Box, InputLabel, MenuItem, OutlinedInput, Select, Tooltip } from "@mui/material";
+import { MenuItem, OutlinedInput, Select } from "@mui/material";
 
 export default function ManageClasses() {
 

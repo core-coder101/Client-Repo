@@ -21,12 +21,12 @@ export const getVideoInfoByID = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/show-video-info?ID=${ID}`,
+        `${import.meta.env.VITE_HOST}api/show-video-info?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -49,12 +49,12 @@ export const getVideoByID = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_HOST}api/show-video?ID=${ID}`,
+        `${import.meta.env.VITE_HOST}api/show-video?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -73,13 +73,13 @@ export const getVideoByID = createAsyncThunk(
 export const fetchVideoRange = createAsyncThunk(
   "fetchVideoRange",
   async ({ ID, startByte, endByte }, { getState, rejectWithValue }) => {
-    const url = `${process.env.REACT_APP_HOST}api/show-video?ID=${ID}`;
+    const url = `${import.meta.env.VITE_HOST}api/show-video?ID=${ID}`;
     const state = getState();
     const CSRFToken = state.auth.CSRFToken;
     const headers = {
       "X-CSRF-TOKEN": CSRFToken,
       "Content-Type": "application/json",
-      "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+      "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
       Range: `bytes=${startByte}-${endByte}`,
     };
 

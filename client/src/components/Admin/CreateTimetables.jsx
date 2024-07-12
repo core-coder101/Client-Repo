@@ -40,8 +40,8 @@ export default function CreateTimetables() {
 
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     const [formData, setFormData] = useState({
-        classId: Number,
-        teacherId: Number,
+        classId: null,
+        teacherId: null,
         startTime: null,
         endTime: null,
         day: days[0],
@@ -76,13 +76,12 @@ export default function CreateTimetables() {
         console.log("dataToSend: ", dataToSend);
         dispatch(submitTimetableLecture(dataToSend)).unwrap().then(()=>{
             setSubject("")
-            setFormData({
-                classId: Number,
-                teacherId: Number,
-                startTime: null,
-                endTime: null,
+            setFormData(prev => ({
+                ...prev,
+                classId: null,
+                teacherId: null,
                 day: days[0],
-            })
+            }))
             return
         }).catch(()=>{
             return
@@ -92,6 +91,7 @@ export default function CreateTimetables() {
   return (
     <>
         <LoadingOverlay loading={loading || createClassLoading || createTimeTableLoading} />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div className="dashboard">
             <div className="mt-2 mb-4">
                 <div className="headingNavbar d-flex justify-content-center">
@@ -122,12 +122,8 @@ export default function CreateTimetables() {
                             </MenuItem>
                         })}
                         </Select>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <TimePicker value={FormData.startTime} required className="mt-3" name="startTime" onChange={(newValue)=>{setFormData(prev=>({...prev, startTime: newValue}))}} label="Start Time" />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <TimePicker value={FormData.endTime} required className="mt-3" name="endTime" onChange={(newValue)=>{setFormData(prev=>({...prev, endTime: newValue}))}} label="End Time" />
-                        </LocalizationProvider>
                         <InputLabel id="timetableTeacher">Select Teacher</InputLabel>
                         <Select
                             labelId="timetableTeacher"
@@ -218,6 +214,7 @@ export default function CreateTimetables() {
             }}
             errorMessage={createTimeTableError}
         />
+        </LocalizationProvider>
     </>
   );
 }
