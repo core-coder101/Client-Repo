@@ -9,6 +9,8 @@ import CreateTeacherReducer from "./slices/Admin/CreateTeacherSlice"
 import SelectVideoReducer from "./slices/Admin/SelectVideoSlice"
 import studentAttendanceTeacherReducer from "./slices/Teacher/StudentAttendance"
 import studentDashboardReducer from "./slices/Student/StudentDashboard"
+import manageClassesReducer from "./slices/Admin/ManageClasses"
+import createTimetablesReducer from "./slices/Admin/CreateTimetables"
 
 const store = configureStore({
   reducer: {
@@ -21,6 +23,8 @@ const store = configureStore({
     selectVideo: SelectVideoReducer,
     studentAttendanceTeacher: studentAttendanceTeacherReducer,
     studentDashboard: studentDashboardReducer,
+    manageClasses: manageClassesReducer,
+    createTimeTable: createTimetablesReducer,
   },
   devTools: true,
 });

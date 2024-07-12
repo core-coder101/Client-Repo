@@ -17,7 +17,7 @@ const echo = new Echo({
     "authEndpoint": "http://127.0.0.1:8000/broadcasting/auth",
     auth: {
         headers: {
-            Authorization: `Bearer ${userFromLocalStorage.token}`,
+            Authorization: `Bearer ${userFromLocalStorage?.token}`,
         },
     },
 });

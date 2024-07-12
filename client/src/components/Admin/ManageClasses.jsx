@@ -4,90 +4,28 @@ import "../../assets/css/class.css"
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Popup from 'react-animated-popup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingOverlay from '../common/LoadingOverlay';
 import CustomPopup from '../common/CustomPopup';
+import { GetClasses } from '../../redux/slices/Admin/UploadLecture';
+import { DeleteClass, setError as manageClassesSetError, setPopup as manageClassesSetPopup } from '../../redux/slices/Admin/ManageClasses';
+import { setError, setPopup } from '../../redux/slices/Admin/UploadLecture';
+import { Box, InputLabel, MenuItem, OutlinedInput, Select, Tooltip } from "@mui/material";
 
 export default function ManageClasses() {
 
-  const { CSRFToken } = useSelector((state) => state.auth)
+  const { classesData, loading, error, popup } = useSelector(state => state.uploadLecture)
+  const { loading: manageClassesLoading, error: manageClassesError, popup: manageClassesPopup } = useSelector(state => state.manageClasses)
 
-  const [Classes , SetClasses] = useState([]);
-  const [errorMessage , setErrorMessage] = useState(null);
-  const [popup, setPopup] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-
-  const GetClasses = async () =>{
-    setErrorMessage("Loading Classes. . . ")
-    setLoading(true)
-    try {
-      const response = await axios.get(
-          'http://127.0.0.1:8000/api/GetClasses'
-          ,{
-              headers: {
-                  'X-CSRF-TOKEN': CSRFToken,
-                  'Content-Type': 'application/json',
-                  'API-TOKEN': 'IT is to secret you cannot break it :)',
-              },
-          }
-      );
-      if(response && response.data.success == true){
-        SetClasses(response.data.data);
-      }
-  } catch (error) {
-      console.error(error);
-      if(error.response.data.message.includes("[2002]")){
-        setErrorMessage("Database down at the moment. . . ")
-        setPopup(true)
-      } else{
-        setErrorMessage("Failed to Load Classes")
-        setPopup(true)
-      }
-  } finally {
-    setLoading(false)
-  }
-}
+  const dispatch = useDispatch()
 
 
   useEffect(()=>{
-    GetClasses();
+    dispatch(GetClasses())
   },[]);
 
 
   const navigate = useNavigate()
-
-
-  const Delete = async(id) => {
-    setErrorMessage("Deleting Class")
-    setLoading(true)
-    try {
-      const response = await axios.post(
-          'http://127.0.0.1:8000/api/DeleteClass',{ID:id}
-          ,{
-              headers: {
-                  'X-CSRF-TOKEN': CSRFToken,
-                  'Content-Type': 'application/json',
-                  'API-TOKEN': 'IT is to secret you cannot break it :)',
-              },
-          }
-      );
-      SetClasses((prev)=>{
-        return(prev.filter((Class) =>{
-          return !(Class.id == id)
-        }))
-      })
-      setErrorMessage("Class Deleted Successfully")
-      setPopup(true)
-  } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Delete Class");
-      setPopup(true)
-  } finally {
-    setLoading(false)
-  }
-  }
 
   const Edit = (id) => {
     navigate(`/createclass/${id}`);
@@ -96,10 +34,25 @@ export default function ManageClasses() {
     navigate(`/ClassDetails/${id}`);
   }
 
+  const actions = [
+    {
+      name: "Details",
+      action: (id) => {navigate(`/ClassDetails/${id}`)}
+    },
+    {
+      name: "Edit",
+      action: (id) => {navigate(`/createclass/${id}`)}
+    },
+    {
+      name: "Delete",
+      action: (id) => {dispatch(DeleteClass(id))}
+    },
+  ]
+
 
   return (
     <>
-    <LoadingOverlay loading={loading} />
+    <LoadingOverlay loading={loading || manageClassesLoading} />
     <div className='dashboard'>
         <div className='mt-2 mb-4'>
           <div className='headingNavbar d-flex justify-content-center'>
@@ -116,13 +69,12 @@ export default function ManageClasses() {
               <th>ClassName</th>
               <th>ClassTeacher</th>
               <th>ClassFloor</th>
-              <th>Details</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th>Timetable</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {Classes && Classes.length > 0 ? Classes.map((Class) => {
+            {classesData && classesData.length > 0 ? classesData.map((Class) => {
               console.log(Class);
                 return (
               <tr>
@@ -130,9 +82,26 @@ export default function ManageClasses() {
               <td data-title="Name">{Class.ClassName}</td>
               <td data-title="TeacherName">{Class.teachers ? Class.teachers.users.name : "none"}</td>
               <td data-title="Floor">{Class.ClassFloor}</td>
-              <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  className="btn btn-info">Details</button></td>
-              <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} className="btn btn-warning">Edit</button></td>
-              <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} className="btn btn-danger">Delete</button></td>
+              {/* <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  class="btn btn-info">Details</button></td>
+              <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} class="btn btn-warning">Edit</button></td>
+              <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} class="btn btn-danger">Delete</button></td> */}
+              <td data-title="Timetable"></td>
+              <td data-title="Actions">
+                <Select
+                  labelId="manageClassesActions"
+                  id="demo-multiple-chip"
+                  input={<OutlinedInput value="Actions" id="select-multiple-chip" label="Chip" />}
+                >
+                  {actions.map((action, index) => (
+                      <MenuItem
+                      key={index}
+                      onClick={()=>{action.action(Class.id)}}
+                      >
+                      {action.name}
+                      </MenuItem>
+                  ))}
+                </Select>
+              </td>
             </tr>
           );
             }) :
@@ -145,8 +114,13 @@ export default function ManageClasses() {
       </div>
         <CustomPopup 
           Visible={popup} 
-          OnClose={() => {setPopup(false); setTimeout(()=>{setErrorMessage("")},400)}}
-          errorMessage={errorMessage}
+          OnClose={() => {dispatch(setPopup(false)); setTimeout(()=>{dispatch(setError(""))},400)}}
+          errorMessage={error}
+          />
+        <CustomPopup 
+          Visible={manageClassesPopup} 
+          OnClose={() => {dispatch(manageClassesSetPopup(false)); setTimeout(()=>{dispatch(manageClassesSetError(""))},400)}}
+          errorMessage={manageClassesError}
           />
       </div>
     </div>
