@@ -1,20 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/css/dashboard.css";
-import { FaArrowCircleRight } from "react-icons/fa";
-import { FaRegCreditCard } from "react-icons/fa";
-import { FaMoneyCheckDollar } from "react-icons/fa6";
-import { GoGraph } from "react-icons/go";
-import { FaChartPie } from "react-icons/fa";
-import { BsGraphUpArrow } from "react-icons/bs";
-import { VscGraphLine } from "react-icons/vsc";
-import Graph from "./Graph";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
+
 import Chart from "react-apexcharts";
 import ReactApexChart from "react-apexcharts"
-import { PieChart } from "@mui/x-charts/PieChart";
+import { useSelector } from "react-redux";
+import axios from 'axios';
+import CustomPopup from "../common/CustomPopup";
 
 const data2 = [
   { label: "Present", value: 17 },
@@ -31,6 +22,20 @@ const series = [
 ];
 
 export default function Dashboard() {
+
+
+    const [errorMessage, setErrorMessage] = useState("");
+    const [popup, setPopup] = useState(false);
+    const [FeeDataDB , SetFeeData] = useState('');
+    const [Expensives , SetExpensives] = useState('');
+    
+  const { CSRFToken, user } = useSelector((state) => state.auth);
+
+  if (user.token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+  }
+
+
   const cardBackgroundIconStyles = {
     opacity: "20%",
     width: "80%",
@@ -161,11 +166,40 @@ export default function Dashboard() {
   }
 
 
+  const TotalExpensives = async () =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/TotalExpensives`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        SetExpensives(response.data);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Reset Password");
+      setPopup(true);
+    }
+  }
+
+  useEffect(()=>{
+    TotalExpensives();
+  },[])
   
   const PaySeries = {
     monthDataSeries1: {
-      prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
-      dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
+      prices: Expensives && Expensives.combinedResults ? Expensives.combinedResults.map((data) => data.total_expensive) : [],
+      dates: Expensives && Expensives.combinedResults ? Expensives.combinedResults.map((data) => data.month_name) : []
     }
   }
 
@@ -190,7 +224,7 @@ export default function Dashboard() {
         enabled: false
       },
       title: {
-        text: 'PKR 50920',
+        text: `PKR ${Expensives.TotalExpensive}`,
         align: 'center', // Align title to center
         style: {
           fontSize: '19px',
@@ -262,16 +296,45 @@ export default function Dashboard() {
 
 
 
+  const GeneratedPaidFee = async () =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GeneratedPaidFee`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        SetFeeData(response.data);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Reset Password");
+      setPopup(true);
+    }
+  }
+
+  useEffect(()=>{
+    GeneratedPaidFee();
+  },[])
+
 
   const FeeSeries = {
     monthDataSeries1: {
-      prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
-      dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
+      prices: FeeDataDB && FeeDataDB.data ? FeeDataDB.data.map((data) => data.total_fee) : [],
+      dates: FeeDataDB && FeeDataDB.data ? FeeDataDB.data.map((data) => data.month_name) : []
     }
   }
 
   const FeeData = {
-          
     series: [{
       name: "Student Fee",
       data: FeeSeries.monthDataSeries1.prices
@@ -291,8 +354,8 @@ export default function Dashboard() {
         enabled: false
       },
       title: {
-        text: 'PKR 400920',
-        align: 'center', // Align title to center
+        text: `PKR ${FeeDataDB && FeeDataDB.YearlyTotalFee}`,
+        align: 'center',
         style: {
           fontSize: '19px',
           color: '#666'
@@ -572,6 +635,16 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <CustomPopup
+            Visible={popup}
+            OnClose={() => {
+              setPopup(false);
+              setTimeout(() => {
+                setErrorMessage("");
+              }, 400);
+            }}
+            errorMessage={errorMessage}
+            />
     </div>
   );
 }

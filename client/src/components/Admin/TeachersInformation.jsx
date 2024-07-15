@@ -234,6 +234,71 @@ export default function TeachersInformation() {
     setLocalLoading(loading)
   }, [loading])
 
+
+
+
+  const AllTeacherPayPaid = async() =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/TeacherPayPaid`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Mark Pay Paid");
+      setPopup(true);
+    }
+  }
+
+
+
+  const TeacherPayPaid = async(ID) =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/TeacherPayPaid?ID=${ID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Mark Pay Paid");
+      setPopup(true);
+    }
+  }
+
+
+
+  const FeeManagement = async(ID) =>{
+    navigate(`/FeeManagement/${ID}`);
+  }
+
+
+
   return (
     <>
       <LoadingOverlay loading={localLoading} />
@@ -248,7 +313,7 @@ export default function TeachersInformation() {
           />
           <h4>Dashboard \ Teachers Information</h4>
         </div>
-        <div className="ms-auto me-4"></div>
+        <div className="ms-auto me-4"><button onClick={AllTeacherPayPaid} className="btn btn-primary">Pay Paid</button></div>
       </div>
       <form>
         <div className="inputsDiv">
@@ -453,8 +518,11 @@ export default function TeachersInformation() {
                           >
                             Delete
                           </a>
-                          <a className="dropdown-item" onClick={() => {}}>
-                            Deactivate Teacher
+                          <a className="dropdown-item" onClick={() => {TeacherPayPaid(teacher.users.id)}}>
+                            mark Paid
+                          </a>
+                          <a className="dropdown-item" onClick={() => {FeeManagement(teacher.users.id)}}>
+                            Pay Details
                           </a>
                         </div>
                       </div>
