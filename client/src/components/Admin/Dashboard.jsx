@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Chart from "react-apexcharts";
+import ReactApexChart from "react-apexcharts"
 import { PieChart } from "@mui/x-charts/PieChart";
 
 const data2 = [
@@ -46,56 +47,471 @@ export default function Dashboard() {
         show: true,
         position: 'bottom'
       },
+      title: {
+        text: 'Today Preset Staff',
+        align: 'center', // Align title to center
+        style: {
+          fontSize: '24px',
+          color: '#666'
+        },
+      },
       colors: ["#179c13", "#cc1d28"]
     },
     series: [17, 3],
   };
 
-  const series = {
+
+
+  const ProfitSeries = {
     monthDataSeries1: {
-      prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
+      prices: [70, 21, 110, 150, 40, 60, 30, 200, 150],
       dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
     }
   }
 
-  const data = {
+  const ProfitData = {
           
     series: [{
-      name: "STOCK ABC",
-      data: series.monthDataSeries1.prices
+      name: "Total Profit",
+      data: ProfitSeries.monthDataSeries1.prices
     }],
     options: {
       chart: {
         type: 'area',
-        height: 350,
+        height: 250,
         zoom: {
           enabled: false
+        },
+        toolbar: {
+          show: false // Hide the toolbar/menu button
         }
       },
       dataLabels: {
         enabled: false
       },
       stroke: {
-        curve: 'straight'
+        curve: 'smooth',
+        lineCap: 'butt',
+        colors: undefined,
+        width: 2,
+        dashArray: 0,
       },
-      
       title: {
-        text: 'Fundamental Analysis of Stocks',
-        align: 'left'
+        text: 'PKR 370920',
+        align: 'center', // Align title to center
+        style: {
+          fontSize: '19px',
+          color: '#666'
+        },
+        floating: true, // Makes the title float inside the chart area
+        offsetY: 3, // Adjust vertical offset as needed
+        offsetX: -57,
       },
       subtitle: {
-        text: 'Price Movements',
-        align: 'left'
-      },
-      labels: series.monthDataSeries1.dates,
+      text: 'Total Profit this year',
+      align: 'left',
+      offsetX:20
+    },
+
       xaxis: {
-        type: 'datetime',
+        type: 'category', // Use category type since we won't show dates
+        labels: {
+          show: false // Hide x-axis labels
+        },
+        axisBorder: {
+          show: false // Hide x-axis line
+        },
+        axisTicks: {
+          show: false // Hide x-axis ticks
+        },
+        categories: ProfitSeries.monthDataSeries1.dates // Provide categories without showing labels
       },
       yaxis: {
+        labels: {
+          show: false // Hide y-axis labels
+        },
+        axisBorder: {
+          show: false // Hide y-axis line
+        },
+        axisTicks: {
+          show: false // Hide x-axis ticks
+        },
+        opposite: true
+      },
+      legend: {
+        show: false // Hide legend
+      },
+      tooltip: {
+        enabled: true // Disable tooltip
+      },
+      grid: {
+        show: false // Hide grid lines
+      },
+      fill: {
+        opacity: 1 // Ensure no fill opacity
+      },
+      colors: ['#6ca7f0'],
+      padding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      }
+    },
+  }
+
+
+  
+  const PaySeries = {
+    monthDataSeries1: {
+      prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
+      dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
+    }
+  }
+
+  const PayData = {
+          
+    series: [{
+      name: "Expensives",
+      data: PaySeries.monthDataSeries1.prices
+    }],
+    options: {
+      chart: {
+        type: 'area',
+        height: 250,
+        zoom: {
+          enabled: false
+        },
+        toolbar: {
+          show: false // Hide the toolbar/menu button
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      title: {
+        text: 'PKR 50920',
+        align: 'center', // Align title to center
+        style: {
+          fontSize: '19px',
+          color: '#666'
+        },
+        floating: true, // Makes the title float inside the chart area
+        offsetY: 3, // Adjust vertical offset as needed
+        offsetX: -57,
+      },
+      subtitle: {
+      text: 'Expensive this year',
+      align: 'left',
+      offsetX:20
+    },
+    stroke: {
+      curve: 'smooth',
+      lineCap: 'butt',
+      colors: undefined,
+      width: 2,
+      dashArray: 0,
+    },
+
+      xaxis: {
+        type: 'category', // Use category type since we won't show dates
+        labels: {
+          show: false // Hide x-axis labels
+        },
+        axisBorder: {
+          show: false // Hide x-axis line
+        },
+        axisTicks: {
+          show: false // Hide x-axis ticks
+        },
+        categories: PaySeries.monthDataSeries1.dates // Provide categories without showing labels
+      },
+      yaxis: {
+        labels: {
+          show: false // Hide y-axis labels
+        },
+        axisTicks: {
+          show: false // Hide x-axis ticks
+        },
+        axisBorder: {
+          show: false // Hide y-axis line
+        },
+        opposite: true
+      },
+      legend: {
+        show: false // Hide legend
+      },
+      tooltip: {
+        enabled: true // Disable tooltip
+      },
+      grid: {
+        show: false // Hide grid lines
+      },
+      fill: {
+        opacity: 1 // Ensure no fill opacity
+      },
+      colors: ['#d1d8e3'],
+      padding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      }
+    },
+  }
+
+
+
+
+  const FeeSeries = {
+    monthDataSeries1: {
+      prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
+      dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
+    }
+  }
+
+  const FeeData = {
+          
+    series: [{
+      name: "Student Fee",
+      data: FeeSeries.monthDataSeries1.prices
+    }],
+    options: {
+      chart: {
+        type: 'area',
+        height: 250,
+        zoom: {
+          enabled: false
+        },
+        toolbar: {
+          show: false // Hide the toolbar/menu button
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      title: {
+        text: 'PKR 400920',
+        align: 'center', // Align title to center
+        style: {
+          fontSize: '19px',
+          color: '#666'
+        },
+        floating: true, // Makes the title float inside the chart area
+        offsetY: 3, // Adjust vertical offset as needed
+        offsetX: -57,
+      },
+      subtitle: {
+      text: 'Student Fee this year',
+      align: 'left',
+      offsetX:20
+    },
+    stroke: {
+      curve: 'smooth',
+      lineCap: 'butt',
+      colors: undefined,
+      width: 2,
+      dashArray: 0,
+    },
+      xaxis: {
+        type: 'category', // Use category type since we won't show dates
+        labels: {
+          show: false // Hide x-axis labels
+        },
+        axisBorder: {
+          show: false // Hide x-axis line
+        },
+        axisTicks: {
+          show: false // Hide x-axis ticks
+        },
+        categories: FeeSeries.monthDataSeries1.dates // Provide categories without showing labels
+      },
+      yaxis: {
+        labels: {
+          show: false // Hide y-axis labels
+        },
+        axisBorder: {
+          show: false // Hide y-axis line
+        },
+        axisTicks: {
+          show: false // Hide x-axis ticks
+        },
         opposite: true
       },
       legend: {
         horizontalAlign: 'left'
+      },
+      tooltip: {
+        enabled: true // Disable tooltip
+      },
+      grid: {
+        show: false // Hide grid lines
+      },
+      fill: {
+        opacity: 1 // Ensure no fill opacity
+      },
+      colors: ['#d1d8e3'],
+      padding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      }
+    },
+  }
+
+
+  const Radarseries = [{
+    name: 'Series 1',
+    data: [80, 50, 30, 40, 100, 20],
+  }, {
+    name: 'Series 2',
+    data: [20, 30, 40, 80, 20, 80],
+  }]
+
+  const Radardata = {
+    chart: {
+      height: 400,
+      type: 'radar',
+      toolbar: {
+        show: false // Hide the toolbar/menu button
+      }
+    },
+    dataLabels: {
+      enabled: true
+    },
+    title: {
+      text: 'Student Attendance previous week',
+      align:'center',
+      style: {
+          fontSize: '18px',
+          color: '#666'
+        },
+      offsetY:0
+    },
+    plotOptions: {
+      radar: {
+        size: 140,
+        polygons: {
+          strokeColors: '#e9e9e9',
+          fill: {
+            colors: ['#f8f8f8', '#fff']
+          }
+        }
+      }
+    },stroke: {
+                width: 2
+              },
+              fill: {
+                opacity: 0.1
+              },
+              markers: {
+                size: 0
+              },
+    tooltip: {
+      y: {
+        formatter: function(val) {
+          return val
+        }
+      }
+    },
+    xaxis: {
+      categories: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    },
+    yaxis: {
+      labels: {
+        formatter: function(val, i) {
+          if (i % 2 === 0) {
+            return val
+          } else {
+            return ''
+          }
+        }
+      }
+    }
+  }
+
+
+
+  const series = [{
+      name: 'Paid',
+      data: [10,12,7,8,2,7,15,17,13,16,10,9,12,14,21,20
+      ]
+    },
+    {
+      name: 'UnPaid',
+      data: [-4,-2,-5,-7,-4,-2,-4,-3,-7,-8,-4,-1,-2,-4,-5,-3
+      ]
+    }
+    ]
+
+  const data = {
+    chart: {
+      type: 'bar',
+      height: 440,
+      stacked: true
+    },
+    colors: ['#008FFB', '#FF4560'],
+    plotOptions: {
+      bar: {
+        borderRadius: 5,
+        borderRadiusApplication: 'end', // 'around', 'end'
+        borderRadiusWhenStacked: 'all', // 'all', 'last'
+        horizontal: true,
+        barHeight: '80%',
+      },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      width: 1,
+      colors: ["#fff"]
+    },
+    
+    grid: {
+      xaxis: {
+        lines: {
+          show: false
+        }
+      }
+    },
+    yaxis: {
+      stepSize: 1
+    },
+    tooltip: {
+      shared: false,
+      x: {
+        formatter: function (val) {
+          return val
+        }
+      },
+      y: {
+        formatter: function (val) {
+          return Math.abs(val) + "%"
+        }
+      }
+    },
+    title: {
+      text: 'Paid and UnPaid Fee',
+      align:'center',
+      style: {
+          fontSize: '24px',
+          color: '#666'
+        },
+      offsetY:15
+    },
+    xaxis: {
+      categories: ['85+', '80-84', '75-79', '70-74', '65-69', '60-64', '55-59', '50-54',
+        '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '15-19', '10-14'
+      ],
+      title: {
+        text: 'Percent'
+      },
+      labels: {
+        formatter: function (val) {
+          return Math.abs(Math.round(val)) + "%"
+        }
       }
     },
   }
@@ -111,82 +527,48 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="cardsDiv ">
-        <div className="card " style={{ backgroundColor: "#DC493B" }}>
-          <FaRegCreditCard color="black" style={cardBackgroundIconStyles} />
-          <h4>27</h4>
-          <h6>Dues - Amount: ****</h6>
-          <button style={{ backgroundColor: "#C84332" }}>
-            More Info <FaArrowCircleRight />
-          </button>
-        </div>
-        <div className="card " style={{ backgroundColor: "#01BFEC" }}>
-          <FaMoneyCheckDollar color="black" style={cardBackgroundIconStyles} />
-          <h4>5000</h4>
-          <h6>Total Income This Year</h6>
-          <button style={{ backgroundColor: "#02ABD7" }}>
-            More Info <FaArrowCircleRight />
-          </button>
-        </div>
-        <div className="card " style={{ backgroundColor: "#03A459" }}>
-          <GoGraph color="black" style={cardBackgroundIconStyles} />
-          <h4>5000</h4>
-          <h6>Total Income This Month</h6>
-          <button style={{ backgroundColor: "#019450" }}>
-            More Info <FaArrowCircleRight />
-          </button>
-        </div>
-        <div className="card " style={{ backgroundColor: "#0272B6" }}>
-          <FaChartPie color="black" style={cardBackgroundIconStyles} />
-          <h4>0</h4>
-          <h6>Income Today</h6>
-          <button style={{ backgroundColor: "#0166A5" }}>
-            More Info <FaArrowCircleRight />
-          </button>
-        </div>
-        <div className="card " style={{ backgroundColor: "#03A459" }}>
-          <BsGraphUpArrow color="black" style={cardBackgroundIconStyles} />
-          <h4>5000</h4>
-          <h6>Profit This Month</h6>
-          <button style={{ backgroundColor: "#019450" }}>
-            More Info <FaArrowCircleRight />
-          </button>
-        </div>
-        <div className="card " style={{ backgroundColor: "#DC493B" }}>
-          <VscGraphLine color="black" style={cardBackgroundIconStyles} />
-          <h4>0</h4>
-          <h6>Total Expense This Year</h6>
-          <button style={{ backgroundColor: "#C84332" }}>
-            More Info <FaArrowCircleRight />
-          </button>
-        </div>
+          <Chart
+            options={FeeData.options}
+            series={FeeData.series}
+            width="100%"
+            type="area"
+            className="smallchart mt-2"
+          />
+          <Chart
+            options={PayData.options}
+            series={PayData.series}
+            width="100%"
+            type="area"
+            className="smallchart mt-2"
+          />
+          <Chart
+            options={ProfitData.options}
+            series={ProfitData.series}
+            width="100%"
+            type="area"
+            className="smallchart mt-2"
+          />
       </div>
       <div className="d-flex" style={{ marginTop: "70px" }}>
         <div className="ms-auto me-auto">
-          <center>
-            <h2 className="protest-revolution-regular mb-4">
-              Fee Generated and Submitted
-            </h2>
-          </center>
-          <Chart
-            options={data.options}
-            series={data.series}
-            width="600"
-            type="area"
-          />
+          <div id="chart">
+              <ReactApexChart options={data} series={series} type="bar" height={440} width={650} className="smallchart" />
+              <br/>
+          </div>
         </div>
         <div>
-          <h2 className="protest-revolution-regular mb-4">
-            Today Present Staff
-          </h2>
-          <div>
             <div style={{ position: "relative" }}>
               <Chart
                 options={pieData.options}
                 series={pieData.series}
                 type="donut"
                 width="380"
+                className="smallchart"
               />
             </div>
+            <div id="chart">
+            <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={400}  className="smallchart mt-5" />
+              <br/>
           </div>
         </div>
       </div>

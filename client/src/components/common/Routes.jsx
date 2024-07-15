@@ -29,6 +29,7 @@ import SelectVideoStudent from "../Student/SelectVideo.jsx";
 import CreateTimetables from "../Admin/CreateTimetables.jsx";
 import Timetable from "../Admin/Timetable.jsx";
 import ChattingTesting from "../Admin/ChattingTesting.jsx";
+import FeeManagement from "../Admin/FeeManagement.jsx";
 
 const AllRoutes = [
   {
@@ -236,6 +237,12 @@ const AllRoutes = [
     path: "Chating",
     component: <ChattingTesting />,
     type: "Student",
+    authentication: "role",
+  },
+  {
+    path: "FeeManagement/:ID",
+    component:  <FeeManagement />,
+    type: "Admin",
     authentication: "role",
   },
 ];

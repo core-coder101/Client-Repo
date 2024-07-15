@@ -239,8 +239,125 @@ export default function StudentInformation() {
       setLoading(false);
     }
   };
+  const ResetPassword = async (ID) =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/ResetPassword?ID=${ID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Reset Password");
+      setPopup(true);
+    }
+  }
+
+  const GenerateChallan = async() =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GenerateStudentFee`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Generate Challan");
+      setPopup(true);
+    }
+  }
+
+  const FeeManagement = async(ID) =>{
+    navigate(`/FeeManagement/${ID}`);
+  }
 
   return (
+    <>
+<div className="viewprofile m-4 ">
+<div className="row">
+  <div className="col-12 col-lg-6">
+    <div className="card mb-3 bordernone" style={{maxWidth: "540px"}}>
+      <div className="row g-0">
+        <div className="col-md-4">
+          <img src={defaultImg} className="img-fluid rounded-start" alt="..." />
+        </div>
+        <div className="col-md-8">
+          <div className="card-body">
+            <h5 className="card-title">Ahmad Mujtaba</h5>
+            <p className="card-text">
+                <div className="d-flex"><div className="titleinfo">User Name </div>: Unnamed</div>
+                <div className="d-flex"><div className="titleinfo">Class </div>: 9th White House</div>
+                <div className="d-flex"><div className="titleinfo">Email </div>: ahmadmujtabap70@gmail.com</div>
+                <div className="d-flex"><div className="titleinfo">Phone Number </div>: 03107562128</div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+<div>
+<div className="card-text studentPara" style={{whiteSpace:'nowrap'}}>
+        <div className="d-flex"><div className="titleinfo">Subjects</div>: English , Computer , Maths </div>
+        <div className="d-flex"><div className="titleinfo">DOB</div>: 24/12/2024</div>
+        <div className="d-flex"><div className="titleinfo">Gender</div>: Male</div>
+        <div className="d-flex"><div className="titleinfo">CNIC</div>:  031075621281331</div>
+        <div className="d-flex"><div className="titleinfo">Home Address</div>:  Gurunanak pura street no 10</div>
+        <div className="d-flex"><div className="titleinfo">Religion</div>: Islam</div>
+        <div className="d-flex"><div className="titleinfo">Monthly Fee</div>:  9800 pkr</div>
+  </div>
+</div>
+</div>
+<div className="col-12 col-lg-6">
+<button type="button" className="btn-close closebtn" style={{float:'right', color:'white',fontSize:'xx-large' , backgroundColor:'white'}} aria-label="Close"></button>
+<div className="card mb-3 bordernone" style={{maxWidth: "540px"}}>
+  <div className="row g-0">
+    <div className="col-md-8">
+      <div className="card-body">
+        <div className="" style={{whiteSpace:'nowrap' , marginLeft:'6px'}}>
+        <br></br>
+        <div className="d-flex"><div className="titleinfo">Father Name</div>: M Saeed </div>
+        <div className="d-flex"><div className="titleinfo">Mother Name</div>: Robina</div>
+        <div className="d-flex"><div className="titleinfo">Guardian CNIC </div>: 3121256280756</div>
+        <div className="d-flex"><div className="titleinfo">Phone Number </div>: 03107562128</div>
+        <div className="d-flex"><div className="titleinfo">Mobile Number </div>: 03107562128</div>
+        <div className="d-flex"><div className="titleinfo">Home Address </div>: Gurunanak pura street no 10</div>
+        <div className="d-flex"><div className="titleinfo">Guardian Email </div>: ahmadmujtabap70@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+</div>
+</div>
+
+      </div>
+    </div>
     <div style={{padding: "15px 20px"}}>
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
@@ -250,9 +367,9 @@ export default function StudentInformation() {
             }}
             className="arrow"
           />
-          <h4>Dashboard \ Students Information</h4>
+          <h4>Dashboard \ Students Management</h4>
         </div>
-        <div className="ms-auto me-4"></div>
+        <div className="ms-auto me-4"><button onClick={GenerateChallan} className="btn btn-primary">Generate Challan</button></div>
       </div>
       <form>
         <div className="inputsDiv">
@@ -378,8 +495,8 @@ export default function StudentInformation() {
                       </div>
                     </td>
                     <td>
-                      <div className="filterDataDiv resetPassword innerButtonDiv">
-                        <p>Reset Password</p>
+                      <div onClick={()=>{ ResetPassword(student.users.id) }} style={{textDecoration:'none'}} className="filterDataDiv resetPassword innerButtonDiv">
+                        <p style={{textDecoration:'none'}}>Reset Password</p>
                         <button>
                           <FaKey
                             color="white"
@@ -389,7 +506,7 @@ export default function StudentInformation() {
                       </div>
                     </td>
                     <td>
-                      <div className="filterDataDiv viewProfile innerButtonDiv">
+                      <div  className="filterDataDiv viewProfile innerButtonDiv">
                         <p>View Profile</p>
                         <button>
                           <IoPerson
@@ -437,6 +554,9 @@ export default function StudentInformation() {
                           </a>
                           <a className="dropdown-item" onClick={() => {}}>
                             Deactivate Student
+                          </a>
+                          <a className="dropdown-item" onClick={() => {FeeManagement(student.users.id)}}>
+                            Fee Management
                           </a>
                         </div>
                       </div>
@@ -608,5 +728,6 @@ export default function StudentInformation() {
         </div>
       )}
     </div>
+    </>
   );
 }
