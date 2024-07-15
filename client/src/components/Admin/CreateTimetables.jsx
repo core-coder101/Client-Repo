@@ -29,7 +29,7 @@ export default function CreateTimetables() {
     const { teachersData, loading: createClassLoading, error: createClassError, popup: createClassPopup } = useSelector(state => state.createClass)
     const dispatch = useDispatch()
 
-    const query = ['users:id,name,email','subjects:UsersID,SubjectName']
+    const query = ['users:id,name,email','subjects:id,UsersID,SubjectName']
 
     useEffect(()=>{
         dispatch(GetClasses())

@@ -10,13 +10,13 @@ export const submitTimetableLecture = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_HOST}api/CreateTimeTable`,
+        `${import.meta.env.VITE_HOST}api/CreateTimeTable`,
         dataToSend,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": process.env.REACT_APP_SECRET_KEY,
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
