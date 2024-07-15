@@ -242,7 +242,7 @@ export default function StudentInformation() {
   const ResetPassword = async (ID) =>{
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_HOST}api/ResetPassword?ID=${ID}`,
+        `${import.meta.env.VITE_HOST}api/ResetPassword?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
@@ -264,6 +264,37 @@ export default function StudentInformation() {
       setErrorMessage("Failed to Reset Password");
       setPopup(true);
     }
+  }
+
+  const GenerateChallan = async() =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GenerateStudentFee`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Generate Challan");
+      setPopup(true);
+    }
+  }
+
+  const FeeManagement = async(ID) =>{
+    navigate(`/FeeManagement/${ID}`);
   }
 
   return (
@@ -336,9 +367,9 @@ export default function StudentInformation() {
             }}
             className="arrow"
           />
-          <h4>Dashboard \ Students Information</h4>
+          <h4>Dashboard \ Students Management</h4>
         </div>
-        <div className="ms-auto me-4"></div>
+        <div className="ms-auto me-4"><button onClick={GenerateChallan} className="btn btn-primary">Generate Challan</button></div>
       </div>
       <form>
         <div className="inputsDiv">
@@ -523,6 +554,9 @@ export default function StudentInformation() {
                           </a>
                           <a className="dropdown-item" onClick={() => {}}>
                             Deactivate Student
+                          </a>
+                          <a className="dropdown-item" onClick={() => {FeeManagement(student.users.id)}}>
+                            Fee Management
                           </a>
                         </div>
                       </div>
