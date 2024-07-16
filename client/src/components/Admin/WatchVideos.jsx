@@ -13,9 +13,10 @@ import Comment from "./Comment";
 import PlaylistItem from "./PlaylistItem";
 import axios from "axios";
 import LoadingOverlay from "../common/LoadingOverlay";
+// import testVideo from "../../videosfortesting/poseqimdwkcji0oapevq.mov"
 
 export const formatDateMessage = (uploadDate) => {
-  console.log(uploadDate)
+  console.log(uploadDate);
   const createdAt = new Date(uploadDate);
   const now = new Date();
 
@@ -98,7 +99,6 @@ export default function WatchVideoes() {
           },
         }
       );
-
     } catch (error) {}
   };
 
@@ -126,7 +126,7 @@ export default function WatchVideoes() {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission behavior
       SubmitComment();
-      setcomment('');
+      setcomment("");
     }
   };
 
@@ -157,11 +157,11 @@ export default function WatchVideoes() {
 
   return (
     <>
-    <LoadingOverlay loading={localLoading} />
+      <LoadingOverlay loading={localLoading} />
       <div className="row m-0 p-0">
         <div className="col-lg-8 videoSideDiv">
           <div className="videodiv">
-              <video
+            <video
                 ref={videoRef}
                 autoPlay
                 src={file}
@@ -267,14 +267,9 @@ export default function WatchVideoes() {
                 className="commentinput mb-3"
                 placeholder="Add a comment"
               />
-              {videoInfo?.comments.map((comment) =>{
-                return (
-                  <Comment
-              Comment={comment}
-              />
-                )
+              {videoInfo?.comments.map((comment) => {
+                return <Comment Comment={comment} />;
               })}
-              
             </div>
           </div>
         </div>
