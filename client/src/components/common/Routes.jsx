@@ -166,13 +166,13 @@ const AllRoutes = [
     authentication: "role",
   },
   {
-    path: "testing",
+    path: "timetable",
     component: <Timetable />,
     type: "Admin",
     authentication: "role",
   },
   {
-    path: "timetable",
+    path: "testing",
     component: <CreateTimetables />,
     type: "Admin",
     authentication: "role",

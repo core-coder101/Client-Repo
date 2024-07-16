@@ -14,13 +14,14 @@ import Select from '@mui/material/Select';
 import { GetClasses, setError, setPopup } from "../../redux/slices/Admin/UploadLecture";
 import CustomPopup from "../common/CustomPopup";
 import { GetTeachers, setPopup as createClassSetPopup, setError as createClassSetError } from "../../redux/slices/Admin/CreateClass";
-import { submitTimetableLecture } from "../../redux/slices/Admin/CreateTimetables";
+import { GetTimeTable, submitTimetableLecture, setError as submitTimetableSetError, setPopup as submitTimetableSetPopup } from "../../redux/slices/Admin/CreateTimetables";
 
 export default function Timetable() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
   const { classesData, loading, popup, error } = useSelector(state => state.uploadLecture)
+  const { DBTimeTableData, loading: createTimeTableLoading, popup: createTimeTablePopup, error: createTimeTableError } = useSelector(state => state.createTimeTable)
   const { teachersData, loading: createClassLoading, popup: createClassPopup, error: createClassError } = useSelector(state => state.createClass)
 
   const [ApiSearchData, SetApiSearchData] = useState({
@@ -32,14 +33,57 @@ export default function Timetable() {
 
   useEffect(() => {
     if(classesData && classesData.length > 0 && ApiSearchData.ClassRank && ApiSearchData.ClassName){
-      let updated = ApiSearchData
       const filteredClass = classesData.find((Class) => {
         return Class.ClassRank === ApiSearchData.ClassRank && Class.ClassName === ApiSearchData.ClassName
       })
-      updated.ClassID = filteredClass.id
-      SetApiSearchData(updated)
+      SetApiSearchData(prev=>(
+        {
+          ...prev,
+          ClassID: filteredClass.id,
+        }
+      ))
     }
   }, [ApiSearchData.ClassName, ApiSearchData.ClassRank])
+
+  useEffect(()=>{
+    if(ApiSearchData.ClassID){
+      dispatch(GetTimeTable(ApiSearchData.ClassID))
+    }
+  }, [ApiSearchData.ClassID])
+
+  useEffect(() => {
+    let dataToSet = [];
+    DBTimeTableData.forEach((lecture) => {
+      let dataToPush = {
+        period: lecture.period,
+        Monday: "",
+        Tuesday: "",
+        Wednesday: "",
+        Thursday: "",
+        Friday: "",
+        Saturday: "",
+      };
+      ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].forEach(day => {
+        const dayData = lecture[day];
+        if (dayData.subject) {
+          const teacher = teachersData.find(teacher => teacher.id === dayData.teacher_id);
+          dataToPush[day] = {
+            teacherName: teacher?.users.name || "name not found",
+            teacherId: dayData.teacher_id,
+            subject: dayData.subject,
+          };
+        } else {
+          dataToPush[day] = { teacherName: "", teacherId: "", subject: "" };
+        }
+      });
+      dataToSet.push(dataToPush);
+    });
+    console.log("dataToSet: ", dataToSet);
+    setTimeTableData(dataToSet)
+  }, [DBTimeTableData]);
+  
+
+  // {teacherName: teacher.users.name,teacherId: teacher.id, subject: teacher.subjects.SubjectName}
 
   const [timeTableData, setTimeTableData] = useState([
     { period: [null, null], Monday: "", Tuesday: "", Wednesday: "", Thursday: "", Friday: "", Saturday: "" },
@@ -162,7 +206,7 @@ export default function Timetable() {
             subject: period[day].subject,
             }
             console.log(dataToSend);
-             dispatch(submitTimetableLecture(dataToSend))
+            dispatch(submitTimetableLecture(dataToSend))
             return
         })})
     } else {
@@ -171,9 +215,18 @@ export default function Timetable() {
     }
   }
 
+  const handleTimeRangeChange = (newTimeRange, periodIndex) => {
+    const updatedTimeTableData = [...timeTableData];
+    updatedTimeTableData[periodIndex].period = [
+      newTimeRange.startTime,
+      newTimeRange.endTime
+    ];
+    setTimeTableData(updatedTimeTableData);
+  };
+
   return (
     <>
-      <LoadingOverlay loading={loading || createClassLoading} />
+      <LoadingOverlay loading={loading || createClassLoading || createTimeTableLoading} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div style={{ padding: "15px 20px" }}>
           <div className="mt-2 mb-4">
@@ -208,6 +261,7 @@ export default function Timetable() {
                   </Box>
                 )}
                 MenuProps={MenuProps}
+                style={{marginRight: "10px"}}
               >
                   <MenuItem value={"Main Campus"}>
                     Main Campus
@@ -234,6 +288,7 @@ export default function Timetable() {
                   </Box>
                 )}
                 MenuProps={MenuProps}
+                style={{marginRight: "10px"}}
                 required
               >
                   {classesData &&
@@ -263,6 +318,7 @@ export default function Timetable() {
                     </Box>
                   )}
                   MenuProps={MenuProps}
+                  style={{marginRight: "10px"}}
                   required
               >
                 {classesData &&
@@ -313,15 +369,16 @@ export default function Timetable() {
                           <tr key={periodIndex}>
                             <td>{periodIndex + 1}</td>
                             <td>
-                              <SingleInputTimeRangeField
-                                value={timeRanges[periodIndex]}
-                                onChange={(newTimeRange) => {
-                                  let updatedTimeTableData = timeTableData
-                                  updatedTimeTableData[periodIndex].period = newTimeRange
-                                  setTimeTableData(updatedTimeTableData)
-                                }}
-                                style={{minWidth: "max-content"}}
-                              />
+                            <SingleInputTimeRangeField
+                              key={periodIndex}
+                              value={{ startTime: lecture[0], endTime: lecture[1] }}
+                              onChange={(newTimeRange) => {
+                                let updated = timeTableData
+                                timeTableData[periodIndex].period = newTimeRange
+                                setTimeTableData(updated)
+                              }}
+                              style={{ minWidth: "max-content" }}
+                            />
                             </td>
                             {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
                               <td key={day}>
@@ -329,29 +386,31 @@ export default function Timetable() {
                                   <InputLabel>Subject</InputLabel>
                                   <Select
                                     labelId={`select-label-${day}-${periodIndex}`}
-                                    value={lecture[day]}
+                                    value={JSON.stringify(lecture[day])}
                                     onChange={(e) => handleSelectChange(e, periodIndex, day)}
                                     input={<OutlinedInput label="Subject" />}
                                     MenuProps={MenuProps}
-                                    renderValue={(selected) => (
+                                    renderValue={(selected) => {
+                                      const parsed = JSON.parse(selected)
+                                      return (
                                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                          <Chip label={`${selected.teacherName} ${selected.subject}`} />
+                                          <Chip label={`${parsed.teacherName} ${parsed.subject}`} />
                                       </Box>
-                                    )}
+                                      )}}
                                     required
                                   >
                                     {/* {teachersData.length > 0 && (
                                     <> */}
-                                      <MenuItem key={teachersData.length} value={{teacherName: "", teacherId: "", subject: "none"}}>
+                                      <MenuItem key={teachersData.length} value={JSON.stringify({teacherName: "", teacherId: "", subject: "none"})}>
                                         none
                                       </MenuItem>
-                                      <MenuItem key={teachersData.length + 1} value={{teacherName: "", teacherId: "", subject: "break"}}>
+                                      <MenuItem key={teachersData.length + 1} value={JSON.stringify({teacherName: "", teacherId: "", subject: "break"})}>
                                         break
                                       </MenuItem>
                                     {/* </>
                                     )} */}
                                     {teachersData.length > 0 && teachersData.map((teacher, index) => (
-                                    <MenuItem key={index} value={{teacherName: teacher.users.name,teacherId: teacher.id, subject: teacher.subjects.SubjectName}}>
+                                    <MenuItem key={index} value={JSON.stringify({teacherName: teacher.users.name,teacherId: teacher.id, subject: teacher.subjects.SubjectName})}>
                                       {`${teacher.users.name} ${teacher.subjects.SubjectName}`}
                                     </MenuItem>
                                   ))}
@@ -383,7 +442,7 @@ export default function Timetable() {
                             <td>{periodIndex + 1}</td>
                             <td>
                               <SingleInputTimeRangeField
-                                value={fridayTimeRanges[periodIndex]}
+                                value={{startTime: lecture.period[0], endTime: lecture.period[1]}}
                                 onChange={(newTimeRange) => {
                                   let updatedTimeTableData = timeTableData
                                   updatedTimeTableData[periodIndex].period = newTimeRange
@@ -397,7 +456,7 @@ export default function Timetable() {
                                 <InputLabel>Subject</InputLabel>
                                 <Select
                                   labelId={`select-label-Friday-${periodIndex}`}
-                                  value={lecture.Friday}
+                                  value={JSON.stringify(lecture.Friday)}
                                   onChange={(e) => handleFridaySelectChange(e, periodIndex)}
                                   input={<OutlinedInput label="Subject" />}
                                   MenuProps={MenuProps}
@@ -450,6 +509,16 @@ export default function Timetable() {
           }, 400);
         }}
         errorMessage={createClassError}
+      />
+      <CustomPopup 
+        Visible={createTimeTablePopup}
+        OnClose={() => {
+          dispatch(submitTimetableSetPopup(false))
+          setTimeout(() => {
+            dispatch(submitTimetableSetError(null))
+          }, 400);
+        }}
+        errorMessage={createTimeTableError}
       />
     </>
   );
