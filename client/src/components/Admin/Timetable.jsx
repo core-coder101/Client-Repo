@@ -15,6 +15,7 @@ import { GetClasses, setError, setPopup } from "../../redux/slices/Admin/UploadL
 import CustomPopup from "../common/CustomPopup";
 import { GetTeachers, setPopup as createClassSetPopup, setError as createClassSetError } from "../../redux/slices/Admin/CreateClass";
 import { GetTimeTable, submitTimetableLecture, setError as submitTimetableSetError, setPopup as submitTimetableSetPopup } from "../../redux/slices/Admin/CreateTimetables";
+import dayjs from "dayjs";
 
 export default function Timetable() {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export default function Timetable() {
     let dataToSet = [];
     DBTimeTableData.forEach((lecture) => {
       let dataToPush = {
-        period: lecture.period,
+        period: [new dayjs(new Date(`2024-11-09T${lecture.period[0]}`)),new dayjs(new Date(`2024-11-09T${lecture.period[1]}`))],
         Monday: "",
         Tuesday: "",
         Wednesday: "",
@@ -68,9 +69,9 @@ export default function Timetable() {
         if (dayData.subject) {
           const teacher = teachersData.find(teacher => teacher.id === dayData.teacher_id);
           dataToPush[day] = {
-            teacherName: teacher?.users.name || "name not found",
+            teacherName: teacher?.users.name || "",
             teacherId: dayData.teacher_id,
-            subject: dayData.subject,
+            subject: dayData.subject || "none",
           };
         } else {
           dataToPush[day] = { teacherName: "", teacherId: "", subject: "" };
@@ -371,7 +372,7 @@ export default function Timetable() {
                             <td>
                             <SingleInputTimeRangeField
                               key={periodIndex}
-                              value={{ startTime: lecture[0], endTime: lecture[1] }}
+                              value={lecture.period}
                               onChange={(newTimeRange) => {
                                 let updated = timeTableData
                                 timeTableData[periodIndex].period = newTimeRange
@@ -392,11 +393,23 @@ export default function Timetable() {
                                     MenuProps={MenuProps}
                                     renderValue={(selected) => {
                                       const parsed = JSON.parse(selected)
-                                      return (
-                                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                          <Chip label={`${parsed.teacherName} ${parsed.subject}`} />
-                                      </Box>
-                                      )}}
+                                      if(parsed.teacherName && parsed.subject){
+                                        return (
+                                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                                            <Chip label={`${parsed.teacherName} ${parsed.subject}`} />
+                                        </Box>
+                                        )
+                                      } else if (parsed.subject){
+                                        return (
+                                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                                            <Chip label={`${parsed.subject}`} />
+                                        </Box>
+                                        )} else {
+                                        return (
+                                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                                            <Chip label={"none"} />
+                                        </Box>
+                                        )}}}
                                     required
                                   >
                                     {/* {teachersData.length > 0 && (
