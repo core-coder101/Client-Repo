@@ -4,7 +4,7 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import "../../assets/css/Teacher.css";
 import "../../assets/css/studentInformation.css";
 import "../../assets/css/studentInformation/all.min.css";
-import { InputLabel, MenuItem, OutlinedInput, FormControl, Button, Tabs, Tab, Box, Chip } from "@mui/material";
+import { InputLabel, MenuItem, OutlinedInput, FormControl, Button, Tabs, Tab, Box, Chip, } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -16,12 +16,13 @@ import CustomPopup from "../common/CustomPopup";
 import { GetTeachers, setPopup as createClassSetPopup, setError as createClassSetError } from "../../redux/slices/Admin/CreateClass";
 import { GetTimeTable, submitTimetableLecture, setError as submitTimetableSetError, setPopup as submitTimetableSetPopup } from "../../redux/slices/Admin/CreateTimetables";
 import dayjs from "dayjs";
+import Snackbar from '@mui/material/Snackbar';
 
 export default function Timetable() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  const { classesData, loading, popup, error } = useSelector(state => state.uploadLecture)
+  const { classesData, loading, popup } = useSelector(state => state.uploadLecture)
   const { DBTimeTableData, loading: createTimeTableLoading, popup: createTimeTablePopup, error: createTimeTableError } = useSelector(state => state.createTimeTable)
   const { teachersData, loading: createClassLoading, popup: createClassPopup, error: createClassError } = useSelector(state => state.createClass)
 
@@ -176,15 +177,6 @@ export default function Timetable() {
     },
   };
 
-
-  //  format to send: 
-  //   classId: 8,
-  //   teacherId: 1,
-  //   startTime: "07:00:00",
-  //   endTime: "07:30:00",
-  //   day: "Monday",
-  //   subject: "Maths",
-
   const handleSubmit = (e) => {
     e.preventDefault()
     if(tabIndex === 0){
@@ -215,15 +207,6 @@ export default function Timetable() {
 
     }
   }
-
-  const handleTimeRangeChange = (newTimeRange, periodIndex) => {
-    const updatedTimeTableData = [...timeTableData];
-    updatedTimeTableData[periodIndex].period = [
-      newTimeRange.startTime,
-      newTimeRange.endTime
-    ];
-    setTimeTableData(updatedTimeTableData);
-  };
 
   return (
     <>
@@ -503,7 +486,41 @@ export default function Timetable() {
         </form>
         </div>
       </LocalizationProvider>
-      <CustomPopup 
+      <Snackbar
+        open={popup}
+        onClose={() => {
+          dispatch(setPopup(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(setError(""))
+        }}
+        message={createClassError}
+        autoHideDuration={6000}
+      />
+      <Snackbar
+        open={createClassPopup}
+        onClose={() => {
+          dispatch(createClassSetPopup(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(createClassSetError(""))
+        }}
+        message={createClassError}
+        autoHideDuration={6000}
+      />
+      <Snackbar
+        open={createTimeTablePopup}
+        onClose={() => {
+          dispatch(submitTimetableSetPopup(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(submitTimetableSetError(""))
+        }}
+        message={createTimeTableError}
+        autoHideDuration={6000}
+        transitionDuration={400}
+      />
+      {/* <CustomPopup 
         Visible={popup}
         OnClose={() => {
           dispatch(setPopup(false))
@@ -532,7 +549,7 @@ export default function Timetable() {
           }, 400);
         }}
         errorMessage={createTimeTableError}
-      />
+      /> */}
     </>
   );
 }
