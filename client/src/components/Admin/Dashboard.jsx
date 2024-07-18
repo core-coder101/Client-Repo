@@ -6,6 +6,7 @@ import ReactApexChart from "react-apexcharts"
 import { useSelector } from "react-redux";
 import axios from 'axios';
 import CustomPopup from "../common/CustomPopup";
+import LoadingOverlay from "../common/LoadingOverlay";
 
 const data2 = [
   { label: "Present", value: 17 },
@@ -101,6 +102,42 @@ export default function Dashboard() {
     GetStudentWeekAttendance();
   },[]);
 
+
+
+
+
+  const [StaffAttendance , SetStaffAttendance] = useState('');
+
+  const GetTeacherAttendance = async () =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GetTeacherAttendance`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        SetStaffAttendance(response.data);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Reset Password");
+      setPopup(true);
+    }
+  }
+
+  useEffect(()=>{
+    GetTeacherAttendance();
+  },[]);
+
   const cardBackgroundIconStyles = {
     opacity: "20%",
     width: "80%",
@@ -127,7 +164,7 @@ export default function Dashboard() {
       },
       colors: ["#179c13", "#cc1d28"]
     },
-    series: [17, 3],
+    series: [ StaffAttendance && StaffAttendance.data.presentCount, StaffAttendance && StaffAttendance.data.absentCount],
   };
 
 
@@ -716,6 +753,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
 
   return (
     <div className="dashboard">
+    <LoadingOverlay />
       <div className="mt-2 mb-4">
         <div className="headingNavbar d-flex justify-content-center">
           <div className="d-flex">
