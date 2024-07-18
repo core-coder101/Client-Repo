@@ -7,13 +7,17 @@ export const handleError = (error) => {
 
   const { data, status } = error.response;
 
+  const shortener = (message) => {
+    return message.length > 40 ? message.substring(0, 40) : message
+  }
+
   if (data.message) {
     try {
       // If data.message is a JSON string, parse it
       const parsedMessage = JSON.parse(data.message);
 
       if (parsedMessage.email) {
-        return parsedMessage.email[0];
+        return shortener(parsedMessage.email[0]);
       }
     } catch (e) {
       // If parsing fails, continue to handle message as a string
@@ -34,14 +38,14 @@ export const handleError = (error) => {
         return "Teacher not found";
       }
 
-      return data.message;
+      return shortener(data.message);
     }
 
     // If data.message is an object, extract the error message
     if (typeof data.message === 'object') {
       const errorMessages = Object.values(data.message).flat();
       if (errorMessages.length > 0) {
-        return errorMessages[0];
+        return shortener(errorMessages[0]);
       }
     }
   }

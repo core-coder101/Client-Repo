@@ -1,155 +1,282 @@
-import React , {useState} from 'react'
-import "../../assets/css/dashboard.css"
-import { FaArrowCircleRight } from "react-icons/fa";
-import { FaRegCreditCard } from "react-icons/fa";
-import { FaMoneyCheckDollar } from "react-icons/fa6";
-import { GoGraph } from "react-icons/go";
-import { FaChartPie } from "react-icons/fa";
-import { BsGraphUpArrow } from "react-icons/bs";
-import { VscGraphLine } from "react-icons/vsc";
-import Graph from './Graph';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import React, { useEffect, useState } from "react";
+import "../../assets/css/dashboard.css";
+import "../../assets/css/student/calender.css";
+import Calendar from "react-calendar";
+import moment from "moment";
+import { useDispatch, useSelector } from 'react-redux';
+import { PieChart } from "@mui/x-charts/PieChart";
+import { setError, setPopup } from "../../redux/slices/Student/StudentDashboard";
+import LoadingOverlay from "../common/LoadingOverlay";
+import { GetTimeTable, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
+import { Snackbar } from "@mui/material";
+import { GetTeacherAttendanceDashboard } from "../../redux/slices/Teacher/StudentAttendance";
 
-import { PieChart } from '@mui/x-charts/PieChart';
-
-
-
-
-const data1 = [
-  { label: 'Present Staff', value: 20 }
-  ];
-
-const data2 = [
-  { label: 'Present', value: 20},
-  { label: 'Absent', value: 10 },
-];
-
-
-const series = [
-  
-  {
-    innerRadius: 0,
-    outerRadius: 80,
-    id: 'series-1',
-    data: data1,
-    arcLabel: (text) => `Present Staff`,
-    arcLabelMinAngle: 45,
-  },
-  {
-    innerRadius: 110,
-    outerRadius: 140,
-    id: 'series-2',
-    data: data2,
-  },
-];
 
 export default function Dashboard() {
+  
+  const { teacherAttendance, presentCount, absentCount, loading, popup, error } = useSelector(state=>state.studentAttendanceTeacher)
+  const { DBTimeTableData, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
+  const dispatch = useDispatch()
+  const [localLoading, setLocalLoading] = useState(false)
+  // redux state update bug fix
+  useEffect(()=>{
+    setLocalLoading(loading)
+  }, [loading])
 
-  const cardBackgroundIconStyles = { opacity: "20%",
-    width: "80%",
-    height: "80%",
-    position: "absolute",
-    right: "-40px",
+  useEffect(() => {
+    if(DBTimeTableData.length > 0){
+      setTimeTable(DBTimeTableData)
+    }
+  }, [DBTimeTableData])
+
+  useEffect(()=>{
+    dispatch(GetTeacherAttendanceDashboard())
+    dispatch(GetTimeTable("TImETableforfuckingteacher"))
+  }, [dispatch])
+
+  const data = [
+    { label: "Present", value: presentCount },
+    { label: "Absent", value: absentCount },
+  ];
+  
+  const series = [
+    {
+      innerRadius: 110,
+      outerRadius: 120,
+      id: "series-2",
+      data: data,
+    },
+  ];
+
+  const [itemData, setItemData] = useState()
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [timetable, setTimeTable] = useState([
+    {
+      Subject: "Physics",
+      StartingTime: "14:40:00",
+      EndingTime: "15:20:00",
+    },
+    {
+      Subject: "Chemistry",
+      StartingTime: "15:20:00",
+      EndingTime: "16:00:00",
+    },
+    {
+      Subject: "Maths",
+      StartingTime: "16:00:00",
+      EndingTime: "16:40:00",
+    },
+    {
+      Subject: "Urdu",
+      StartingTime: "16:40:00",
+      EndingTime: "17:20:00",
+    },
+    {
+      Subject: "Computer",
+      StartingTime: "17:20:00",
+      EndingTime: "18:00:00",
+    },
+    {
+      Subject: "English",
+      StartingTime: "18:00:00",
+      EndingTime: "18:40:00",
+    },
+    {
+      Subject: "Islamiat",
+      StartingTime: "18:40:00",
+      EndingTime: "19:20:00",
+    },
+    {
+      Subject: "Tarjama-tul-Quran",
+      StartingTime: "19:20:00",
+      EndingTime: "19:40:00",
+    },
+  ])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+}, []);
+
+  let presentPercentage = 0
+  if(presentCount + absentCount > 0){
+    // denomenator can't be zero 💀
+    presentPercentage = (
+      (presentCount / (presentCount + absentCount)) *
+      100
+    ).toFixed(2);
   }
-  const [itemData, setItemData] = useState();
 
+  const present = [];
+  const absent = [];
+  // 2024-07-08
+
+  teacherAttendance.forEach((attendance)=>{
+    if(attendance.attendance === "Present"){
+      present.push(attendance.Date)
+    } else {
+      absent.push(attendance.Date)
+    }
+  })
 
   return (
-    <div className='dashboard'>
-      <div className='mt-2 mb-4'>
-          <div className='headingNavbar d-flex justify-content-center'>
-            <div className='d-flex'><h4>Dashboard</h4></div>
-            <div className='ms-auto me-4'></div>
+    <>
+      <LoadingOverlay loading={localLoading || loading2} />
+      <div className="dashboard">
+        <div className="mt-2 mb-4">
+          <div className="headingNavbar d-flex justify-content-center">
+            <div className="d-flex">
+              <h4>Dashboard</h4>
+            </div>
+            <div className="ms-auto me-4"></div>
           </div>
         </div>
-        <div className='cardsDiv '>
-          <div className='card ' style={{backgroundColor: "#DC493B"}}>
-            <FaRegCreditCard color='black' style={cardBackgroundIconStyles} />
-            <h4>27</h4>
-            <h6>Dues - Amount: ****</h6>
-            <button style={{backgroundColor: "#C84332"}}>More Info <FaArrowCircleRight /></button>
+        <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
+          <div className="timeTableMainDiv">
+            <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
+            {timetable.map(lecture => {
+              let ongoing = false;
+              let start = lecture.StartingTime;
+              let end = lecture.EndingTime;
+              console.log("start: ", start)
+              let [startHours, startMinutes, startSeconds] = start.split(":");
+              let [endHours, endMinutes, endSeconds] = end.split(":");
+              
+              let currentSeconds = currentTime.getSeconds();
+              let currentTimeInSeconds = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentSeconds;
+              let startTimeInSeconds = parseInt(startHours) * 3600 + parseInt(startMinutes) * 60 + parseInt(startSeconds);
+              let endTimeInSeconds = parseInt(endHours) * 3600 + parseInt(endMinutes) * 60 + parseInt(endSeconds);
+              
+              if (currentTimeInSeconds >= startTimeInSeconds && currentTimeInSeconds < endTimeInSeconds) {
+                  ongoing = true;
+              }
+              
+              const startMessage = new Date("2024-09-11T" + start).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
+              const endMessage = new Date("2024-09-11T" + end).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
+              
+              return (
+                  <div key={lecture.Subject} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
+                      <h6>{lecture.Subject}</h6>
+                      <p>{`${startMessage} - ${endMessage}`}</p>
+                  </div>
+              );
+            })}
           </div>
-          <div className='card ' style={{backgroundColor: "#01BFEC"}}>
-            <FaMoneyCheckDollar color='black' style={cardBackgroundIconStyles} />
-            <h4>5000</h4>
-            <h6>Total Income This Year</h6>
-            <button style={{backgroundColor: "#02ABD7"}}>More Info <FaArrowCircleRight /></button>
-          </div>
-          <div className='card ' style={{backgroundColor: "#03A459"}}>
-            <GoGraph color='black' style={cardBackgroundIconStyles} />
-            <h4>5000</h4>
-            <h6>Total Income This Month</h6>
-            <button style={{backgroundColor: "#019450"}}>More Info <FaArrowCircleRight /></button>
-          </div>
-          <div className='card ' style={{backgroundColor: "#0272B6"}}>
-            <FaChartPie color='black' style={cardBackgroundIconStyles} />
-            <h4>0</h4>
-            <h6>Income Today</h6>
-            <button style={{backgroundColor:"#0166A5"}}>More Info <FaArrowCircleRight /></button>
-          </div>
-          <div className='card ' style={{backgroundColor: "#03A459"}}>
-            <BsGraphUpArrow color='black' style={cardBackgroundIconStyles} />
-            <h4>5000</h4>
-            <h6>Profit This Month</h6>
-            <button style={{backgroundColor: "#019450"}}>More Info <FaArrowCircleRight /></button>
-          </div>
-          <div className='card ' style={{backgroundColor: "#DC493B"}}>
-            <VscGraphLine color='black' style={cardBackgroundIconStyles} />
-            <h4>0</h4>
-            <h6>Total Expense This Year</h6>
-            <button style={{backgroundColor: "#C84332"}}>More Info <FaArrowCircleRight /></button>
+          <div className="d-flex flex-wrap itemsContainer justify-content-center justify-content-md-start">
+            <div
+              className="attendanceMAINDIV"
+              style={{
+                margin: "5px",
+                boxShadow: "rgba(0, 0, 0, 0.122) 0px 0px 5px 5px",
+                border: "1px solid rgb(218, 207, 207)",
+              }}
+            >
+              <h2 style={{ textAlign: "center", margin: "0", margin: "5px 0px" }}>
+                Attendance
+              </h2>
+              <div className="attendanceOuterDiv">
+                <PieChart
+                  colors={["rgb(1, 128, 35)", "rgb(199, 14, 33)"]}
+                  series={series}
+                  width={350}
+                  height={250}
+                  slotProps={{
+                    legend: { hidden: true },
+                  }}
+                  onItemClick={(event, d) => setItemData(d)}
+                />
+                <div className="percentageDiv">{`${presentPercentage}%`}</div>
+                <ul
+                  style={{
+                    display: "flex",
+                    listStyle: "none",
+                    padding: 0,
+                    width: "max-content",
+                    position: "relative",
+                    right: "25px",
+                  }}
+                >
+                  <li
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginRight: "10px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        backgroundColor: "green",
+                        borderRadius: "50%",
+                        display: "inline-block",
+                        marginRight: "5px",
+                      }}
+                    ></span>
+                    Present
+                  </li>
+                  <li style={{ display: "flex", alignItems: "center" }}>
+                    <span
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        backgroundColor: "red",
+                        borderRadius: "50%",
+                        display: "inline-block",
+                        marginRight: "5px",
+                      }}
+                    ></span>
+                    Absent
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="calendarDiv" style={{ margin: "5px" }}>
+              <Calendar
+                tileClassName={({ date, view }) => {
+                  if (
+                    present.find((x) => x === moment(date).format("YYYY-MM-DD"))
+                  ) {
+                    return "present";
+                  } else if (
+                    absent.find((x) => x === moment(date).format("YYYY-MM-DD"))
+                  ) {
+                    return "absent";
+                  }
+                }}
+              ></Calendar>
+            </div>
+            <div></div>
           </div>
         </div>
-        <div className='d-flex' style={{marginTop:"70px"}}>
-        <div className='ms-auto me-auto'>
-        <center><h2 className='protest-revolution-regular mb-4'>Fee Generated and Submitted</h2></center>
-        <Graph className="mt-1" />
-        </div>
-      <div>
-      <h2 className='protest-revolution-regular mb-4'>Today Present Staff</h2>
-        <Stack
-      direction={{ xs: 'column', md: 'row' }}
-      spacing={{ xs: 0, md: 4 }}
-      sx={{ width: '100%' }}
-    >
-      <Box sx={{ flexGrow: 1 }}>
-        <PieChart
-          colors={['#03a459','#dc493b']}
-          series={series}
-          
-          width={400}
-          height={300}
-          slotProps={{
-            legend: { hidden: true },
-          }}
-          onItemClick={(event, d) => setItemData(d)}
-        />{' '}
-      </Box>
-
-      <Stack direction="column" sx={{ width: { xs: '100%', md: '40%' } }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <IconButton
-            aria-label="reset"
-            size="small"
-            onClick={() => {
-              setItemData(null);
-            }}
-          >
-          </IconButton>
-        </Box>
-      </Stack>
-    </Stack>
-        </div>
-        </div>
-    </div>
-  )
+      </div>
+      <Snackbar
+        open={popup2}
+        onClose={() => {
+          dispatch(setPopup2(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(setError2(""))
+        }}
+        message={error2}
+        autoHideDuration={3000}
+        transitionDuration={400}
+      />
+      <Snackbar
+        open={popup}
+        onClose={() => {
+          dispatch(setPopup(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(setError(""))
+        }}
+        message={error}
+        autoHideDuration={3000}
+        transitionDuration={400}
+      />
+    </>
+  );
 }

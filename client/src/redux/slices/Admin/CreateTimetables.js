@@ -56,6 +56,32 @@ export const submitTimetableLecture = createAsyncThunk(
     }
   }
 );
+export const destroyTimeTable = createAsyncThunk(
+  "destroyTimeTable",
+  async (ID, { getState, rejectWithValue }) => {
+    const state = getState();
+    const CSRFToken = state.auth.CSRFToken;
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_HOST}api/destroyTimeTable?ID=${ID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        return data.message || "Successfully reset timetable data";
+      } else {
+        return rejectWithValue(handleResponse(data))
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error))
+    }
+  }
+);
 
 const initialState = {
     DBTimeTableData: [],
@@ -103,6 +129,22 @@ const createTimetablesSlice = createSlice({
         state.DBTimeTableData = action.payload;
       })
       .addCase(GetTimeTable.rejected, (state, action) => {
+        state.loading = false;
+        state.DBTimeTableData = [];
+        state.error = action.payload || "An Unknown Error";
+        state.popup = true;
+      })
+      .addCase(destroyTimeTable.pending, (state) => {
+        state.popup = false
+        state.error = "Resetting Timetable Data";
+        state.loading = true;
+      })
+      .addCase(destroyTimeTable.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = action.payload
+        state.popup = true
+      })
+      .addCase(destroyTimeTable.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "An Unknown Error";
         state.popup = true;

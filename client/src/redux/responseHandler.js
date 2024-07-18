@@ -6,6 +6,10 @@ export const handleResponse = (data) => {
         return "No error message from server";
     }
 
+    const shortener = (message) => {
+      return message.length > 40 ? message.substring(0, 40) : message
+    }
+
     if(data.message.ClassName){
       return data.message.ClassName[0]
     }
@@ -27,11 +31,7 @@ export const handleResponse = (data) => {
             return "Please Enter a valid Email address"
         }
 
-        if(data.message.length > 50){
-          return data.message.substring(0, 50) + " . . ."
-        } else {
-          return data.message;
-        }
+          return shortener(data.message)
 
       } else if (data.message.email) {
         return data.message.email[0];
