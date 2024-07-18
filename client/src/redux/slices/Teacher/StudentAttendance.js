@@ -30,6 +30,33 @@ export const GetTeacherClassinfo = createAsyncThunk(
     }
   }
 );
+export const teacherAttendance = createAsyncThunk(
+  "teacherAttendance",
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState();
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_HOST}api/teacherattendance`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": state.auth.CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        return data.message;
+      } else {
+        return rejectWithValue(
+          handleResponse(data) || "Failed to mark your attendance"
+        );
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error));
+    }
+  }
+);
 export const SubmitAttendance = createAsyncThunk(
   "SubmitAttendance",
   async (selectedRows, { getState, rejectWithValue }) => {
@@ -67,6 +94,35 @@ export const SubmitAttendance = createAsyncThunk(
     }
   }
 );
+export const GetTeacherAttendanceDashboard = createAsyncThunk(
+  "GetTeacherAttendanceDashboard",
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState();
+    const CSRFToken = state.auth.CSRFToken;
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GetTeacherAttendanceDashboard`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        return data;
+      } else {
+        return rejectWithValue(handleResponse(data));
+      }
+    } catch (error) {
+      const errorMessage = handleError(error);
+      return rejectWithValue(errorMessage);
+      // return rejectWithValue(error.response?.data?.message || error.message)
+    }
+  }
+);
+
 
 export const GetStudentInformation = createAsyncThunk(
   "GetStudentInformation",
@@ -111,6 +167,9 @@ const initialState = {
   popup: false,
   teacherData: null,
   studentsData: null,
+  teacherAttendance: [],
+  presentCount: 0,
+  absentCount: 0,
 };
 
 const studentAttendanceSliceTeacher = createSlice({
@@ -145,8 +204,8 @@ const studentAttendanceSliceTeacher = createSlice({
         state.loading = false;
       })
       .addCase(GetTeacherClassinfo.rejected, (state, action) => {
-        state.error = action.payload;
         state.loading = false;
+        state.error = action.payload;
         state.popup = true;
       })
       .addCase(GetStudentInformation.pending, (state) => {
@@ -154,12 +213,12 @@ const studentAttendanceSliceTeacher = createSlice({
         state.loading = true;
       })
       .addCase(GetStudentInformation.fulfilled, (state, action) => {
-        state.studentsData = action.payload;
         state.loading = false;
+        state.studentsData = action.payload;
       })
       .addCase(GetStudentInformation.rejected, (state, action) => {
-        state.error = action.payload;
         state.loading = false;
+        state.error = action.payload;
         state.popup = true;
       })
       .addCase(SubmitAttendance.pending, (state) => {
@@ -167,15 +226,45 @@ const studentAttendanceSliceTeacher = createSlice({
         state.loading = true;
       })
       .addCase(SubmitAttendance.fulfilled, (state, action) => {
-        state.error = action.payload;
         state.loading = false;
+        state.error = action.payload;
         state.popup = true;
       })
       .addCase(SubmitAttendance.rejected, (state, action) => {
-        state.error = action.payload;
         state.loading = false;
+        state.error = action.payload;
         state.popup = true;
-      });
+      })
+      .addCase(teacherAttendance.pending, (state) => {
+        state.error = "Loading Attendance Data";
+        state.loading = true;
+      })
+      .addCase(teacherAttendance.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.popup = true
+      })
+      .addCase(teacherAttendance.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.popup = true;
+      })
+      .addCase(GetTeacherAttendanceDashboard.pending, (state) => {
+        state.popup = false;
+        state.error = "Loading Attendance Data";
+        state.loading = true;
+      })
+      .addCase(GetTeacherAttendanceDashboard.fulfilled, (state, action) => {
+        state.teacherAttendance = action.payload.attendance;
+        state.absentCount = action.payload.absentCount;
+        state.presentCount = action.payload.presentCount;
+        state.loading = false;
+      })
+      .addCase(GetTeacherAttendanceDashboard.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.popup = true;
+      })
   },
 });
 

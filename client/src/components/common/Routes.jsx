@@ -28,6 +28,7 @@ import UploadLectureForTeacher from "../Teacher/UploadLecture.jsx"
 import SelectVideoStudent from "../Student/SelectVideo.jsx";
 import CreateTimetables from "../Admin/CreateTimetables.jsx";
 import Timetable from "../Admin/Timetable.jsx";
+import TimetableForTeacher from "../Teacher/Timetable.jsx";
 import ChattingTesting from "../Admin/ChattingTesting.jsx";
 import FeeManagement from "../Admin/FeeManagement.jsx";
 import Addexpensives from "../Admin/Addexpensives.jsx";
@@ -168,13 +169,19 @@ const AllRoutes = [
     authentication: "role",
   },
   {
-    path: "testing",
+    path: "timetable",
     component: <Timetable />,
     type: "Admin",
     authentication: "role",
   },
   {
     path: "timetable",
+    component: <TimetableForTeacher />,
+    type: "Teacher",
+    authentication: "role",
+  },
+  {
+    path: "testing",
     component: <CreateTimetables />,
     type: "Admin",
     authentication: "role",

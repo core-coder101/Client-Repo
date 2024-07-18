@@ -4,61 +4,29 @@ import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import "../../assets/css/Teacher.css";
 import "../../assets/css/studentInformation.css";
 import "../../assets/css/studentInformation/all.min.css";
-import { InputLabel, MenuItem, OutlinedInput, FormControl, Button, Tabs, Tab, Box, Chip, Tooltip, } from "@mui/material";
+import { InputLabel, MenuItem, OutlinedInput, FormControl, Button, Box, Chip, Tooltip, } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { SingleInputTimeRangeField } from '@mui/x-date-pickers-pro/SingleInputTimeRangeField';
 import Select from '@mui/material/Select';
-import { GetClasses, setError, setPopup } from "../../redux/slices/Admin/UploadLecture";
 import { GetTeachers, setPopup as createClassSetPopup, setError as createClassSetError } from "../../redux/slices/Admin/CreateClass";
 import { GetTimeTable, destroyTimeTable, submitTimetableLecture, setError as submitTimetableSetError, setPopup as submitTimetableSetPopup } from "../../redux/slices/Admin/CreateTimetables";
 import dayjs from "dayjs";
 import Snackbar from '@mui/material/Snackbar';
-import {Dialog} from '@mui/material';
-import {DialogActions} from '@mui/material';
-import {DialogContent} from '@mui/material';
-import {DialogContentText} from '@mui/material';
-import {DialogTitle} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 
 export default function Timetable() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  const { classesData, loading, popup } = useSelector(state => state.uploadLecture)
   const { DBTimeTableData, loading: createTimeTableLoading, popup: createTimeTablePopup, error: createTimeTableError } = useSelector(state => state.createTimeTable)
   const { teachersData, loading: createClassLoading, popup: createClassPopup, error: createClassError } = useSelector(state => state.createClass)
-
-  const [ApiSearchData, SetApiSearchData] = useState({
-    campus: "Main Campus",
-    ClassRank: "",
-    ClassName: "",
-    ClassID: "",
-  });
+  const { teacherData } = useSelector(state => state.studentAttendanceTeacher)
   
   const [dialogOpen, setDialogOpen] = useState(false)
-
-  useEffect(() => {
-    if(classesData && classesData.length > 0 && ApiSearchData.ClassRank && ApiSearchData.ClassName){
-      const filteredClass = classesData.find((Class) => {
-        return Class.ClassRank === ApiSearchData.ClassRank && Class.ClassName === ApiSearchData.ClassName
-      })
-      SetApiSearchData(prev=>(
-        {
-          ...prev,
-          ClassID: filteredClass.id,
-        }
-      ))
-    }
-  }, [ApiSearchData.ClassName, ApiSearchData.ClassRank])
-
-  useEffect(()=>{
-    if(ApiSearchData.ClassID){
-      dispatch(GetTimeTable(ApiSearchData.ClassID))
-    }
-  }, [ApiSearchData.ClassID])
 
   useEffect(() => {
     let dataToSet = [];
@@ -103,28 +71,9 @@ export default function Timetable() {
   const query = ['users:id,name','subjects:UsersID,SubjectName']
 
   useEffect(() => {
-    dispatch(GetClasses())
     dispatch(GetTeachers(query))
+    dispatch(GetTimeTable(""))
   }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    SetApiSearchData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    if (name === "ClassRank") {
-      const selectedClass = classesData.find(
-        (Class) => Class.ClassRank === value
-      );
-      if (selectedClass) {
-        SetApiSearchData((prev) => ({
-          ...prev,
-          ClassName: selectedClass.ClassName,
-        }));
-      }
-    }
-  };
 
   const handleSelectChange = (event, periodIndex, day) => {
     const { value } = event.target;
@@ -172,7 +121,7 @@ export default function Timetable() {
             return
           }
           dataToSend = {
-            classId: ApiSearchData.ClassID,
+            classId: "",
             teacherId: period[day].teacherId,
             startTime: startTime,
             endTime: endTime,
@@ -182,19 +131,17 @@ export default function Timetable() {
             dispatch(submitTimetableLecture(dataToSend))
             return
         })})
-    dispatch(GetTimeTable(ApiSearchData.ClassID))
+    dispatch(GetTimeTable(""))
   }
 
   const resetTimetable = () => {
     setTimeTableData([])
-    if(ApiSearchData.ClassID){
-      dispatch(destroyTimeTable(ApiSearchData.ClassID))
-    }
+    dispatch(destroyTimeTable())
   }
 
   return (
     <>
-      <LoadingOverlay loading={loading || createClassLoading || createTimeTableLoading} />
+      <LoadingOverlay loading={createClassLoading || createTimeTableLoading} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div style={{ padding: "15px 20px" }}>
           <div className="mt-2 mb-4">
@@ -212,97 +159,6 @@ export default function Timetable() {
           </div>
         </div>
           <form onSubmit={handleSubmit}>
-            <div className="inputsDiv">
-              <div className="inputDiv">
-                <FormControl>
-                <InputLabel id="createTimetableCampus">Campus</InputLabel>
-                <Select
-                labelId="createTimetableCampus"
-                id="createTimetableCampus"
-                value={ApiSearchData.campus}
-                name="campus"
-                onChange={handleChange}
-                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      <Chip key={selected} label={selected} />
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-                style={{marginRight: "10px"}}
-              >
-                  <MenuItem value={"Main Campus"}>
-                    Main Campus
-                  </MenuItem>
-                  <MenuItem value={"Second Campus"}>
-                    Second Campus
-                  </MenuItem>
-              </Select>
-              </FormControl>
-              </div>
-              <div className="inputDiv">
-                <FormControl>
-                <InputLabel id="createTimetableCampus">Class Rank</InputLabel>
-                <Select
-                labelId="createTimetableCampus"
-                id="createTimetableCampus"
-                value={ApiSearchData.ClassRank}
-                name="ClassRank"
-                onChange={handleChange}
-                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      <Chip key={selected} label={selected} />
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-                style={{marginRight: "10px"}}
-                required
-              >
-                  {classesData &&
-                    Array.from(
-                      new Set(classesData.map((Class) => Class.ClassRank))
-                    ).map((rank) => (
-                      <MenuItem key={rank} value={rank}>
-                        {rank}
-                      </MenuItem>
-                    ))}
-              </Select>
-              </FormControl>
-              </div>
-              <div className="inputDiv">
-                <FormControl>
-                <InputLabel id="createTimetableCampus">Class Name</InputLabel>
-                <Select
-                  labelId="createTimetableCampus"
-                  id="createTimetableCampus"
-                  value={ApiSearchData.ClassName}
-                  name="ClassName"
-                  onChange={handleChange}
-                  input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        <Chip key={selected} label={selected} />
-                    </Box>
-                  )}
-                  MenuProps={MenuProps}
-                  style={{marginRight: "10px"}}
-                  required
-              >
-                {classesData &&
-                    classesData.map(
-                      (Class) =>
-                        ApiSearchData.ClassRank === Class.ClassRank && (
-                          <MenuItem key={Class.ClassName} value={Class.ClassName}>
-                            {Class.ClassName}
-                          </MenuItem>
-                        )
-                    )}
-              </Select>
-              </FormControl>
-              </div>
-            </div>
-          
           <div className="row pt-4 pl-3">
             <div className="col-md-6">
               <div>
@@ -420,17 +276,6 @@ export default function Timetable() {
         </form>
         </div>
       </LocalizationProvider>
-      <Snackbar
-        open={popup}
-        onClose={() => {
-          dispatch(setPopup(false))
-        }}
-        onAnimationEnd={()=>{
-          dispatch(setError(""))
-        }}
-        message={createClassError}
-        autoHideDuration={3000}
-      />
       <Snackbar
         open={createClassPopup}
         onClose={() => {

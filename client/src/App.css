@@ -57,6 +57,10 @@
 .popup > div{
     position: fixed !important;
 }
+.css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root{
+    background-color: #1D1B31 !important;
+    border: 1px solid #5a586e !important;
+}
 
 @media (max-width : 576px) {
 .sidebar{

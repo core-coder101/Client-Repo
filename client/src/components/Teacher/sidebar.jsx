@@ -17,7 +17,7 @@ import { logout } from "../../redux/slices/authSlice";
 import { GiTeacher } from "react-icons/gi";
 import { IoMdCloudUpload } from "react-icons/io";
 import { GoVideo } from "react-icons/go";
-
+import { RiCalendarScheduleLine } from "react-icons/ri";
 
 function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobile }) {
   const { user } = useSelector((state) => state.auth);
@@ -50,7 +50,6 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
       },
     ],
   };
-
   return (
     <>
       <div>
@@ -96,6 +95,17 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
                 <span className="links_name">Student Attendance</span>
               </Link>
               <span className="tooltip">Mark Attendance</span>
+            </li>
+            <li>
+              <Link onClick={closeSidebarForMobile} to="/timetable">
+                <i className="bx d-flex justify-content-center align-items-center">
+                  <RiCalendarScheduleLine 
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </i>
+                <span className="links_name">Timetables</span>
+              </Link>
+              <span className="tooltip">Timetables</span>
             </li>
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={0} />
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>

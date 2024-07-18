@@ -3,7 +3,7 @@ import "../../assets/css/Sidebar.css";
 import { BsPersonFill } from "react-icons/bs";
 import { TbHexagonLetterHFilled } from "react-icons/tb";
 import SubMenu from "../common/SubMenu";
-import { RiArrowDropDownLine } from "react-icons/ri";
+import { RiArrowDropDownLine, RiCalendarScheduleLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { SiGoogleclassroom } from "react-icons/si";
@@ -184,6 +184,17 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
                 <span className="links_name">Dashboard</span>
               </Link>
               <span className="tooltip">Dashboard</span>
+            </li>
+            <li>
+              <Link onClick={closeSidebarForMobile} to="/timetable">
+                <i className="bx d-flex justify-content-center align-items-center">
+                  <RiCalendarScheduleLine 
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </i>
+                <span className="links_name">Timetables</span>
+              </Link>
+              <span className="tooltip">Timetables</span>
             </li>
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={teachersData} key={1} />

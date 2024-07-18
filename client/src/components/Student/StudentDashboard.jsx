@@ -5,13 +5,16 @@ import Calendar from "react-calendar";
 import moment from "moment";
 import { useDispatch, useSelector } from 'react-redux';
 import { PieChart } from "@mui/x-charts/PieChart";
-import { GetStudentAttendance } from "../../redux/slices/Student/StudentDashboard";
+import { GetStudentAttendance, setError, setPopup } from "../../redux/slices/Student/StudentDashboard";
 import LoadingOverlay from "../common/LoadingOverlay";
+import { GetTimeTable, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
+import { Snackbar } from "@mui/material";
 
 
 export default function Dashboard() {
   
   const { attendanceData, presentCount, absentCount, loading, popup, error } = useSelector(state=>state.studentDashboard)
+  const { DBTimeTableData, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
   const dispatch = useDispatch()
   const [localLoading, setLocalLoading] = useState(false)
 
@@ -20,8 +23,15 @@ export default function Dashboard() {
     setLocalLoading(loading)
   }, [loading])
 
+  useEffect(() => {
+    if(DBTimeTableData.length > 0){
+      setTimeTable(DBTimeTableData)
+    }
+  }, [DBTimeTableData])
+
   useEffect(()=>{
     dispatch(GetStudentAttendance())
+    dispatch(GetTimeTable(""))
   }, [dispatch])
 
   const data = [
@@ -42,44 +52,44 @@ export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [timetable, setTimeTable] = useState([
     {
-      subject: "Physics",
-      start: "14:40:00",
-      end: "16:20:00",
+      Subject: "Physics",
+      StartingTime: "14:40:00",
+      EndingTime: "15:20:00",
     },
     {
-      subject: "Chemistry",
-      start: "15:20:00",
-      end: "16:00:00",
+      Subject: "Chemistry",
+      StartingTime: "15:20:00",
+      EndingTime: "16:00:00",
     },
     {
-      subject: "Maths",
-      start: "16:00:00",
-      end: "16:40:00",
+      Subject: "Maths",
+      StartingTime: "16:00:00",
+      EndingTime: "16:40:00",
     },
     {
-      subject: "Urdu",
-      start: "16:40:00",
-      end: "17:20:00",
+      Subject: "Urdu",
+      StartingTime: "16:40:00",
+      EndingTime: "17:20:00",
     },
     {
-      subject: "Computer",
-      start: "17:20:00",
-      end: "18:00:00",
+      Subject: "Computer",
+      StartingTime: "17:20:00",
+      EndingTime: "18:00:00",
     },
     {
-      subject: "English",
-      start: "18:00:00",
-      end: "18:40:00",
+      Subject: "English",
+      StartingTime: "18:00:00",
+      EndingTime: "18:40:00",
     },
     {
-      subject: "Islamiat",
-      start: "18:40:00",
-      end: "19:20:00",
+      Subject: "Islamiat",
+      StartingTime: "18:40:00",
+      EndingTime: "19:20:00",
     },
     {
-      subject: "Tarjama-tul-Quran",
-      start: "19:20:00",
-      end: "19:40:00",
+      Subject: "Tarjama-tul-Quran",
+      StartingTime: "19:20:00",
+      EndingTime: "19:40:00",
     },
   ])
 
@@ -114,7 +124,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <LoadingOverlay loading={localLoading} />
+      <LoadingOverlay loading={localLoading || loading2} />
       <div className="dashboard">
         <div className="mt-2 mb-4">
           <div className="headingNavbar d-flex justify-content-center">
@@ -129,8 +139,8 @@ export default function Dashboard() {
             <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
             {timetable.map(lecture => {
               let ongoing = false;
-              let start = lecture.start;
-              let end = lecture.end;
+              let start = lecture.StartingTime;
+              let end = lecture.EndingTime;
               let [startHours, startMinutes, startSeconds] = start.split(":");
               let [endHours, endMinutes, endSeconds] = end.split(":");
               
@@ -147,8 +157,8 @@ export default function Dashboard() {
               const endMessage = new Date("2024-09-11T" + end).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
               
               return (
-                  <div key={lecture.subject} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
-                      <h6>{lecture.subject}</h6>
+                  <div key={lecture.Subject} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
+                      <h6>{lecture.Subject}</h6>
                       <p>{`${startMessage} - ${endMessage}`}</p>
                   </div>
               );
@@ -242,6 +252,30 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <Snackbar
+        open={popup2}
+        onClose={() => {
+          dispatch(setPopup2(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(setError2(""))
+        }}
+        message={error2}
+        autoHideDuration={3000}
+        transitionDuration={400}
+      />
+      <Snackbar
+        open={popup}
+        onClose={() => {
+          dispatch(setPopup(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(setError(""))
+        }}
+        message={error}
+        autoHideDuration={3000}
+        transitionDuration={400}
+      />
     </>
   );
 }
