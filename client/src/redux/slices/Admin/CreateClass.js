@@ -157,12 +157,12 @@ const createClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(GetClassDataById.fulfilled, (state, action) => {
-        state.classData = action.payload;
         state.loading = false;
+        state.classData = action.payload;
       })
       .addCase(GetClassDataById.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error Occurred";
         state.loading = false;
+        state.error = action.payload || "An Unknown Error Occurred";
         state.popup = true;
       })
       .addCase(createClass.pending, (state) => {
@@ -170,13 +170,13 @@ const createClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(createClass.fulfilled, (state) => {
-        state.error = "Successfully Created a new Class";
         state.loading = false;
+        state.error = "Successfully Created a new Class";
         state.popup = true;
       })
       .addCase(createClass.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error Occurred";
         state.loading = false;
+        state.error = action.payload || "An Unknown Error Occurred";
         state.popup = true;
       })
       .addCase(UpdateClass.pending, (state) => {
@@ -184,13 +184,13 @@ const createClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(UpdateClass.fulfilled, (state) => {
-        state.error = "Successfully Updated Class";
         state.loading = false;
+        state.error = "Successfully Updated Class";
         state.popup = true;
       })
       .addCase(UpdateClass.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error Occurred";
         state.loading = false;
+        state.error = action.payload || "An Unknown Error Occurred";
         state.popup = true;
       })
       .addCase(GetTeachers.pending, (state) => {
@@ -199,8 +199,8 @@ const createClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(GetTeachers.fulfilled, (state, action) => {
-        state.teachersData = action.payload;
         state.loading = false;
+        state.teachersData = action.payload;
       })
       .addCase(GetTeachers.rejected, (state, action) => {
         state.loading = false;

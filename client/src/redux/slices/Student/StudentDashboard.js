@@ -32,35 +32,6 @@ export const GetStudentAttendance = createAsyncThunk(
   }
 );
 
-export const GetTimetableData = createAsyncThunk(
-  "GetTimetableData",
-  async (ID, { getState, rejectWithValue }) => {
-    const state = getState();
-    const CSRFToken = state.auth.CSRFToken;
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_HOST}api/GetStudentAttendance`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
-          },
-        }
-      );
-      if (data.success == true) {
-        return data;
-      } else {
-        return rejectWithValue(handleResponse(data));
-      }
-    } catch (error) {
-      const errorMessage = handleError(error);
-      return rejectWithValue(errorMessage);
-      // return rejectWithValue(error.response?.data?.message || error.message)
-    }
-  }
-);
-
 const initialState = {
   attendanceData: [],
   presentCount: 0,

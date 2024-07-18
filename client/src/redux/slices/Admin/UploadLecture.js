@@ -161,12 +161,12 @@ const ClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(GetClasses.fulfilled, (state, action) => {
-        state.classesData = action.payload;
         state.loading = false;
+        state.classesData = action.payload;
       })
       .addCase(GetClasses.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error";
         state.loading = false;
+        state.error = action.payload || "An Unknown Error";
         state.popup = true;
       })
       .addCase(createPlaylist.pending, (state) => {
@@ -179,8 +179,8 @@ const ClassSlice = createSlice({
         state.popup = true;
       })
       .addCase(createPlaylist.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error";
         state.loading = false;
+        state.error = action.payload || "An Unknown Error";
         state.popup = true;
       })
       .addCase(getPlaylist.pending, (state) => {
@@ -188,12 +188,12 @@ const ClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(getPlaylist.fulfilled, (state, action) => {
-        state.playlistData = action.payload.data;
         state.loading = false;
+        state.playlistData = action.payload.data;
       })
       .addCase(getPlaylist.rejected, (state, action) => {
-        state.error = action.payload || "An Unknown Error";
         state.loading = false;
+        state.error = action.payload || "An Unknown Error";
         state.popup = true;
       })
       .addCase(uploadLecture.pending, (state) => {
@@ -202,15 +202,15 @@ const ClassSlice = createSlice({
         state.loading = true;
       })
       .addCase(uploadLecture.fulfilled, (state, action) => {
+        state.loading = false;
         state.error = action.payload.message || "Lecture uploaded successfully";
         state.progress = 0;
-        state.loading = false;
         state.popup = true;
       })
       .addCase(uploadLecture.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload || "An Unknown Error";
         state.progress = 0;
-        state.loading = false;
         state.popup = true;
       });
   },

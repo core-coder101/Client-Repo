@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleError } from "../errorHandler";
+import { handleResponse } from "../responseHandler";
 
 export const fetchCSRFToken = createAsyncThunk(
   "fetchCSRFToken",
@@ -12,7 +13,7 @@ export const fetchCSRFToken = createAsyncThunk(
       if (data.csrfToken) {
         return data;
       } else {
-        rejectWithValue(data.message || "Failed to fetch CSRF Token");
+        rejectWithValue(handleResponse(data) || "Failed to fetch CSRF Token");
       }
     } catch (error) {
       return rejectWithValue(handleError(error));
@@ -36,10 +37,10 @@ export const UserData = createAsyncThunk(
       if (data.data) {
         return data;
       } else {
-        rejectWithValue(data.message || "Failed to fetch User Data");
+        rejectWithValue(handleResponse(data) || "Failed to fetch User Data");
       }
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -63,7 +64,7 @@ export const login = createAsyncThunk(
       if (data.success == true) {
         return data;
       } else {
-        return rejectWithValue(data.message || "An unexpected error occurred");
+        return rejectWithValue(handleResponse(data) || "An unexpected error occurred");
       }
     } catch (error) {
       return rejectWithValue(handleError(error));
@@ -104,6 +105,9 @@ const authSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setPopup: (state, action) => {
+      state.popup = !!action.payload
+    },
     setUser: (state, action) => {
       state.loading = false;
       state.user = action.payload;
@@ -116,6 +120,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCSRFToken.pending, (state) => {
+        state.popup = false
         state.error = "Loading. . .";
         state.loading = true;
       })
@@ -148,8 +153,9 @@ const authSlice = createSlice({
         state.popup = true;
       })
       .addCase(UserData.pending, (state) => {
+        state.popup = false
         state.loading = true;
-        state.error = null;
+        state.error = "";
       })
       .addCase(UserData.fulfilled, (state, action) => {
         state.userData = action.payload.data;
@@ -163,7 +169,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setUser, setError, toggleRememberMe } =
+export const { logout, setUser, setError, setPopup, toggleRememberMe } =
   authSlice.actions;
 
 export default authSlice.reducer;
