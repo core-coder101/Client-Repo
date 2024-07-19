@@ -19,6 +19,7 @@ import { BsFillTelephoneFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import LoadingOverlay from "../common/LoadingOverlay";
 import CustomPopup from "../common/CustomPopup";
+import QRCode from "react-qr-code";
 
 export default function TeachersInformation() {
   const navigate = useNavigate();
@@ -356,25 +357,16 @@ export default function TeachersInformation() {
                     <td>{teacher.users.name}</td>
                     <td>{teacher.TeacherPhoneNumber}</td>
                     <td>
-                      {teacher.classes.length > 0
-                        ? teacher.classes.map((Class) => {
-                            return (
-                              <>
-                                {Class.ClassRank} <br />
-                              </>
-                            );
-                          })
+                      {teacher.classes
+                        ? <>{teacher.classes.ClassRank} <br /></>
                         : ""}
                     </td>
                     <td>
-                      {teacher.classes.length > 0
-                        ? teacher.classes.map((Class) => {
-                            return (
-                              <>
-                                {Class.ClassName} <br />
+                      {teacher.classes
+                        ? <>
+                                {teacher.classes.ClassName} <br />
                               </>
-                            );
-                          })
+
                         : ""}
                     </td>
                     <td>{ApiSearchData.campus}</td>
@@ -487,7 +479,8 @@ export default function TeachersInformation() {
       <div ref={pngElementRef} className='studentIdCardDiv' style={{backgroundColor: "white", display: "flex", flexDirection: "column", alignItems: "center", borderRadius: "1rem", padding: "15px 20px", boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px", whiteSpace: "nowrap", width: "300px", height: "460px"}}>
           <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
               <h4 style={{margin: "0", padding: "0"}}>{popupInput.users.name}</h4>
-              <ReactBarcode style={{backgroundColor: "transparent"}} value={ApiSearchData.campus.slice(0, 1) + '-' + JSON.stringify(popupInput.users.id)} options={{format: "code128"}} displayValue={false} renderer='image' />
+              {/* <ReactBarcode style={{backgroundColor: "transparent"}} value={"http://192.168.1.41:3000/testing"} options={{format: "code128"}} displayValue={false} renderer='image' /> */}
+              <QRCode value="http://192.168.1.41:3000/testing" />
               <div style={{display: "flex", flexDirection: "column", width: "100%"}}>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Class: </span>{popupInput.classes.ClassRank ? converter.toWords(popupInput.classes.ClassRank) : "none"}</h6>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Class Name: </span>{popupInput.classes.ClassName ? popupInput.classes.ClassName : "none"}</h6>
@@ -512,3 +505,5 @@ export default function TeachersInformation() {
     </>
   );
 }
+
+// ApiSearchData.campus.slice(0, 1) + '-' + JSON.stringify(popupInput.users.id)

@@ -1,45 +1,9 @@
 import React, { useState } from "react";
 import "../../assets/css/dashboard.css";
-import { FaArrowCircleRight } from "react-icons/fa";
-import { FaRegCreditCard } from "react-icons/fa";
-import { FaMoneyCheckDollar } from "react-icons/fa6";
-import { GoGraph } from "react-icons/go";
-import { FaChartPie } from "react-icons/fa";
-import { BsGraphUpArrow } from "react-icons/bs";
-import { VscGraphLine } from "react-icons/vsc";
-import Graph from "./Graph";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import Chart from "react-apexcharts";
 import ReactApexChart from "react-apexcharts"
-import { PieChart } from "@mui/x-charts/PieChart";
-
-const data2 = [
-  { label: "Present", value: 17 },
-  { label: "Absent", value: 3 },
-];
-const displayMessage = `${data2[0].value} / ${data2[0].value + data2[1].value}`;
-const series = [
-  {
-    innerRadius: 110,
-    outerRadius: 120,
-    id: "series-2",
-    data: data2,
-  },
-];
 
 export default function Dashboard() {
-  const cardBackgroundIconStyles = {
-    opacity: "20%",
-    width: "80%",
-    height: "80%",
-    position: "absolute",
-    right: "-40px",
-  };
-  const [itemData, setItemData] = useState();
-
   const pieData = {
     options: {
       labels: ["Present", "Absent"],
@@ -48,14 +12,21 @@ export default function Dashboard() {
         position: 'bottom'
       },
       title: {
-        text: 'Today Preset Staff',
+        text: 'Today Present Staff',
         align: 'center', // Align title to center
         style: {
           fontSize: '24px',
           color: '#666'
         },
       },
-      colors: ["#179c13", "#cc1d28"]
+      colors: ["#179c13", "#cc1d28"],
+      plotOptions: {
+      pie: {
+      donut: {
+        size: "70%" // the lower the %, the thicker it gets
+      }
+    }
+  }
     },
     series: [17, 3],
   };
@@ -162,7 +133,7 @@ export default function Dashboard() {
 
 
   
-  const PaySeries = {
+  const PaySeries = { 
     monthDataSeries1: {
       prices: [70, 91, 100, 150, 40, 60, 30, 200, 150],
       dates: ['21 Nov', '22 Nov','23 Nov', '24 Nov', '25 Nov', '26 Nov', '27 Nov','30 Nov' ,'15 Dec']
