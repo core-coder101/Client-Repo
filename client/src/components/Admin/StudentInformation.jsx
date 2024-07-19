@@ -19,11 +19,36 @@ import { IoMail } from "react-icons/io5";
 import { toPng } from "html-to-image";
 import converter from "number-to-words";
 import { useSelector } from "react-redux";
+import Dialog from '@mui/material/Dialog';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemButton from '@mui/material/ListItemButton';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
 import CustomPopup from "../common/CustomPopup";
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 
 export default function StudentInformation() {
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   // moved all state definitions to the top (hope it doesn't break anything when merging)
 
   const pngElementRef = useRef(null);
@@ -239,8 +264,128 @@ export default function StudentInformation() {
       setLoading(false);
     }
   };
+  const ResetPassword = async (ID) =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/ResetPassword?ID=${ID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Reset Password");
+      setPopup(true);
+    }
+  }
+
+  const GenerateChallan = async() =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GenerateStudentFee`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed to Generate Challan");
+      setPopup(true);
+    }
+  }
+
+  const FeeManagement = async(ID) =>{
+    navigate(`/FeeManagement/${ID}`);
+  }
+
+  const [ProfileID , SetProfileID] = useState('');
 
   return (
+    <>
+     <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              User Profile
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleClose}>
+              close
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <List>
+        <div className="d-flex">
+        <table id="customers">
+        <center>
+        <h2>Student Data</h2>
+        </center>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  
+</table>
+<table id="customers">
+<center>
+<h2>Teacher Data</h2>
+</center>
+<tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  
+</table>
+</div>
+  </List>
+</Dialog>
+
     <div style={{padding: "15px 20px"}}>
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
@@ -250,9 +395,9 @@ export default function StudentInformation() {
             }}
             className="arrow"
           />
-          <h4>Dashboard \ Students Information</h4>
+          <h4>Dashboard \ Students Management</h4>
         </div>
-        <div className="ms-auto me-4"></div>
+        <div className="ms-auto me-4"><button onClick={GenerateChallan} className="btn btn-primary">Generate Challan</button></div>
       </div>
       <form>
         <div className="inputsDiv">
@@ -378,8 +523,8 @@ export default function StudentInformation() {
                       </div>
                     </td>
                     <td>
-                      <div className="filterDataDiv resetPassword innerButtonDiv">
-                        <p>Reset Password</p>
+                      <div onClick={()=>{ ResetPassword(student.users.id) }} style={{textDecoration:'none'}} className="filterDataDiv resetPassword innerButtonDiv">
+                        <p style={{textDecoration:'none'}}>Reset Password</p>
                         <button>
                           <FaKey
                             color="white"
@@ -389,9 +534,9 @@ export default function StudentInformation() {
                       </div>
                     </td>
                     <td>
-                      <div className="filterDataDiv viewProfile innerButtonDiv">
+                      <div  className="filterDataDiv viewProfile innerButtonDiv">
                         <p>View Profile</p>
-                        <button>
+                        <button onClick={()=>{handleClickOpen(); SetProfileID(student.users.id)}}>
                           <IoPerson
                             color="white"
                             style={{ width: "18px", height: "18px" }}
@@ -437,6 +582,9 @@ export default function StudentInformation() {
                           </a>
                           <a className="dropdown-item" onClick={() => {}}>
                             Deactivate Student
+                          </a>
+                          <a className="dropdown-item" onClick={() => {FeeManagement(student.users.id)}}>
+                            Fee Management
                           </a>
                         </div>
                       </div>
@@ -608,5 +756,6 @@ export default function StudentInformation() {
         </div>
       )}
     </div>
+    </>
   );
 }

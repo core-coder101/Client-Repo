@@ -30,6 +30,8 @@ import CreateTimetables from "../Admin/CreateTimetables.jsx";
 import Timetable from "../Admin/Timetable.jsx";
 import TimetableForTeacher from "../Teacher/Timetable.jsx";
 import ChattingTesting from "../Admin/ChattingTesting.jsx";
+import FeeManagement from "../Admin/FeeManagement.jsx";
+import Addexpensives from "../Admin/Addexpensives.jsx";
 
 const AllRoutes = [
   {
@@ -243,6 +245,18 @@ const AllRoutes = [
     path: "Chating",
     component: <ChattingTesting />,
     type: "Student",
+    authentication: "role",
+  },
+  {
+    path: "FeeManagement/:ID",
+    component:  <FeeManagement />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "Addexpensives",
+    component:  <Addexpensives />,
+    type: "Admin",
     authentication: "role",
   },
 ];
