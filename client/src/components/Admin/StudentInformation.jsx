@@ -19,11 +19,36 @@ import { IoMail } from "react-icons/io5";
 import { toPng } from "html-to-image";
 import converter from "number-to-words";
 import { useSelector } from "react-redux";
+import Dialog from '@mui/material/Dialog';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemButton from '@mui/material/ListItemButton';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
 import CustomPopup from "../common/CustomPopup";
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 
 export default function StudentInformation() {
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   // moved all state definitions to the top (hope it doesn't break anything when merging)
 
   const pngElementRef = useRef(null);
@@ -297,67 +322,70 @@ export default function StudentInformation() {
     navigate(`/FeeManagement/${ID}`);
   }
 
+  const [ProfileID , SetProfileID] = useState('');
+
   return (
     <>
-<div className="viewprofile m-4 ">
-<div className="row">
-  <div className="col-12 col-lg-6">
-    <div className="card mb-3 bordernone" style={{maxWidth: "540px"}}>
-      <div className="row g-0">
-        <div className="col-md-4">
-          <img src={defaultImg} className="img-fluid rounded-start" alt="..." />
-        </div>
-        <div className="col-md-8">
-          <div className="card-body">
-            <h5 className="card-title">Ahmad Mujtaba</h5>
-            <p className="card-text">
-                <div className="d-flex"><div className="titleinfo">User Name </div>: Unnamed</div>
-                <div className="d-flex"><div className="titleinfo">Class </div>: 9th White House</div>
-                <div className="d-flex"><div className="titleinfo">Email </div>: ahmadmujtabap70@gmail.com</div>
-                <div className="d-flex"><div className="titleinfo">Phone Number </div>: 03107562128</div>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-<div>
-<div className="card-text studentPara" style={{whiteSpace:'nowrap'}}>
-        <div className="d-flex"><div className="titleinfo">Subjects</div>: English , Computer , Maths </div>
-        <div className="d-flex"><div className="titleinfo">DOB</div>: 24/12/2024</div>
-        <div className="d-flex"><div className="titleinfo">Gender</div>: Male</div>
-        <div className="d-flex"><div className="titleinfo">CNIC</div>:  031075621281331</div>
-        <div className="d-flex"><div className="titleinfo">Home Address</div>:  Gurunanak pura street no 10</div>
-        <div className="d-flex"><div className="titleinfo">Religion</div>: Islam</div>
-        <div className="d-flex"><div className="titleinfo">Monthly Fee</div>:  9800 pkr</div>
-  </div>
+     <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              User Profile
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleClose}>
+              close
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <List>
+        <div className="d-flex">
+        <table id="customers">
+        <center>
+        <h2>Student Data</h2>
+        </center>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  
+</table>
+<table id="customers">
+<center>
+<h2>Teacher Data</h2>
+</center>
+<tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  <tr>
+    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+  </tr>
+  
+</table>
 </div>
-</div>
-<div className="col-12 col-lg-6">
-<button type="button" className="btn-close closebtn" style={{float:'right', color:'white',fontSize:'xx-large' , backgroundColor:'white'}} aria-label="Close"></button>
-<div className="card mb-3 bordernone" style={{maxWidth: "540px"}}>
-  <div className="row g-0">
-    <div className="col-md-8">
-      <div className="card-body">
-        <div className="" style={{whiteSpace:'nowrap' , marginLeft:'6px'}}>
-        <br></br>
-        <div className="d-flex"><div className="titleinfo">Father Name</div>: M Saeed </div>
-        <div className="d-flex"><div className="titleinfo">Mother Name</div>: Robina</div>
-        <div className="d-flex"><div className="titleinfo">Guardian CNIC </div>: 3121256280756</div>
-        <div className="d-flex"><div className="titleinfo">Phone Number </div>: 03107562128</div>
-        <div className="d-flex"><div className="titleinfo">Mobile Number </div>: 03107562128</div>
-        <div className="d-flex"><div className="titleinfo">Home Address </div>: Gurunanak pura street no 10</div>
-        <div className="d-flex"><div className="titleinfo">Guardian Email </div>: ahmadmujtabap70@gmail.com</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div>
-</div>
-</div>
+  </List>
+</Dialog>
 
-      </div>
-    </div>
     <div style={{padding: "15px 20px"}}>
       <div className="headingNavbar d-flex justify-content-center">
         <div className="d-flex">
@@ -508,7 +536,7 @@ export default function StudentInformation() {
                     <td>
                       <div  className="filterDataDiv viewProfile innerButtonDiv">
                         <p>View Profile</p>
-                        <button>
+                        <button onClick={()=>{handleClickOpen(); SetProfileID(student.users.id)}}>
                           <IoPerson
                             color="white"
                             style={{ width: "18px", height: "18px" }}
