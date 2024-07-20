@@ -3,24 +3,12 @@ import "../../assets/css/dashboard.css";
 
 import Chart from "react-apexcharts";
 import ReactApexChart from "react-apexcharts"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import CustomPopup from "../common/CustomPopup";
 import LoadingOverlay from "../common/LoadingOverlay";
-
-const data2 = [
-  { label: "Present", value: 17 },
-  { label: "Absent", value: 3 },
-];
-const displayMessage = `${data2[0].value} / ${data2[0].value + data2[1].value}`;
-const series = [
-  {
-    innerRadius: 110,
-    outerRadius: 120,
-    id: "series-2",
-    data: data2,
-  },
-];
+import { GetGeneratedChallans, GetGeneratedPaidFee, GetStudentWeekAttendance, GetTeacherAttendance, GetTotalExpenses, setError, setPopup } from "../../redux/slices/Admin/Dashboard";
+import { Snackbar } from "@mui/material";
 
 export function customFormatNumber(number) {
   // Convert the number to a string
@@ -57,95 +45,18 @@ export function customFormatNumber(number) {
 
 
 export default function Dashboard() {
-
-
-    const [errorMessage, setErrorMessage] = useState("");
-    const [popup, setPopup] = useState(false);
-    const [FeeDataDB , SetFeeData] = useState('');
-    const [Expensives , SetExpensives] = useState('');
     
-  const { CSRFToken, user } = useSelector((state) => state.auth);
+  const { challans, expenses, feeData, studentWeekAttendance, staffAttendance, loading, error, popup } = useSelector((state) => state.adminDashboard);
 
-  if (user.token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
-  }
-
-  const [studentweekattendances , setstudentweekattendance] = useState('');
-
-  const GetStudentWeekAttendance = async () =>{
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_HOST}api/GetStudentWeekAttendance`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-
-      if (response.data.success == true) {
-        setstudentweekattendance(response.data);
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Reset Password");
-      setPopup(true);
-    }
-  }
+  const dispatch = useDispatch()
 
   useEffect(()=>{
-    GetStudentWeekAttendance();
+    dispatch(GetStudentWeekAttendance())
+    dispatch(GetTeacherAttendance())
+    dispatch(GetTotalExpenses())
+    dispatch(GetGeneratedPaidFee())
+    dispatch(GetGeneratedChallans())
   },[]);
-
-
-
-
-
-  const [StaffAttendance , SetStaffAttendance] = useState('');
-
-  const GetTeacherAttendance = async () =>{
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_HOST}api/GetTeacherAttendance`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-
-      if (response.data.success == true) {
-        SetStaffAttendance(response.data);
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Reset Password");
-      setPopup(true);
-    }
-  }
-
-  useEffect(()=>{
-    GetTeacherAttendance();
-  },[]);
-
-  const cardBackgroundIconStyles = {
-    opacity: "20%",
-    width: "80%",
-    height: "80%",
-    position: "absolute",
-    right: "-40px",
-  };
-  const [itemData, setItemData] = useState();
 
   const pieData = {
     options: {
@@ -164,15 +75,15 @@ export default function Dashboard() {
       },
       colors: ["#179c13", "#cc1d28"]
     },
-    series: [ StaffAttendance && StaffAttendance.data.presentCount, StaffAttendance && StaffAttendance.data.absentCount],
+    series: [ staffAttendance && staffAttendance.presentCount, staffAttendance && staffAttendance.absentCount],
   };
 
 
   const mergedData = {};
 
-// Process Expensives data
-if (Expensives && Expensives.combinedResults) {
-  Expensives.combinedResults.forEach((data) => {
+// Process expenses data
+if (expenses && expenses.combinedResults) {
+  expenses.combinedResults.forEach((data) => {
     const month = data.month_name.trim();
     if (!mergedData[month]) {
       mergedData[month] = { total_expensive: 0, total_fee: 0 };
@@ -181,9 +92,9 @@ if (Expensives && Expensives.combinedResults) {
   });
 }
 
-// Process FeeDataDB data
-if (FeeDataDB && FeeDataDB.data) {
-  FeeDataDB.data.forEach((data) => {
+// Process feeData data
+if (feeData && feeData.data) {
+  feeData.data.forEach((data) => {
     const month = data.month_name.trim();
     if (!mergedData[month]) {
       mergedData[month] = { total_expensive: 0, total_fee: 0 };
@@ -236,7 +147,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
         dashArray: 0,
       },
       title: {
-        text: `PKR ${customFormatNumber(FeeDataDB.YearlyTotalFee - Expensives.TotalExpensive)}`,
+        text: `PKR ${customFormatNumber(feeData?.YearlyTotalFee - expenses?.TotalExpensive || '')}`,
         align: 'center', // Align title to center
         style: {
           fontSize: '19px',
@@ -298,49 +209,18 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
       }
     },
   }
-
-
-  const TotalExpensives = async () =>{
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_HOST}api/TotalExpensives`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-
-      if (response.data.success == true) {
-        SetExpensives(response.data);
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Reset Password");
-      setPopup(true);
-    }
-  }
-
-  useEffect(()=>{
-    TotalExpensives();
-  },[])
   
   const PaySeries = {
     monthDataSeries1: {
-      prices: Expensives && Expensives.combinedResults ? Expensives.combinedResults.map((data) => data.total_expensive) : [],
-      dates: Expensives && Expensives.combinedResults ? Expensives.combinedResults.map((data) => data.month_name) : []
+      prices: expenses && expenses.combinedResults ? expenses.combinedResults.map((data) => data.total_expensive) : [],
+      dates: expenses && expenses.combinedResults ? expenses.combinedResults.map((data) => data.month_name) : []
     }
   }
 
   const PayData = {
           
     series: [{
-      name: "Expensives",
+      name: "expenses",
       data: PaySeries.monthDataSeries1.prices
     }],
     options: {
@@ -358,7 +238,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
         enabled: false
       },
       title: {
-        text: `PKR ${Expensives && customFormatNumber(Expensives.TotalExpensive)}`,
+        text: `PKR ${expenses && customFormatNumber(expenses?.TotalExpensive || '')}`,
         align: 'center', // Align title to center
         style: {
           fontSize: '19px',
@@ -428,41 +308,11 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
     },
   }
 
-  const GeneratedPaidFee = async () =>{
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_HOST}api/GeneratedPaidFee`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-
-      if (response.data.success == true) {
-        SetFeeData(response.data);
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Reset Password");
-      setPopup(true);
-    }
-  }
-
-  useEffect(()=>{
-    GeneratedPaidFee();
-  },[])
-
 
   const FeeSeries = {
     monthDataSeries1: {
-      prices: FeeDataDB && FeeDataDB.data ? FeeDataDB.data.map((data) => data.total_fee) : [],
-      dates: FeeDataDB && FeeDataDB.data ? FeeDataDB.data.map((data) => data.month_name) : []
+      prices: feeData && feeData.data ? feeData.data.map((data) => data.total_fee) : [],
+      dates: feeData && feeData.data ? feeData.data.map((data) => data.month_name) : []
     }
   }
 
@@ -486,7 +336,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
         enabled: false
       },
       title: {
-        text: `PKR ${customFormatNumber(FeeDataDB && FeeDataDB.YearlyTotalFee)}`,
+        text: `PKR ${customFormatNumber(feeData && feeData?.YearlyTotalFee || '')}`,
         align: 'center',
         style: {
           fontSize: '19px',
@@ -558,10 +408,10 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
 
   const Radarseries = [{
     name: 'Present',
-    data: studentweekattendances && studentweekattendances.data ? studentweekattendances.data.map((data) => data.present_count) : []
+    data: studentWeekAttendance && studentWeekAttendance ? studentWeekAttendance.map((data) => data.present_count) : []
   }, {
     name: 'Absent',
-    data: studentweekattendances && studentweekattendances.data ? studentweekattendances.data.map((data) => data.absent_count) : []
+    data: studentWeekAttendance && studentWeekAttendance ? studentWeekAttendance.map((data) => data.absent_count) : []
   }]
 
   const Radardata = {
@@ -612,7 +462,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
       }
     },
     xaxis: {
-      categories: studentweekattendances && studentweekattendances.data ? studentweekattendances.data.map((data) => data.day_name) : []
+      categories: studentWeekAttendance && studentWeekAttendance ? studentWeekAttendance.map((data) => data.day_name) : []
     },
     yaxis: {
       labels: {
@@ -627,48 +477,13 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
     }
   }
 
-
-  const [Challans , setChallans] = useState('');
-
-  const GeneratedChallans = async () =>{
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_HOST}api/GeneratedChallans`,
-        {
-          headers: {
-            "X-CSRF-TOKEN": CSRFToken,
-            "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
-          },
-        }
-      );
-
-      if (response.data.success == true) {
-        setChallans(response.data);
-      } else {
-        setErrorMessage(response.data.message);
-        setPopup(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to Reset Password");
-      setPopup(true);
-    }
-  }
-
-  useEffect(()=>{
-    GeneratedChallans();
-  },[])
-
-
-
   const series = [{
       name: 'Paid',
-      data: Challans && Challans.data ? Challans.data.map((data) => parseInt(data.paid_fee)) : [],
+      data: challans && challans ? challans.map((data) => parseInt(data.paid_fee)) : [],
     },
     {
       name: 'UnPaid',
-      data: Challans && Challans.data ? Challans.data.map((data) => -parseInt(data.unpaid_fee)) : [],
+      data: challans && challans ? challans.map((data) => -parseInt(data.unpaid_fee)) : [],
     }
     ]
 
@@ -729,7 +544,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
       offsetY:15
     },
     xaxis: {
-      categories: Challans && Challans.data ? Challans.data.map((data) => data.month_name) : [],
+      categories: challans && challans ? challans.map((data) => data.month_name) : [],
       title: {
         text: 'Percent'
       },
@@ -741,83 +556,78 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
     },
   }
 
-
-
-
-
-
-
-
-
-
-
   return (
-    <div className="dashboard">
-    <LoadingOverlay />
-      <div className="mt-2 mb-4">
-        <div className="headingNavbar d-flex justify-content-center">
-          <div className="d-flex">
-            <h4>Dashboard</h4>
-          </div>
-          <div className="ms-auto me-4"></div>
-        </div>
-      </div>
-      <div className="cardsDiv ">
-          <Chart
-            options={FeeData.options}
-            series={FeeData.series}
-            width="100%"
-            type="area"
-            className="smallchart mt-2"
-          />
-          <Chart
-            options={PayData.options}
-            series={PayData.series}
-            width="100%"
-            type="area"
-            className="smallchart mt-2"
-          />
-          <Chart
-            options={ProfitData.options}
-            series={ProfitData.series}
-            width="100%"
-            type="area"
-            className="smallchart mt-2"
-          />
-      </div>
-      <div className="d-flex" style={{ marginTop: "70px" }}>
-        <div className="ms-auto me-auto">
-          <div id="chart">
-              <ReactApexChart options={data} series={series} type="bar" height={440} width={650} className="smallchart" />
-              <br/>
-          </div>
-        </div>
-        <div>
-            <div style={{ position: "relative" }}>
-              <Chart
-                options={pieData.options}
-                series={pieData.series}
-                type="donut"
-                width="380"
-                className="smallchart"
-              />
+    <>
+      <LoadingOverlay loading={loading} />
+      <div className="dashboard">
+      <LoadingOverlay />
+        <div className="mt-2 mb-4">
+          <div className="headingNavbar d-flex justify-content-center">
+            <div className="d-flex">
+              <h4>Dashboard</h4>
             </div>
-            <div id="chart">
-            <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={400}  className="smallchart mt-5" />
-              <br/>
+            <div className="ms-auto me-4"></div>
           </div>
         </div>
-      </div>
-      <CustomPopup
-            Visible={popup}
-            OnClose={() => {
-              setPopup(false);
-              setTimeout(() => {
-                setErrorMessage("");
-              }, 400);
-            }}
-            errorMessage={errorMessage}
+        <div className="cardsDiv ">
+            <Chart
+              options={FeeData.options}
+              series={FeeData.series}
+              width="100%"
+              type="area"
+              className="smallchart mt-2"
             />
-    </div>
+            <Chart
+              options={PayData.options}
+              series={PayData.series}
+              width="100%"
+              type="area"
+              className="smallchart mt-2"
+            />
+            <Chart
+              options={ProfitData.options}
+              series={ProfitData.series}
+              width="100%"
+              type="area"
+              className="smallchart mt-2"
+            />
+        </div>
+        <div className="d-flex" style={{ marginTop: "70px" }}>
+          <div className="ms-auto me-auto">
+            <div id="chart">
+                <ReactApexChart options={data} series={series} type="bar" height={440} width={650} className="smallchart" />
+                <br/>
+            </div>
+          </div>
+          <div>
+              <div style={{ position: "relative" }}>
+                <Chart
+                  options={pieData.options}
+                  series={pieData.series}
+                  type="donut"
+                  width="380"
+                  className="smallchart"
+                />
+              </div>
+              <div id="chart">
+              <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={400}  className="smallchart mt-5" />
+                <br/>
+            </div>
+          </div>
+        </div>
+        <Snackbar
+          open={popup}
+          onClose={() => {
+            dispatch(setPopup(false))
+          }}
+          onAnimationEnd={()=>{
+            dispatch(setError(""))
+          }}
+          message={error}
+          autoHideDuration={3000}
+          transitionDuration={400}
+        />
+      </div>
+    </>
   );
 }

@@ -137,7 +137,7 @@ export default function Dashboard() {
         <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
           <div className="timeTableMainDiv">
             <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
-            {timetable.map(lecture => {
+            {timetable && timetable.length > 0 && timetable.map(lecture => {
               let ongoing = false;
               let start = lecture.StartingTime;
               let end = lecture.EndingTime;
