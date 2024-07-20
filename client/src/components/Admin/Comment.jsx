@@ -22,7 +22,7 @@ export default function Comment({Comment}) {
 
         <div className='comment'>
             <div className='imgDiv'>
-                <img style={{borderRadius:'50%', objectFit: "cover", height:'50px', width:'50px'}} src={(Comment.users.images[0].data)
+                <img style={{borderRadius:'50%', objectFit: "cover", height:'50px', width:'50px'}} src={(Comment.users.images[0]?.data)
                               ? `data:image/png;base64,${Comment.users.images[0].data}`
                               : defaultImg
                           } />

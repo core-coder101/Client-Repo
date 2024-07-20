@@ -26,7 +26,7 @@ import StudentAttendance from "../Admin/StudentAttendance.jsx";
 import StudentAttendanceForTeacher from "../Teacher/StudentAttendance.jsx"
 import UploadLectureForTeacher from "../Teacher/UploadLecture.jsx"
 import SelectVideoStudent from "../Student/SelectVideo.jsx";
-import CreateTimetables from "../Admin/CreateTimetables.jsx";
+import CreateTimetables from "../Admin/Markattendance.jsx";
 import Timetable from "../Admin/Timetable.jsx";
 import TimetableForTeacher from "../Teacher/Timetable.jsx";
 import ChattingTesting from "../Admin/ChattingTesting.jsx";

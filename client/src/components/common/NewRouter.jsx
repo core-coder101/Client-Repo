@@ -14,6 +14,7 @@ import {
 } from "./Routes";
 import PrivateRoute from "./Auth/PrivateRoute";
 import NotFound from "./NotFound";
+import Markattendance from "../Admin/Markattendance";
 
 export default function NewRouter() {
   return (
@@ -27,6 +28,7 @@ export default function NewRouter() {
             {MapRoutes(GetUserRoutes())}
           </Route>
         </Route>
+        <Route path='/markattendance' element={<Markattendance />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
     </Router>

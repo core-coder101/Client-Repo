@@ -30,6 +30,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
+import QRCode from "react-qr-code";
 import CustomPopup from "../common/CustomPopup";
 
 
@@ -351,38 +352,119 @@ export default function StudentInformation() {
           </Toolbar>
         </AppBar>
         <List>
-        <div className="d-flex">
+        {
+          filteredStudentsInfo && filteredStudentsInfo.filter(student => {
+            return student.id === ProfileID;
+          }).map((student, i)=>{
+            return(
+  <div key={i} className="bgColorProfile d-flex">
         <table id="customers">
-        <center>
-        <h2>Student Data</h2>
-        </center>
   <tr>
-    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+    <th className="">Profile Pic : <b className="ms-auto" style={{float:'right'}}>
+    <img style={{ objectFit: "cover", height:'50px', width:'50px'}} src={(student.users.images[0]?.data)
+                              ? `data:image/png;base64,${student.users.images[0].data}`
+                              : defaultImg
+                          } />
+    </b></th>
   </tr>
   <tr>
-    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+    <th className="">Name : <b className="ms-auto" style={{float:'right'}}>{student.users.name}</b></th>
   </tr>
   <tr>
-    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+    <th className="">Email : <b className="ms-auto" style={{float:'right'}}>{student.users.email}</b></th>
   </tr>
-  
+  <tr>
+    <th className="">UserName : <b className="ms-auto" style={{float:'right'}}>{student.users.userName}</b></th>
+  </tr>
+  <tr>
+    <th className="">Student CNIC : <b className="ms-auto" style={{float:'right'}}>{student.StudentCNIC}</b></th>
+  </tr>
+  <tr>
+    <th className="">Gender : <b className="ms-auto" style={{float:'right'}}>{student.StudentGender}</b></th>
+  </tr>
+  <tr>
+    <th className="">Date of Birth : <b className="ms-auto" style={{float:'right'}}>{student.StudentDOB}</b></th>
+  </tr>
+  <tr>
+    <th className="">Phone Number : <b className="ms-auto" style={{float:'right'}}>{student.StudentPhoneNumber}</b></th>
+  </tr>
+  <tr>
+    <th className="">Home Address : <b className="ms-auto" style={{float:'right'}}>{student.StudentHomeAddress}</b></th>
+  </tr>
+  <tr>
+    <th className="">Religion : <b className="ms-auto" style={{float:'right'}}>{student.StudentReligion}</b></th>
+  </tr>
+  <tr>
+    <th className="">Monthly Fee : <b className="ms-auto" style={{float:'right'}}>{student.StudentMonthlyFee} Pkr</b></th>
+  </tr>
+  <tr>
+    <th className="">Student Subjects : <b className="ms-auto" style={{float:'right'}}>{student.subjects.map((subject)=>( subject.SubjectName))}</b></th>
+  </tr>
+  <tr>
+    <th className="">Last Updated : <b className="ms-auto" style={{float:'right'}}>{student.users.updated_at}</b></th>
+  </tr>
 </table>
 <table id="customers">
-<center>
-<h2>Teacher Data</h2>
-</center>
 <tr>
-    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+    <th className="">Father Name : <b className="ms-auto" style={{float:'right'}}>{student.parents.FatherName}</b></th>
   </tr>
   <tr>
-    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+    <th className="">Mother Name : <b className="ms-auto" style={{float:'right'}}>{student.parents.MotherName}</b></th>
   </tr>
   <tr>
-    <th className="">Centro comercial Moctezuma <b className="ms-auto" style={{float:'right'}}>Francisco Chang</b></th>
+    <th className="">Guardian's CNIC : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansCNIC}</b></th>
+  </tr>
+  <tr>
+    <th className="">Guardian's Phone Number : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansPhoneNumber}</b></th>
+  </tr>
+  <tr>
+    <th className="">Extra Phone Number : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansPhoneNumber2}</b></th>
+  </tr>
+  <tr>
+    <th className="">Guardian's Email : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansEmail}</b></th>
+  </tr>
+  <tr>
+    <th className="">HomeAddress : <b className="ms-auto" style={{float:'right'}}>{student.parents.HomeAddress}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
+  </tr>
+  <tr>
+    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
   </tr>
   
 </table>
 </div>
+            );
+          })
+        }
   </List>
 </Dialog>
 
@@ -536,7 +618,7 @@ export default function StudentInformation() {
                     <td>
                       <div  className="filterDataDiv viewProfile innerButtonDiv">
                         <p>View Profile</p>
-                        <button onClick={()=>{handleClickOpen(); SetProfileID(student.users.id)}}>
+                        <button onClick={()=>{handleClickOpen(); SetProfileID(student.id)}}>
                           <IoPerson
                             color="white"
                             style={{ width: "18px", height: "18px" }}
@@ -666,7 +748,8 @@ export default function StudentInformation() {
                 <h4 style={{ margin: "0", padding: "0" }}>
                   {popupInput.users.name}
                 </h4>
-                <ReactBarcode
+                <QRCode style={{width:"130px",height:'130px' , margin:'20px 0px'}} value="http://192.168.1.31:3000/markattendance?ClassID=2&UserID=5" />
+                {/* <ReactBarcode
                   style={{ backgroundColor: "transparent" }}
                   value={
                     ApiSearchData.campus.slice(0, 1) +
@@ -676,7 +759,7 @@ export default function StudentInformation() {
                   options={{ format: "code128" }}
                   displayValue={false}
                   renderer="image"
-                />
+                /> */}
                 <div
                   style={{
                     display: "flex",
@@ -700,7 +783,7 @@ export default function StudentInformation() {
                     <span style={{ color: "#5b8beb" }}>Full Name: </span>
                     {popupInput.users.name}
                   </h6>
-                  <h6 style={{ paddingBottom: "50px", fontSize: "14px" }}>
+                  <h6 style={{ paddingBottom: "30px", fontSize: "14px" }}>
                     <span style={{ color: "#5b8beb" }}>
                       Emergency Contact:{" "}
                     </span>

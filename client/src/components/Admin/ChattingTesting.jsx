@@ -125,7 +125,7 @@ useEffect(() => {
 
             channel.listen('PrivateMessageSent', (event) => {
                 console.log('Message received:', event.message); // Debugging line
-                if(event.receiver_id == ID){
+                if(event.senderId == parseInt(ID)){
                 setmessages((prevMessages) => [...prevMessages, {
                   'Sending_id':  event.senderId,
                   'Message': event.message,
@@ -329,7 +329,7 @@ useEffect(() => {
         </div>
           <div className="write">
               <a href="javascript:;" className="write-link attach" />
-              <input type="text" name='message' value={message} onChange={e => setmessage(e.target.value)} class="form-control" id="exampleFormControlInput1" placeholder="Enter message"  />
+              <input type="text" name='message' value={message} onChange={e => setmessage(e.target.value)} className="form-control" id="exampleFormControlInput1" placeholder="Enter message"  />
               <a href="javascript:;" className="write-link smiley" />
               <button type='button' onClick={Submit} className="write-link send" />
             </div>
