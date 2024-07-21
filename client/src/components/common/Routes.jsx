@@ -32,6 +32,7 @@ import TimetableForTeacher from "../Teacher/Timetable.jsx";
 import ChattingTesting from "../Admin/ChattingTesting.jsx";
 import FeeManagement from "../Admin/FeeManagement.jsx";
 import Addexpensives from "../Admin/Addexpensives.jsx";
+import Announcement from "../Admin/Announcement.jsx";
 
 const AllRoutes = [
   {
@@ -256,6 +257,12 @@ const AllRoutes = [
   {
     path: "Addexpensives",
     component:  <Addexpensives />,
+    type: "Admin",
+    authentication: "role",
+  },
+  {
+    path: "announcement",
+    component:  <Announcement />,
     type: "Admin",
     authentication: "role",
   },

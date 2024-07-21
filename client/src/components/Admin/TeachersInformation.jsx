@@ -19,10 +19,37 @@ import { BsFillTelephoneFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import LoadingOverlay from "../common/LoadingOverlay";
 import CustomPopup from "../common/CustomPopup";
+import Dialog from '@mui/material/Dialog';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemButton from '@mui/material/ListItemButton';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+import QRCode from "react-qr-code";
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 
 export default function TeachersInformation() {
   const navigate = useNavigate();
 
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const [ProfileID , SetProfileID] = useState('');
   // please define all states at the top -_-
 
   const [isOpen, setIsOpen] = useState({});
@@ -301,6 +328,86 @@ export default function TeachersInformation() {
 
   return (
     <>
+    <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              User Profile
+            </Typography>
+            <Button autoFocus color="inherit" onClick={handleClose}>
+              close
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <List>
+        {
+          filteredTeacherInfo && filteredTeacherInfo.filter(teacher => {
+            return teacher.id === ProfileID;
+          }).map((teacher, i)=>{
+            return(
+  <div key={i} className="bgColorProfile d-flex">
+        <table id="customers">
+  <tr>
+    <th className="">Profile Pic : <b className="ms-auto" style={{float:'right'}}>
+    <img style={{ objectFit: "cover", height:'50px', width:'50px'}} src={(teacher.users.images[0]?.data)
+                              ? `data:image/png;base64,${teacher.users.images[0].data}`
+                              : defaultImg
+                          } />
+    </b></th>
+  </tr>
+  <tr>
+    <th className="">Name : <b className="ms-auto" style={{float:'right'}}>{teacher.users.name}</b></th>
+  </tr>
+  <tr>
+    <th className="">Email : <b className="ms-auto" style={{float:'right'}}>{teacher.users.email}</b></th>
+  </tr>
+  <tr>
+    <th className="">UserName : <b className="ms-auto" style={{float:'right'}}>{teacher.users.userName}</b></th>
+  </tr>
+  <tr>
+    <th className="">Teacher CNIC : <b className="ms-auto" style={{float:'right'}}>{teacher.TeacherCNIC}</b></th>
+  </tr>
+  <tr>
+    <th className="">Date of Birth : <b className="ms-auto" style={{float:'right'}}>{teacher.TeacherDOB}</b></th>
+  </tr>
+  <tr>
+    <th className="">Phone Number : <b className="ms-auto" style={{float:'right'}}>{teacher.TeacherPhoneNumber}</b></th>
+  </tr>
+  <tr>
+    <th className="">Home Address : <b className="ms-auto" style={{float:'right'}}>{teacher.TeacherHomeAddress}</b></th>
+  </tr>
+  <tr>
+    <th className="">Religion : <b className="ms-auto" style={{float:'right'}}>{teacher.TeacherReligion}</b></th>
+  </tr>
+  <tr>
+    <th className="">Monthly Fee : <b className="ms-auto" style={{float:'right'}}>{teacher.TeacherSalary} Pkr</b></th>
+  </tr>
+  <tr>
+    <th className="">teacher Subjects : <b className="ms-auto" style={{float:'right'}}>{teacher.users.subjects.map((subject)=>( subject.SubjectName))}</b></th>
+  </tr>
+  <tr>
+    <th className="">Last Updated : <b className="ms-auto" style={{float:'right'}}>{teacher.users.updated_at}</b></th>
+  </tr>
+</table>
+</div>
+            );
+          })
+        }
+  </List>
+</Dialog>
       <LoadingOverlay loading={localLoading} />
     <div style={{padding: "15px 20px"}}>
       <div className="headingNavbar d-flex justify-content-center">
@@ -472,9 +579,9 @@ export default function TeachersInformation() {
                       </div>
                     </td>
                     <td>
-                      <div className="filterDataDiv viewProfile innerButtonDiv">
+                      <div onClick={()=>{handleClickOpen(); SetProfileID(teacher.id)}} className="filterDataDiv viewProfile innerButtonDiv">
                         <p>View Profile</p>
-                        <button>
+                        <button >
                           <IoPerson
                             color="white"
                             style={{ width: "18px", height: "18px" }}
@@ -491,7 +598,7 @@ export default function TeachersInformation() {
                           data-toggle="dropdown"
                           aria-haspopup="true"
                           aria-expanded={isOpen[teacher.id]}
-                          onClick={() => toggleDropdown(teacher.id)} // Pass the student ID to toggleDropdown
+                          onClick={() => toggleDropdown(teacher.id)} // Pass the teacher ID to toggleDropdown
                         >
                           Actions
                         </button>

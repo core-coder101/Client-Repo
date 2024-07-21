@@ -785,25 +785,27 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
             className="smallchart mt-2"
           />
       </div>
-      <div className="d-flex" style={{ marginTop: "70px" }}>
-        <div className="ms-auto me-auto">
+      <div className="row" style={{ marginTop: "70px" }}>
+        <div className="ms-auto me-auto col-12 col-lg-8">
           <div id="chart">
-              <ReactApexChart options={data} series={series} type="bar" height={440} width={650} className="smallchart" />
+              <ReactApexChart options={data} series={series} type="bar" height={'400px'}  width={'100%'} className="smallchart" />
               <br/>
           </div>
         </div>
-        <div>
-            <div style={{ position: "relative" }}>
+        <div className="col-12 col-lg-4">
+            <div>
+            <center>
               <Chart
                 options={pieData.options}
                 series={pieData.series}
                 type="donut"
-                width="380"
+                width="100%"
                 className="smallchart"
               />
+              </center>
             </div>
             <div id="chart">
-            <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={400}  className="smallchart mt-5" />
+            <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={'400px'}  className="smallchart mt-5" />
               <br/>
           </div>
         </div>

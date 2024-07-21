@@ -616,9 +616,9 @@ export default function StudentInformation() {
                       </div>
                     </td>
                     <td>
-                      <div  className="filterDataDiv viewProfile innerButtonDiv">
+                      <div onClick={()=>{handleClickOpen(); SetProfileID(student.id)}} className="filterDataDiv viewProfile innerButtonDiv">
                         <p>View Profile</p>
-                        <button onClick={()=>{handleClickOpen(); SetProfileID(student.id)}}>
+                        <button >
                           <IoPerson
                             color="white"
                             style={{ width: "18px", height: "18px" }}
