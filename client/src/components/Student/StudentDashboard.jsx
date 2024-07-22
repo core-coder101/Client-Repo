@@ -9,6 +9,14 @@ import { GetStudentAttendance, setError, setPopup } from "../../redux/slices/Stu
 import LoadingOverlay from "../common/LoadingOverlay";
 import { GetTimeTable, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
 import { Snackbar } from "@mui/material";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 
 export default function Dashboard() {
@@ -50,48 +58,7 @@ export default function Dashboard() {
 
   const [itemData, setItemData] = useState()
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [timetable, setTimeTable] = useState([
-    {
-      Subject: "Physics",
-      StartingTime: "14:40:00",
-      EndingTime: "15:20:00",
-    },
-    {
-      Subject: "Chemistry",
-      StartingTime: "15:20:00",
-      EndingTime: "16:00:00",
-    },
-    {
-      Subject: "Maths",
-      StartingTime: "16:00:00",
-      EndingTime: "16:40:00",
-    },
-    {
-      Subject: "Urdu",
-      StartingTime: "16:40:00",
-      EndingTime: "17:20:00",
-    },
-    {
-      Subject: "Computer",
-      StartingTime: "17:20:00",
-      EndingTime: "18:00:00",
-    },
-    {
-      Subject: "English",
-      StartingTime: "18:00:00",
-      EndingTime: "18:40:00",
-    },
-    {
-      Subject: "Islamiat",
-      StartingTime: "18:40:00",
-      EndingTime: "19:20:00",
-    },
-    {
-      Subject: "Tarjama-tul-Quran",
-      StartingTime: "19:20:00",
-      EndingTime: "19:40:00",
-    },
-  ])
+  const [timetable, setTimeTable] = useState([])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -141,8 +108,8 @@ export default function Dashboard() {
               let ongoing = false;
               let start = lecture.StartingTime;
               let end = lecture.EndingTime;
-              let [startHours, startMinutes, startSeconds] = start.split(":");
-              let [endHours, endMinutes, endSeconds] = end.split(":");
+              let [startHours, startMinutes, startSeconds] = start?.split(":");
+              let [endHours, endMinutes, endSeconds] = end?.split(":");
               
               let currentSeconds = currentTime.getSeconds();
               let currentTimeInSeconds = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentSeconds;

@@ -33,6 +33,10 @@ export default function UploadLecture() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
+  useEffect(()=>{
+    console.log("progress: ", progress);
+  }, [progress])
+
   // moving it to the top cuz I need it in a state declaration. . .
   const names = [
     "Maths",
@@ -391,7 +395,7 @@ export default function UploadLecture() {
 
   return (
     <>
-    <LoadingOverlay loading={localLoading} />
+    <LoadingOverlay loading={localLoading && !progress} />
     <div className="uploadLectureMain">
       <div className="mb-4" style={{ width: "100%" }}>
         <div className="headingNavbar d-flex justify-content-center">
@@ -646,31 +650,33 @@ export default function UploadLecture() {
             }}
             errorMessage={error}
           />
-          {progress ? <Popup
-            visible={localLoading}
-            onClose={() => {}}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-column-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
+          <div className='popup'>
+            {progress ? <Popup
+              visible={localLoading}
+              onClose={() => {}}
+              style={{
+                backgroundColor: "rgba(17, 16, 29, 0.95)",
+                boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
+                padding: "40px 20px",
+              }}
             >
-              <h5
-                dangerouslySetInnerHTML={{ __html: error }}
-                style={{ color: "white", margin: "0" }}
-              ></h5>
+              <div
+                className="d-column-flex justify-content-center align-items-center"
+                style={{ width: "max-content", height: "100%", padding: "0" }}
+              >
+                <h5
+                  dangerouslySetInnerHTML={{ __html: error }}
+                  style={{ color: "white", margin: "0" }}
+                ></h5>
 
-                <ProgressBar
-                  style={{ height: "20px", marginTop: "15px" }}
-                  now={progress}
-                  label={`${progress}%`}
-                />
-            </div>
-          </Popup> : null}
+                  <ProgressBar
+                    style={{ height: "20px", marginTop: "15px" }}
+                    now={progress}
+                    label={`${progress}%`}
+                  />
+              </div>
+            </Popup> : null}
+          </div>
           <div>
           <div className="popup">
             <Popup
