@@ -92,10 +92,10 @@ const Submit = () =>{
 <ReactQuill theme="snow" className='ReactQuill' value={value} onChange={setValue} />
 </div>
 <div className='mt-3'>
-  <input type="checkbox" id="vehicle2" name="teacher"        checked={isTeacherChecked}
+  <input type="checkbox" id="vehicle2" name="teacher"  checked={isTeacherChecked}
         onChange={handleTeacherChange} />
   <label for="vehicle2" className='ms-2'> For Teachers</label><br />
-  <input type="checkbox" id="vehicle3" name="student"         checked={isStudentChecked}
+  <input type="checkbox" id="vehicle3" name="student"  checked={isStudentChecked}
         onChange={handleStudentChange} />
   <label for="vehicle3" className='ms-2'> For Students</label><br />
 </div>
