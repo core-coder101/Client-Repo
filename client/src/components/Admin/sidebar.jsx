@@ -28,127 +28,128 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
 
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
-
-  const classesData = {
-    title: "Classes",
-    icon: <SiGoogleclassroom />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Create Class",
-        path: "/createclass",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Manage Classes",
-        path: "/manageclasses",
-        icon: <SiGoogleclassroom />,
-      },
-    ],
-  };
-  const studentsData = {
-    title: "Students",
-    icon: <PiStudentFill />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Add Student",
-        path: "/addstudent",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Students Information",
-        path: "/studentsinformation",
-        icon: (
-          <IoInformationCircleOutline
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-      {
-        title: "Students Attendance",
-        path: "/studentattendance",
-        icon: (
-          <IoIosCheckmarkCircleOutline
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
-  const teachersData = {
-    title: "Teachers",
-    icon: <FaChalkboardTeacher />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Add Teacher",
-        path: "/addteacher",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Teachers Information",
-        path: "/teachersinformation",
-        icon: (
-          <IoInformationCircleOutline
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
-  const lecturesData = {
-    title: "Lectures",
-    icon: <GiTeacher />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Upload Lecture",
-        path: "/uploadlecture",
-        icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Browse Lectures",
-        path: "/selectvideo",
-        icon: (
-          <GoVideo
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
-  const feeData = {
-    title: "Fee",
-    icon: <FaMoneyCheckAlt />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Upload Lecture",
-        path: "/uploadlecture",
-        icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Browse Lectures",
-        path: "/selectvideo",
-        icon: (
-          <GoVideo
-            style={{ width: "20px", height: "20px" }}
-          />
-        ),
-      },
-    ],
-  };
+  const subMenus = [
+    {
+      title: "Classes",
+      icon: <SiGoogleclassroom />,
+      iconClosed: <RiArrowDropDownLine />,
+      iconOpened: <MdKeyboardArrowUp />,
+  
+      subNav: [
+        {
+          title: "Create Class",
+          path: "/createclass",
+          icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
+        },
+        {
+          title: "Manage Classes",
+          path: "/manageclasses",
+          icon: <SiGoogleclassroom />,
+        },
+      ],
+    },
+    {
+      title: "Students",
+      icon: <PiStudentFill />,
+      iconClosed: <RiArrowDropDownLine />,
+      iconOpened: <MdKeyboardArrowUp />,
+  
+      subNav: [
+        {
+          title: "Add Student",
+          path: "/addstudent",
+          icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
+        },
+        {
+          title: "Students Information",
+          path: "/studentsinformation",
+          icon: (
+            <IoInformationCircleOutline
+              style={{ width: "20px", height: "20px" }}
+            />
+          ),
+        },
+        {
+          title: "Students Attendance",
+          path: "/studentattendance",
+          icon: (
+            <IoIosCheckmarkCircleOutline
+              style={{ width: "20px", height: "20px" }}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: "Teachers",
+      icon: <FaChalkboardTeacher />,
+      iconClosed: <RiArrowDropDownLine />,
+      iconOpened: <MdKeyboardArrowUp />,
+  
+      subNav: [
+        {
+          title: "Add Teacher",
+          path: "/addteacher",
+          icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
+        },
+        {
+          title: "Teachers Information",
+          path: "/teachersinformation",
+          icon: (
+            <IoInformationCircleOutline
+              style={{ width: "20px", height: "20px" }}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: "Lectures",
+      icon: <GiTeacher />,
+      iconClosed: <RiArrowDropDownLine />,
+      iconOpened: <MdKeyboardArrowUp />,
+  
+      subNav: [
+        {
+          title: "Upload Lecture",
+          path: "/uploadlecture",
+          icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
+        },
+        {
+          title: "Browse Lectures",
+          path: "/selectvideo",
+          icon: (
+            <GoVideo
+              style={{ width: "20px", height: "20px" }}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: "Fee",
+      icon: <FaMoneyCheckAlt />,
+      iconClosed: <RiArrowDropDownLine />,
+      iconOpened: <MdKeyboardArrowUp />,
+  
+      subNav: [
+        {
+          title: "Upload Lecture",
+          path: "/uploadlecture",
+          icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
+        },
+        {
+          title: "Browse Lectures",
+          path: "/selectvideo",
+          icon: (
+            <GoVideo
+              style={{ width: "20px", height: "20px" }}
+            />
+          ),
+        },
+      ],
+    },
+  ]
   const imageSrc = userData && userData.images && userData.images[0] && userData.images[0].data
     ? `data:image/png;base64,${userData.images[0].data}`
     : defaultImg;
@@ -200,11 +201,14 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
               </Link>
               <span className="tooltip">Timetables</span>
             </li>
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={teachersData} key={1} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={studentsData} key={2} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={3} />
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={feeData} key={4} />
+            
+            {subMenus.map((subMenuData, index) => {
+              return (
+                <li className="customSubMenu">
+                <SubMenu key={index} closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={subMenuData}/>
+                </li>
+              )
+            })}
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
               <img 
