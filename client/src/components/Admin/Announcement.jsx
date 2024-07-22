@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../assets/css/ReactQuill.css';
@@ -77,8 +77,83 @@ const [isTeacherChecked, setIsTeacherChecked] = useState(false);
     }
   }
 
+
+  const DeleteAnnouncement = async(id) =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/destroyAnnouncement?ID=${id}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        GetAnnouncement();
+        setPopup(true);
+        setErrorMessage(response.data.message);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed create announcement");
+      setPopup(true);
+    }
+  }
+
+
+  const [Announcement, setAnnouncement] = useState('');
+
+  const GetAnnouncement = async() =>{
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/showAllAnnouncement`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+
+      if (response.data.success == true) {
+        setAnnouncement(response.data.data);
+        setPopup(true);
+        setErrorMessage(response.data.message);
+      } else {
+        setErrorMessage(response.data.message);
+        setPopup(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Failed create announcement");
+      setPopup(true);
+    }
+  }
+
+  useEffect(()=>{
+    GetAnnouncement();
+  },[]);
+
+
 const Submit = () =>{
   CreateAnnouncement();
+}
+function truncateString(str, maxLength) {
+  if (str.length <= maxLength) {
+      return str;
+  }
+  return str.slice(0, maxLength) + '...';
+}
+
+const Delete = async(id) =>{
+  DeleteAnnouncement(id);
 }
 
   return (
@@ -116,12 +191,19 @@ const Submit = () =>{
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td><button className='btn btn-danger'>Delete</button></td>
+  {Announcement && Announcement.map((announcement) =>{
+    return (
+      <>
+      <tr>
+      <th scope="row">{announcement.id}</th>
+      <td>{announcement.heading}</td>
+      <td>{truncateString(announcement.description, 40)}</td>
+      <td><button className='btn btn-danger' onClick={ () =>{Delete(announcement.id)}}>Delete</button></td>
     </tr>
+    </>
+    );
+  })}
+    
   </tbody>
 </table>
 <br></br>
