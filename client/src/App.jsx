@@ -6,11 +6,22 @@ import { logout,fetchCSRFToken, UserData, setPopup, setError } from "./redux/sli
 import { GetTeacherClassinfo, teacherAttendance } from "./redux/slices/Teacher/StudentAttendance";
 import { Snackbar } from "@mui/material";
 import { setPopup as setPopup2, setError as setError2 } from "./redux/slices/Teacher/StudentAttendance"
+import LoadingOverlay from "./components/common/LoadingOverlay";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import { showAnnouncement } from "./redux/slices/common/announcement";
 
 export default function App() {
   const dispatch = useDispatch();
-  const { CSRFToken, rememberMe, loading, error, popup } = useSelector((state) => state.auth);
+  const { CSRFToken, rememberMe, loading, error, popup, user } = useSelector((state) => state.auth);
   const { loading: loading2, error: error2, popup: popup2 } = useSelector((state) => state.studentAttendanceTeacher);
+  const { announcements, loading: loading3, error: error3, popup: popup3 } = useSelector((state) => state.showAnnouncement);
 
   useEffect(() => {
     if(!CSRFToken){
@@ -43,7 +54,31 @@ export default function App() {
       }
     }
   }, [dispatch]);
+  
+  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if(user?.Role === "Student" || user?.Role === "Teacher"){
+      dispatch(showAnnouncement())
+    }
+  }, [user])
+
+  useEffect(() => {
+    if(announcements.keys > 0){
+      console.log("announcements: ", announcements);
+    }
+  }, [announcements])
+  
   return (
     <div>
       <NewRouter />
@@ -71,6 +106,26 @@ export default function App() {
         autoHideDuration={3000}
         transitionDuration={400}
       />
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+        className="AnnouncementOuterDiv"
+      >
+        <DialogTitle id="responsive-dialog-title">
+          <h1>Announcement 🔊</h1>
+        </DialogTitle>
+        <DialogContent>
+          <h2>Fee Reminder!</h2>
+          <p>Last day to clear your dues!</p>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

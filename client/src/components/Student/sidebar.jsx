@@ -28,25 +28,25 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
 
-  const classesData = {
-    title: "Classes",
-    icon: <SiGoogleclassroom />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
+  // const classesData = {
+  //   title: "Classes",
+  //   icon: <SiGoogleclassroom />,
+  //   iconClosed: <RiArrowDropDownLine />,
+  //   iconOpened: <MdKeyboardArrowUp />,
 
-    subNav: [
-      {
-        title: "Create Class",
-        path: "/createclass",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Manage Classes",
-        path: "/manageclasses",
-        icon: <SiGoogleclassroom />,
-      },
-    ],
-  };
+  //   subNav: [
+  //     {
+  //       title: "Create Class",
+  //       path: "/createclass",
+  //       icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
+  //     },
+  //     {
+  //       title: "Manage Classes",
+  //       path: "/manageclasses",
+  //       icon: <SiGoogleclassroom />,
+  //     },
+  //   ],
+  // };
 
 
   const imageSrc = userData && userData.images && userData.images[0] && userData.images[0].data
@@ -99,7 +99,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
               </Link>
               <span className="tooltip">Browse Lectures</span>
             </li>
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
+            {/* <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} /> */}
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
               <img 

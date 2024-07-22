@@ -101,8 +101,8 @@ export default function Addexpensives() {
                 setErrorMessage("");
               }, 400);
             }}
-            errorMessage={errorMessage}
-            />
+            errorMessage={handleResponse({message: errorMessage})}
+          />
 
     </>
   )

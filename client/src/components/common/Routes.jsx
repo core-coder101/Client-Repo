@@ -181,12 +181,12 @@ const AllRoutes = [
     type: "Teacher",
     authentication: "role",
   },
-  {
-    path: "testing",
-    component: <CreateTimetables />,
-    type: "Admin",
-    authentication: "role",
-  },
+  // {
+  //   path: "testing",
+  //   component: <CreateTimetables />,
+  //   type: "Admin",
+  //   authentication: "role",
+  // },
   {
     path: "studentattendance",
     component: <StudentAttendanceForTeacher />,
