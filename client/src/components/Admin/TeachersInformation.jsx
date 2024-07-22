@@ -662,14 +662,14 @@ export default function TeachersInformation() {
       <div ref={pngElementRef} className='studentIdCardDiv' style={{backgroundColor: "white", display: "flex", flexDirection: "column", alignItems: "center", borderRadius: "1rem", padding: "15px 20px", boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px", whiteSpace: "nowrap", width: "300px", height: "460px"}}>
           <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
               <h4 style={{margin: "0", padding: "0"}}>{popupInput.users.name}</h4>
-              <ReactBarcode style={{backgroundColor: "transparent"}} value={ApiSearchData.campus.slice(0, 1) + '-' + JSON.stringify(popupInput.users.id)} options={{format: "code128"}} displayValue={false} renderer='image' />
+              <QRCode style={{width:"130px",height:'130px' , margin:'20px 0px'}} value={`http://192.168.1.31:3000/markattendance?ClassID=${popupInput.classes[0].id}&UserID=${popupInput.id}`} />
               <div style={{display: "flex", flexDirection: "column", width: "100%"}}>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Class: </span>{popupInput.classes.ClassRank ? converter.toWords(popupInput.classes.ClassRank) : "none"}</h6>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Class Name: </span>{popupInput.classes.ClassName ? popupInput.classes.ClassName : "none"}</h6>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Campus: </span>{ApiSearchData.campus}</h6>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Teacher ID: </span>{popupInput.id}</h6>
                   <h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Full Name: </span>{popupInput.users.name}</h6>
-                  <h6 style={{ paddingBottom: "50px", fontSize: "14px"}}><span style={{color: "#5b8beb",}}>Contact: </span>{popupInput.TeacherPhoneNumber}</h6>
+                  <h6 style={{ paddingBottom: "25px", fontSize: "14px"}}><span style={{color: "#5b8beb",}}>Contact: </span>{popupInput.TeacherPhoneNumber}</h6>
               </div>
               <div style={{display: "flex", width: "100%"}}>
                   <FaLocationDot style={{marginRight: "5px"}} color="#5b8beb" /><h6 style={{fontSize: "14px"}}><span style={{color: "#5b8beb"}}>Faisalabad, Kohinoor City</span></h6>

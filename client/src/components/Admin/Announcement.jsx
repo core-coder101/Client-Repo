@@ -103,6 +103,29 @@ const Submit = () =>{
   <button className="btn btn-primary form-control mt-3" onClick={Submit}>Submit</button>
 </div>
         </div>
+
+        <br></br>
+        <br></br>
+<table className=" table caption-top">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Heading</th>
+      <th scope="col">Description</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td><button className='btn btn-danger'>Delete</button></td>
+    </tr>
+  </tbody>
+</table>
+<br></br>
+<br></br>
     </>
   )
 }

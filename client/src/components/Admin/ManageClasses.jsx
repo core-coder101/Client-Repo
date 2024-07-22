@@ -83,7 +83,9 @@ export default function ManageClasses() {
               {/* <td data-title="Details"><button type="button" onClick={()=>{Details(Class.id)}}  class="btn btn-info">Details</button></td>
               <td data-title="Edit"><button type="button" onClick={()=>{Edit(Class.id)}} class="btn btn-warning">Edit</button></td>
               <td data-title="Delete"><button type="button" onClick={()=>{Delete(Class.id)}} class="btn btn-danger">Delete</button></td> */}
-              <td data-title="Timetable"></td>
+              <td data-title="Timetable">
+                <button className='btn btn-danger' style={{fontSize:'small'}}> Check TimeTable</button>
+              </td>
               <td data-title="Actions">
                 <Select
                   labelId="manageClassesActions"

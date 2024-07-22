@@ -748,7 +748,7 @@ export default function StudentInformation() {
                 <h4 style={{ margin: "0", padding: "0" }}>
                   {popupInput.users.name}
                 </h4>
-                <QRCode style={{width:"130px",height:'130px' , margin:'20px 0px'}} value="http://192.168.1.31:3000/markattendance?ClassID=2&UserID=5" />
+                <QRCode style={{width:"130px",height:'130px' , margin:'20px 0px'}} value={`http://192.168.1.31:3000/markattendance?ClassID=${popupInput.StudentClassID}&UserID=${popupInput.id}`} />
                 {/* <ReactBarcode
                   style={{ backgroundColor: "transparent" }}
                   value={

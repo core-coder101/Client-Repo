@@ -3,6 +3,7 @@ import "../../assets/css/Sidebar.css";
 import { BsPersonFill } from "react-icons/bs";
 import { TbHexagonLetterHFilled } from "react-icons/tb";
 import SubMenu from "../common/SubMenu";
+import defaultImg from "../../assets/img/default.png";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdKeyboardArrowUp } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,7 +21,7 @@ import { GoVideo } from "react-icons/go";
 
 
 function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobile }) {
-  const { user } = useSelector((state) => state.auth);
+  const { user , userData } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
@@ -47,6 +48,10 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
     ],
   };
 
+
+  const imageSrc = userData && userData.images && userData.images[0] && userData.images[0].data
+  ? `data:image/png;base64,${userData.images[0].data}`
+  : defaultImg;
 
   return (
     <>
@@ -97,10 +102,11 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
             <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
-                <BsPersonFill
-                  color="white"
-                  style={{ width: "30px", height: "30px", marginRight: "10px" }}
-                />
+              <img 
+              style={{ borderRadius: '50%', objectFit: 'cover', height: '40px', width: '40px' }}
+              src={imageSrc}
+              alt="User Profile"
+              />
                 <div className="name_job">
                   <div className="name">{user ? user.Name : ""}</div>
                   <div className="job">{user ? user.Role : ""}</div>
