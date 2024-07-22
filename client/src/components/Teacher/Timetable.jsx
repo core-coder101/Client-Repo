@@ -29,6 +29,9 @@ export default function Timetable() {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
+    if (!(DBTimeTableData && DBTimeTableData.length > 0)){
+      return
+    }
     let dataToSet = [];
     DBTimeTableData.forEach((lecture) => {
       let dataToPush = {
@@ -112,7 +115,7 @@ export default function Timetable() {
   const handleSubmit = (e) => {
     e.preventDefault()
     let dataToSend
-      timeTableData.forEach(period => {
+    timeTableData && timeTableData.length > 0 && timeTableData.forEach(period => {
         const startTime = new Date(period.period[0]).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const endTime = new Date(period.period[1]).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]

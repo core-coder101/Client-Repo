@@ -12,6 +12,9 @@ import CustomFooter from "../Admin/CustomFooter";
 import { Tooltip } from "@mui/material";
 import Popup from "react-animated-popup";
 import { useSelector } from "react-redux";
+import CustomPopup from "../common/CustomPopup";
+import { handleError } from "../../redux/errorHandler";
+import { handleResponse } from "../../redux/responseHandler";
 
 export default function StudentAttendance() {
   const navigate = useNavigate();
@@ -289,28 +292,16 @@ export default function StudentAttendance() {
             flexDirection: "column",
           }}
         >
-          <Popup
-            animationDuration={400}
-            visible={popup}
-            onClose={() => {
+          <CustomPopup
+            Visible={popup}
+            OnClose={() => {
               setPopup(false);
               setTimeout(() => {
                 setErrorMessage("");
               }, 400);
             }}
-            style={{
-              backgroundColor: "rgba(17, 16, 29, 0.95)",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "max-content", height: "100%", padding: "0" }}
-            >
-              <h5 style={{ color: "white", margin: "0" }}>{errorMessage}</h5>
-            </div>
-          </Popup>
+            errorMessage={handleResponse({message: errorMessage})}
+          />
           <Popup
             visible={loading}
             onClose={() => {}}

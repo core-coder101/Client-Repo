@@ -3,7 +3,6 @@ import "../../assets/css/class.css";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import Popup from "react-animated-popup";
 import { useDispatch, useSelector } from "react-redux";
 import { GetClassDataById, GetTeachers, UpdateClass, createClass, setError, setPopup } from "../../redux/slices/Admin/CreateClass";
 import LoadingOverlay from "../common/LoadingOverlay";
