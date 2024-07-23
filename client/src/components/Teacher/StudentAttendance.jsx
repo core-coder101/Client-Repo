@@ -149,16 +149,6 @@ export default function StudentAttendance() {
             flexDirection: "column",
           }}
         >
-          <CustomPopup
-            Visible={localPopup}
-            OnClose={() => {
-              dispatch(setPopup(false))
-              setTimeout(() => {
-                dispatch(setError(""))
-              }, 400);
-            }}
-            errorMessage={error}
-          />
           <DataGrid
             rows={filteredRows}
             columns={columns}

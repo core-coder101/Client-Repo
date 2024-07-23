@@ -99,7 +99,7 @@ export default function SelectVideo() {
          return (
           (Data.videos.length > 0) ?
         <button onClick={()=>{navigate(`/watchvideo/${Data.videos[0].id}`)}} className='outerCardBtn'>
-        <div className="col ">
+        <div className="col cardDiv">
           <div className="card custom-card playlist">
             <div className='Cardimage'><img src={
                             Data.videos[0].images
@@ -130,8 +130,8 @@ export default function SelectVideo() {
       {VideosData && VideosData.length > 0 && VideosData.map((videoData)=>{
         return(
           <>
-          <button onClick={()=>{navigate(`/watchvideo/${videoData.id}`)}} className='outerCardBtn'>
-        <div className="col">
+          <button onClick={()=>{navigate(`/watchvideo/${videoData.id}`)}} className='outerCardBtn' style={{marginLeft: "2px"}}>
+        <div className="col cardDiv">
           <div className="card custom-card">
           <div className='Cardimage'>
             <img  className="card-img-top custom-img"  src={

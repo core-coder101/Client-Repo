@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PieChart } from "@mui/x-charts/PieChart";
 import { setError, setPopup } from "../../redux/slices/Student/StudentDashboard";
 import LoadingOverlay from "../common/LoadingOverlay";
-import { GetTimeTable, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
+import { setError as setError2, setPopup as setPopup2, GetTimeTableForTeacherDashboard } from "../../redux/slices/Admin/CreateTimetables";
 import { Snackbar } from "@mui/material";
 import { GetTeacherAttendanceDashboard } from "../../redux/slices/Teacher/StudentAttendance";
 
@@ -15,7 +15,7 @@ import { GetTeacherAttendanceDashboard } from "../../redux/slices/Teacher/Studen
 export default function Dashboard() {
   
   const { teacherAttendance, presentCount, absentCount, loading, popup, error } = useSelector(state=>state.studentAttendanceTeacher)
-  const { DBTimeTableData, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
+  const { teacherDashboardTimetable, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
   const dispatch = useDispatch()
   const [localLoading, setLocalLoading] = useState(false)
   // redux state update bug fix
@@ -24,14 +24,14 @@ export default function Dashboard() {
   }, [loading])
 
   useEffect(() => {
-    if(DBTimeTableData.length > 0){
-      setTimeTable(DBTimeTableData)
+    if(teacherDashboardTimetable.length > 0){
+      setTimeTable(teacherDashboardTimetable)
     }
-  }, [DBTimeTableData])
+  }, [teacherDashboardTimetable])
 
   useEffect(()=>{
     dispatch(GetTeacherAttendanceDashboard())
-    dispatch(GetTimeTable("TImETableforfuckingteacher"))
+    dispatch(GetTimeTableForTeacherDashboard("TImETableforfuckingteacher"))
   }, [dispatch])
 
   const data = [
@@ -50,48 +50,7 @@ export default function Dashboard() {
 
   const [itemData, setItemData] = useState()
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [timetable, setTimeTable] = useState([
-    {
-      Subject: "Physics",
-      StartingTime: "14:40:00",
-      EndingTime: "15:20:00",
-    },
-    {
-      Subject: "Chemistry",
-      StartingTime: "15:20:00",
-      EndingTime: "16:00:00",
-    },
-    {
-      Subject: "Maths",
-      StartingTime: "16:00:00",
-      EndingTime: "16:40:00",
-    },
-    {
-      Subject: "Urdu",
-      StartingTime: "16:40:00",
-      EndingTime: "17:20:00",
-    },
-    {
-      Subject: "Computer",
-      StartingTime: "17:20:00",
-      EndingTime: "18:00:00",
-    },
-    {
-      Subject: "English",
-      StartingTime: "18:00:00",
-      EndingTime: "18:40:00",
-    },
-    {
-      Subject: "Islamiat",
-      StartingTime: "18:40:00",
-      EndingTime: "19:20:00",
-    },
-    {
-      Subject: "Tarjama-tul-Quran",
-      StartingTime: "19:20:00",
-      EndingTime: "19:40:00",
-    },
-  ])
+  const [timetable, setTimeTable] = useState([])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -122,6 +81,10 @@ export default function Dashboard() {
     }
   })
 
+  useEffect(() => {
+    console.log("timetable: ",timetable);
+  }, [timetable])
+
   return (
     <>
       <LoadingOverlay loading={localLoading || loading2} />
@@ -137,13 +100,15 @@ export default function Dashboard() {
         <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
           <div className="timeTableMainDiv">
             <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
-            {timetable.map(lecture => {
+            {timetable && timetable.length > 0 && timetable.map((lecture, index) => {
+              if(!(lecture?.StartingTime && lecture?.EndingTime)){
+                return
+              }
               let ongoing = false;
               let start = lecture.StartingTime;
               let end = lecture.EndingTime;
-              console.log("start: ", start)
-              let [startHours, startMinutes, startSeconds] = start.split(":");
-              let [endHours, endMinutes, endSeconds] = end.split(":");
+              let [startHours, startMinutes, startSeconds] = start?.split(":");
+              let [endHours, endMinutes, endSeconds] = end?.split(":");
               
               let currentSeconds = currentTime.getSeconds();
               let currentTimeInSeconds = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentSeconds;
@@ -158,8 +123,8 @@ export default function Dashboard() {
               const endMessage = new Date("2024-09-11T" + end).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
               
               return (
-                  <div key={lecture.Subject} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
-                      <h6>{lecture.Subject}</h6>
+                  <div key={index} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
+                      <h6>{lecture.class?.ClassRank} {lecture.class?.ClassName} (Floor {lecture.class?.ClassFloor})</h6>
                       <p>{`${startMessage} - ${endMessage}`}</p>
                   </div>
               );

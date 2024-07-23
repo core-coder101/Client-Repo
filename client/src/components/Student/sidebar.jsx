@@ -1,22 +1,10 @@
 import React, { useState } from "react";
 import "../../assets/css/Sidebar.css";
-import { BsPersonFill } from "react-icons/bs";
 import { TbHexagonLetterHFilled } from "react-icons/tb";
-import SubMenu from "../common/SubMenu";
 import defaultImg from "../../assets/img/default.png";
-import { RiArrowDropDownLine } from "react-icons/ri";
-import { MdKeyboardArrowUp } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import { SiGoogleclassroom } from "react-icons/si";
-import { IoAddOutline } from "react-icons/io5";
-import { FaChalkboardTeacher } from "react-icons/fa";
-import { PiStudentFill } from "react-icons/pi";
-import { IoInformationCircleOutline } from "react-icons/io5";
-import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import { GiTeacher } from "react-icons/gi";
-import { IoMdCloudUpload } from "react-icons/io";
 import { GoVideo } from "react-icons/go";
 
 
@@ -27,27 +15,6 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
 
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
-
-  const classesData = {
-    title: "Classes",
-    icon: <SiGoogleclassroom />,
-    iconClosed: <RiArrowDropDownLine />,
-    iconOpened: <MdKeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: "Create Class",
-        path: "/createclass",
-        icon: <IoAddOutline style={{ width: "20px", height: "20px" }} />,
-      },
-      {
-        title: "Manage Classes",
-        path: "/manageclasses",
-        icon: <SiGoogleclassroom />,
-      },
-    ],
-  };
-
 
   const imageSrc = userData && userData.images && userData.images[0] && userData.images[0].data
   ? `data:image/png;base64,${userData.images[0].data}`
@@ -99,7 +66,6 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
               </Link>
               <span className="tooltip">Browse Lectures</span>
             </li>
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={classesData} key={0} />
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
               <img 

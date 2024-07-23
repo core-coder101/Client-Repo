@@ -185,6 +185,7 @@ const Delete = async(id) =>{
   <thead>
     <tr>
       <th scope="col">#</th>
+      <th scope='col'>For</th>
       <th scope="col">Heading</th>
       <th scope="col">Description</th>
       <th scope="col">Actions</th>
@@ -196,6 +197,7 @@ const Delete = async(id) =>{
       <>
       <tr>
       <th scope="row">{announcement.id}</th>
+      <td>{announcement?.teacher ? "Teacher" : ""}  {announcement?.student ? "Student" : ""}</td>
       <td>{announcement.heading}</td>
       <td>{truncateString(announcement.description, 40)}</td>
       <td><button className='btn btn-danger' onClick={ () =>{Delete(announcement.id)}}>Delete</button></td>

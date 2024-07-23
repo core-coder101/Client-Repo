@@ -11,6 +11,8 @@ import studentAttendanceTeacherReducer from "./slices/Teacher/StudentAttendance"
 import studentDashboardReducer from "./slices/Student/StudentDashboard"
 import manageClassesReducer from "./slices/Admin/ManageClasses"
 import createTimetablesReducer from "./slices/Admin/CreateTimetables"
+import createDashboardsReducer from "./slices/Admin/Dashboard"
+import announcementReducer from "./slices/common/announcement"
 
 const store = configureStore({
   reducer: {
@@ -25,6 +27,8 @@ const store = configureStore({
     studentDashboard: studentDashboardReducer,
     manageClasses: manageClassesReducer,
     createTimeTable: createTimetablesReducer,
+    adminDashboard: createDashboardsReducer,
+    showAnnouncement: announcementReducer,
   },
   devTools: true,
 });

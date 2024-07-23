@@ -72,6 +72,10 @@
     background: none;
     border: none;
 }
+.cardDiv{
+  width: 100%;
+  height: 100%;
+}
 .playlist{
     box-shadow: 
     #302e4975 3px -4px, 
@@ -92,6 +96,11 @@
 }
 .Cardimage{
     position: relative;
+}
+  .Cardimage img {
+  object-fit: cover;
+  height: 100%;
+  aspect-ratio: 16/9;
 }
 .Videotime{
     position: absolute;

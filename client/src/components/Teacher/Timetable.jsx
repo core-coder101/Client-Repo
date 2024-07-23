@@ -16,6 +16,7 @@ import { GetTimeTable, destroyTimeTable, submitTimetableLecture, setError as sub
 import dayjs from "dayjs";
 import Snackbar from '@mui/material/Snackbar';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { GetTeacherClassinfo, setError, setPopup } from "../../redux/slices/Teacher/StudentAttendance";
 
 
 export default function Timetable() {
@@ -24,15 +25,25 @@ export default function Timetable() {
 
   const { DBTimeTableData, loading: createTimeTableLoading, popup: createTimeTablePopup, error: createTimeTableError } = useSelector(state => state.createTimeTable)
   const { teachersData, loading: createClassLoading, popup: createClassPopup, error: createClassError } = useSelector(state => state.createClass)
-  const { teacherData } = useSelector(state => state.studentAttendanceTeacher)
-  
+  const { teacherData, loading, error, popup } = useSelector(state => state.studentAttendanceTeacher)
   const [dialogOpen, setDialogOpen] = useState(false)
 
+
   useEffect(() => {
+    if(!(teacherData && teacherData.length > 0)){
+      dispatch(GetTeacherClassinfo())
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!(DBTimeTableData && DBTimeTableData.length > 0)){
+      return
+    }
+    console.log("DBTimeTableData: ", DBTimeTableData);
     let dataToSet = [];
     DBTimeTableData.forEach((lecture) => {
       let dataToPush = {
-        period: [new dayjs(new Date(`2024-11-09T${lecture.period[0]}`)),new dayjs(new Date(`2024-11-09T${lecture.period[1]}`))],
+        period: [new dayjs(new Date(`2024-11-09T${lecture?.period[0]}`)),new dayjs(new Date(`2024-11-09T${lecture?.period[1]}`))],
         Monday: "",
         Tuesday: "",
         Wednesday: "",
@@ -112,7 +123,7 @@ export default function Timetable() {
   const handleSubmit = (e) => {
     e.preventDefault()
     let dataToSend
-      timeTableData.forEach(period => {
+    timeTableData && timeTableData.length > 0 && timeTableData.forEach(period => {
         const startTime = new Date(period.period[0]).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const endTime = new Date(period.period[1]).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -141,7 +152,7 @@ export default function Timetable() {
 
   return (
     <>
-      <LoadingOverlay loading={createClassLoading || createTimeTableLoading} />
+      <LoadingOverlay loading={createClassLoading || createTimeTableLoading || loading} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div style={{ padding: "15px 20px" }}>
           <div className="mt-2 mb-4">
@@ -162,7 +173,7 @@ export default function Timetable() {
           <div className="row pt-4 pl-3">
             <div className="col-md-6">
               <div>
-                <h4 className="att_heading">Weekly Time Table</h4>
+                <h4 className="att_heading">Weekly Time Table {(teacherData && teacherData.classes && (teacherData.classes.length > 0)) ? `for ${teacherData.classes[0].ClassRank} ${teacherData.classes[0].ClassName}` : ""}</h4>
               </div>
             </div>
           </div>
@@ -296,6 +307,18 @@ export default function Timetable() {
           dispatch(submitTimetableSetError(""))
         }}
         message={createTimeTableError}
+        autoHideDuration={3000}
+        transitionDuration={400}
+      />
+      <Snackbar
+        open={popup}
+        onClose={() => {
+          dispatch(setPopup(false))
+        }}
+        onAnimationEnd={()=>{
+          dispatch(setError(""))
+        }}
+        message={error}
         autoHideDuration={3000}
         transitionDuration={400}
       />

@@ -28,7 +28,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
   const [scrollbarVisibility, setScrollbarVisibility] =
     useState("scrollbarDisappear");
 
-  const lecturesData = {
+  const subMenus = [{
     title: "Lectures",
     icon: <GiTeacher />,
     iconClosed: <RiArrowDropDownLine />,
@@ -50,7 +50,7 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
         ),
       },
     ],
-  };
+  }];
 
   const imageSrc = userData && userData.images && userData.images[0] && userData.images[0].data
   ? `data:image/png;base64,${userData.images[0].data}`
@@ -113,7 +113,13 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
               </Link>
               <span className="tooltip">Timetables</span>
             </li>
-            <SubMenu closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={lecturesData} key={0} />
+            {subMenus.map((subMenuData, index) => {
+             return (
+              <li className="customSubMenu">
+                <SubMenu key={index} closeSidebarForMobile={closeSidebarForMobile} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} item={subMenuData} />
+              </li>
+             )
+            })}
             <li className={"profile " + (sidebarOpen ? "leftZero" : "")}>
               <div className="profile-details">
               <img 

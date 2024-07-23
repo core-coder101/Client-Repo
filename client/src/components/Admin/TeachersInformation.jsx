@@ -528,25 +528,16 @@ export default function TeachersInformation() {
                     <td>{teacher.users.name}</td>
                     <td>{teacher.TeacherPhoneNumber}</td>
                     <td>
-                      {teacher.classes.length > 0
-                        ? teacher.classes.map((Class) => {
-                            return (
-                              <>
-                                {Class.ClassRank} <br />
-                              </>
-                            );
-                          })
+                      {teacher.classes
+                        ? <>{teacher.classes.ClassRank} <br /></>
                         : ""}
                     </td>
                     <td>
-                      {teacher.classes.length > 0
-                        ? teacher.classes.map((Class) => {
-                            return (
-                              <>
-                                {Class.ClassName} <br />
+                      {teacher.classes
+                        ? <>
+                                {teacher.classes.ClassName} <br />
                               </>
-                            );
-                          })
+
                         : ""}
                     </td>
                     <td>{ApiSearchData.campus}</td>
@@ -687,3 +678,5 @@ export default function TeachersInformation() {
     </>
   );
 }
+
+// ApiSearchData.campus.slice(0, 1) + '-' + JSON.stringify(popupInput.users.id)
