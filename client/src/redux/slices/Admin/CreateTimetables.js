@@ -29,6 +29,58 @@ export const GetTimeTable = createAsyncThunk(
     }
   }
 );
+export const GetTimeTableForTeacherDashboard = createAsyncThunk(
+  "GetTimeTableForTeacherDashboard",
+  async (ID, { getState, rejectWithValue }) => {
+    const state = getState();
+    const CSRFToken = state.auth.CSRFToken;
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GetTimeTable?ID=${ID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        return data.data;
+      } else {
+        return rejectWithValue(handleResponse(data))
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error))
+    }
+  }
+);
+export const GetTimeTableForStudentDashboard = createAsyncThunk(
+  "GetTimeTableForStudentDashboard",
+  async (ID, { getState, rejectWithValue }) => {
+    const state = getState();
+    const CSRFToken = state.auth.CSRFToken;
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GetTimeTable?ID=${ID}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        return data.data;
+      } else {
+        return rejectWithValue(handleResponse(data))
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error))
+    }
+  }
+);
 export const submitTimetableLecture = createAsyncThunk(
   "submitTimetableLecture",
   async (dataToSend, { getState, rejectWithValue }) => {
@@ -85,6 +137,8 @@ export const destroyTimeTable = createAsyncThunk(
 
 const initialState = {
     DBTimeTableData: [],
+    teacherDashboardTimetable: [],
+    studentDashboardTimetable: [],
     loading: false,
     error: null,
     popup: false,
@@ -129,6 +183,36 @@ const createTimetablesSlice = createSlice({
         state.DBTimeTableData = action.payload;
       })
       .addCase(GetTimeTable.rejected, (state, action) => {
+        state.loading = false;
+        state.DBTimeTableData = [];
+        state.error = action.payload || "An Unknown Error";
+        state.popup = true;
+      })
+      .addCase(GetTimeTableForTeacherDashboard.pending, (state) => {
+        state.popup = false
+        state.error = "Loading Timetable";
+        state.loading = true;
+      })
+      .addCase(GetTimeTableForTeacherDashboard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.teacherDashboardTimetable = action.payload;
+      })
+      .addCase(GetTimeTableForTeacherDashboard.rejected, (state, action) => {
+        state.loading = false;
+        state.DBTimeTableData = [];
+        state.error = action.payload || "An Unknown Error";
+        state.popup = true;
+      })
+      .addCase(GetTimeTableForStudentDashboard.pending, (state) => {
+        state.popup = false
+        state.error = "Loading Timetable";
+        state.loading = true;
+      })
+      .addCase(GetTimeTableForStudentDashboard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.studentDashboardTimetable = action.payload;
+      })
+      .addCase(GetTimeTableForStudentDashboard.rejected, (state, action) => {
         state.loading = false;
         state.DBTimeTableData = [];
         state.error = action.payload || "An Unknown Error";

@@ -21,6 +21,7 @@
     "apexcharts": "^3.50.0",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
+    "html-react-parser": "^5.1.12",
     "html-to-image": "^1.11.11",
     "laravel-echo": "^1.16.1",
     "moment": "^2.30.1",

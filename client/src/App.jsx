@@ -16,6 +16,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { showAnnouncement } from "./redux/slices/common/announcement";
+import parse from 'html-react-parser';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -74,7 +75,8 @@ export default function App() {
   }, [user])
 
   useEffect(() => {
-    if(announcements.keys > 0){
+    if(Object.keys(announcements).length > 0){
+      setOpen(true)
       console.log("announcements: ", announcements);
     }
   }, [announcements])
@@ -117,8 +119,8 @@ export default function App() {
           <h1>Announcement 🔊</h1>
         </DialogTitle>
         <DialogContent>
-          <h2>Fee Reminder!</h2>
-          <p>Last day to clear your dues!</p>
+          <h1><strong>{announcements?.heading}</strong></h1>
+          {parse(announcements?.description || "")}
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>

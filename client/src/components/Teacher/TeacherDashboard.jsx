@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PieChart } from "@mui/x-charts/PieChart";
 import { setError, setPopup } from "../../redux/slices/Student/StudentDashboard";
 import LoadingOverlay from "../common/LoadingOverlay";
-import { GetTimeTable, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
+import { setError as setError2, setPopup as setPopup2, GetTimeTableForTeacherDashboard } from "../../redux/slices/Admin/CreateTimetables";
 import { Snackbar } from "@mui/material";
 import { GetTeacherAttendanceDashboard } from "../../redux/slices/Teacher/StudentAttendance";
 
@@ -15,7 +15,7 @@ import { GetTeacherAttendanceDashboard } from "../../redux/slices/Teacher/Studen
 export default function Dashboard() {
   
   const { teacherAttendance, presentCount, absentCount, loading, popup, error } = useSelector(state=>state.studentAttendanceTeacher)
-  const { DBTimeTableData, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
+  const { teacherDashboardTimetable, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
   const dispatch = useDispatch()
   const [localLoading, setLocalLoading] = useState(false)
   // redux state update bug fix
@@ -24,14 +24,14 @@ export default function Dashboard() {
   }, [loading])
 
   useEffect(() => {
-    if(DBTimeTableData.length > 0){
-      setTimeTable(DBTimeTableData)
+    if(teacherDashboardTimetable.length > 0){
+      setTimeTable(teacherDashboardTimetable)
     }
-  }, [DBTimeTableData])
+  }, [teacherDashboardTimetable])
 
   useEffect(()=>{
     dispatch(GetTeacherAttendanceDashboard())
-    dispatch(GetTimeTable("TImETableforfuckingteacher"))
+    dispatch(GetTimeTableForTeacherDashboard("TImETableforfuckingteacher"))
   }, [dispatch])
 
   const data = [
@@ -81,6 +81,10 @@ export default function Dashboard() {
     }
   })
 
+  useEffect(() => {
+    console.log("timetable: ",timetable);
+  }, [timetable])
+
   return (
     <>
       <LoadingOverlay loading={localLoading || loading2} />
@@ -97,6 +101,9 @@ export default function Dashboard() {
           <div className="timeTableMainDiv">
             <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
             {timetable && timetable.length > 0 && timetable.map((lecture, index) => {
+              if(!(lecture?.StartingTime && lecture?.EndingTime)){
+                return
+              }
               let ongoing = false;
               let start = lecture.StartingTime;
               let end = lecture.EndingTime;

@@ -7,22 +7,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PieChart } from "@mui/x-charts/PieChart";
 import { GetStudentAttendance, setError, setPopup } from "../../redux/slices/Student/StudentDashboard";
 import LoadingOverlay from "../common/LoadingOverlay";
-import { GetTimeTable, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
+import { GetTimeTableForStudentDashboard, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
 import { Snackbar } from "@mui/material";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
+
 
 
 export default function Dashboard() {
   
   const { attendanceData, presentCount, absentCount, loading, popup, error } = useSelector(state=>state.studentDashboard)
-  const { DBTimeTableData, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
+  const { studentDashboardTimetable, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
   const dispatch = useDispatch()
   const [localLoading, setLocalLoading] = useState(false)
 
@@ -32,14 +25,14 @@ export default function Dashboard() {
   }, [loading])
 
   useEffect(() => {
-    if(DBTimeTableData.length > 0){
-      setTimeTable(DBTimeTableData)
+    if(studentDashboardTimetable.length > 0){
+      setTimeTable(studentDashboardTimetable)
     }
-  }, [DBTimeTableData])
+  }, [studentDashboardTimetable])
 
   useEffect(()=>{
     dispatch(GetStudentAttendance())
-    dispatch(GetTimeTable(""))
+    dispatch(GetTimeTableForStudentDashboard(""))
   }, [dispatch])
 
   const data = [

@@ -18,7 +18,8 @@ import { logout } from "../../redux/slices/authSlice";
 import { GiTeacher } from "react-icons/gi";
 import { IoMdCloudUpload } from "react-icons/io";
 import { GoVideo } from "react-icons/go";
-import { FaMoneyCheckAlt } from "react-icons/fa";
+import { MdOutlineAttachMoney } from "react-icons/md";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
 
 
 function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobile }) {
@@ -126,29 +127,6 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
         },
       ],
     },
-    {
-      title: "Fee",
-      icon: <FaMoneyCheckAlt />,
-      iconClosed: <RiArrowDropDownLine />,
-      iconOpened: <MdKeyboardArrowUp />,
-  
-      subNav: [
-        {
-          title: "Upload Lecture",
-          path: "/uploadlecture",
-          icon: <IoMdCloudUpload style={{ width: "20px", height: "20px" }} />,
-        },
-        {
-          title: "Browse Lectures",
-          path: "/selectvideo",
-          icon: (
-            <GoVideo
-              style={{ width: "20px", height: "20px" }}
-            />
-          ),
-        },
-      ],
-    },
   ]
   const imageSrc = userData && userData.images && userData.images[0] && userData.images[0].data
     ? `data:image/png;base64,${userData.images[0].data}`
@@ -200,6 +178,28 @@ function Sidebar({ setSidebarOpen, sidebarOpen, sidebarRef, closeSidebarForMobil
                 <span className="links_name">Timetables</span>
               </Link>
               <span className="tooltip">Timetables</span>
+            </li>
+            <li>
+              <Link onClick={closeSidebarForMobile} to="/announcement">
+                <i className="bx d-flex justify-content-center align-items-center">
+                  <HiMiniSpeakerWave 
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </i>
+                <span className="links_name">Announcements</span>
+              </Link>
+              <span className="tooltip">Announcements</span>
+            </li>
+            <li>
+              <Link onClick={closeSidebarForMobile} to="/addexpenses">
+                <i className="bx d-flex justify-content-center align-items-center">
+                  <MdOutlineAttachMoney 
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </i>
+                <span className="links_name">Add Expenses</span>
+              </Link>
+              <span className="tooltip">Add Expenses</span>
             </li>
             
             {subMenus.map((subMenuData, index) => {
