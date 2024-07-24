@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleError } from "../../errorHandler";
+import { handleResponse } from "../../responseHandler";
 
 export const GetVideoData = createAsyncThunk(
   "GetVideoData",
@@ -37,6 +38,73 @@ export const GetVideoData = createAsyncThunk(
     }
   }
 );
+
+
+export const Delete = createAsyncThunk(
+  "Delete",
+  async (id , { getState, rejectWithValue }) => {
+    const state = getState();
+    const CSRFToken = state.auth.CSRFToken;
+    try {
+      const { data } = await axios.get(
+        `${
+          import.meta.env.VITE_HOST
+        }api/destroy-video?ID=${id}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        GetVideoData();
+        return rejectWithValue(handleResponse(data));
+      } else {
+        return rejectWithValue(handleResponse(data));
+      }
+    } catch (error) {
+      const errorMessage = handleError(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+
+export const DeletePlaylist = createAsyncThunk(
+  "DeletePlaylist",
+  async (id , { getState, rejectWithValue }) => {
+    const state = getState();
+    const CSRFToken = state.auth.CSRFToken;
+    try {
+      const { data } = await axios.get(
+        `${
+          import.meta.env.VITE_HOST
+        }api/destroy-Playlist?ID=${id}`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        GetVideoData();
+        return rejectWithValue(handleResponse(data));
+      } else {
+        return rejectWithValue(handleResponse(data));
+      }
+    } catch (error) {
+      const errorMessage = handleError(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+
+
 const initialState = {
   loading: false,
   error: null,
@@ -79,7 +147,21 @@ const createSelectVideoSlice = createSlice({
         state.error = action.payload || "An Unknown Error Occurred";
         state.loading = false;
         state.popup = true;
-      });
+      })
+      .addCase(Delete.pending, (state) => {
+        state.error = "Deleting Video";
+        state.loading = true;
+      })
+      .addCase(Delete.fulfilled, (state, action) => {
+        state.popup = true;
+        state.error = action.payload;
+        state.loading = false;
+      })
+      .addCase(Delete.rejected, (state, action) => {
+        state.error = action.payload || "An Unknown Error Occurred";
+        state.loading = false;
+        state.popup = true;
+      })
   },
 });
 
