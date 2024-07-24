@@ -70,7 +70,9 @@ export default function WatchVideoes() {
   const GetplaylistData = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_SECRET_KEY}api/GetplaylistData?PlaylistID=${videoInfo.VideoPlaylistID}`,
+        `${import.meta.env.VITE_HOST}api/GetplaylistData?PlaylistID=${
+          videoInfo.VideoPlaylistID
+        }`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
@@ -86,7 +88,7 @@ export default function WatchVideoes() {
   const SubmitComment = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_SECRET_KEY}api/StoreComment`,
+        `${import.meta.env.VITE_HOST}api/StoreComment`,
         {
           VideoID: ID,
           Comment: comment,
@@ -162,16 +164,16 @@ export default function WatchVideoes() {
         <div className="col-lg-8 videoSideDiv">
           <div className="videodiv">
             <video
-                ref={videoRef}
-                autoPlay
-                src={file}
-                className="video"
-                controls
-                onEnded={handleEnded}
-              >
-                <source type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              ref={videoRef}
+              autoPlay
+              src={file}
+              className="video"
+              controls
+              onEnded={handleEnded}
+            >
+              <source type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
           {PlaylistData && PlaylistData.videos && (
             <div

@@ -10,7 +10,7 @@ export const GetStudentData = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_SECRET_KEY}api/GetStudentData?ID=${ID}`,
+        `${import.meta.env.VITE_HOST}api/GetStudentData?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
@@ -25,7 +25,9 @@ export const GetStudentData = createAsyncThunk(
         }
         return data.data;
       } else {
-        return rejectWithValue(handleResponse(data) || "Failed to get student data");
+        return rejectWithValue(
+          handleResponse(data) || "Failed to get student data"
+        );
       }
     } catch (error) {
       console.log(error);
@@ -55,7 +57,9 @@ export const Createstudent = createAsyncThunk(
       if (data.success == true) {
         return data;
       } else {
-        return rejectWithValue(handleResponse(data) || "Failed to Create student");
+        return rejectWithValue(
+          handleResponse(data) || "Failed to Create student"
+        );
       }
     } catch (error) {
       // if (error.response.data.message.includes("users_email_unique")){
@@ -88,7 +92,9 @@ export const UpdateStudent = createAsyncThunk(
       if (data.success == true) {
         return data;
       } else {
-        return rejectWithValue(handleResponse(data) || "Failed to Updated Student");
+        return rejectWithValue(
+          handleResponse(data) || "Failed to Updated Student"
+        );
       }
     } catch (error) {
       // if (error.response.data.message.includes("users_email_unique")){
