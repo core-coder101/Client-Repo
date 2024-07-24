@@ -1,15 +1,15 @@
 export const handleError = (error) => {
   console.log("Error received: ", error);
 
+  const shortener = (message) => {
+    return message.length > 40 ? message.substring(0, 40) : message;
+  };
+
   if (!error.response) {
-    return error.message || "Network error";
+    return shortener(error.message) || "Network error";
   }
 
   const { data, status } = error.response;
-
-  const shortener = (message) => {
-    return message.length > 40 ? message.substring(0, 40) : message
-  }
 
   if (data.message) {
     try {
@@ -24,7 +24,7 @@ export const handleError = (error) => {
       console.error("Failed to parse message as JSON:", e);
     }
 
-    if (typeof data.message === 'string') {
+    if (typeof data.message === "string") {
       if (data.message.includes("[2002]")) {
         console.error("DATABASE DOWN");
         return "Database down at the moment";
@@ -42,7 +42,7 @@ export const handleError = (error) => {
     }
 
     // If data.message is an object, extract the error message
-    if (typeof data.message === 'object') {
+    if (typeof data.message === "object") {
       const errorMessages = Object.values(data.message).flat();
       if (errorMessages.length > 0) {
         return shortener(errorMessages[0]);
