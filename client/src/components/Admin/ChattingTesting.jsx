@@ -184,7 +184,7 @@ export default function ChattingTesting() {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -200,7 +200,7 @@ export default function ChattingTesting() {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
@@ -221,7 +221,7 @@ export default function ChattingTesting() {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );

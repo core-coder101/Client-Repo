@@ -8,7 +8,8 @@ export const fetchCSRFToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_HOST}api/csrf-token`, {
+        `${import.meta.env.VITE_HOST}api/csrf-token`,
+        {
           withCredentials: true,
         }
       );
@@ -61,14 +62,16 @@ export const login = createAsyncThunk(
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
-            "API-TOKEN": "IT is to secret you cannot break it :)",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
           },
         }
       );
       if (data.success == true) {
         return data;
       } else {
-        return rejectWithValue(handleResponse(data) || "An unexpected error occurred");
+        return rejectWithValue(
+          handleResponse(data) || "An unexpected error occurred"
+        );
       }
     } catch (error) {
       return rejectWithValue(handleError(error));
@@ -110,7 +113,7 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
     setPopup: (state, action) => {
-      state.popup = !!action.payload
+      state.popup = !!action.payload;
     },
     setUser: (state, action) => {
       state.loading = false;
@@ -124,7 +127,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCSRFToken.pending, (state) => {
-        state.popup = false
+        state.popup = false;
         state.error = "Loading. . .";
         state.loading = true;
       })
@@ -157,7 +160,7 @@ const authSlice = createSlice({
         state.popup = true;
       })
       .addCase(UserData.pending, (state) => {
-        state.popup = false
+        state.popup = false;
         state.loading = true;
         state.error = "";
       })
