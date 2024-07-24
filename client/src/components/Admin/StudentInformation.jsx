@@ -89,7 +89,7 @@ export default function StudentInformation() {
     setErrorMessage("Loading Class data");
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/GetClasses", {
+      const response = await axios.get(`${import.meta.env.VITE_SECRET_KEY}api/GetClasses`, {
         headers: {
           "X-CSRF-TOKEN": CSRFToken,
           "Content-Type": "application/json",
@@ -119,7 +119,7 @@ export default function StudentInformation() {
     setErrorMessage("Loading Students' data");
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/GetStudentInformation",
+        `${import.meta.env.VITE_SECRET_KEY}api/GetStudentInformation`,
         {
           campus: ApiSearchData.campus,
           ClassRank: ApiSearchData.ClassRank,
@@ -177,7 +177,7 @@ export default function StudentInformation() {
   const Delete = async (id) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/DeleteStudent",
+        `${import.meta.env.VITE_SECRET_KEY}api/DeleteStudent`,
         { ID: id },
         {
           headers: {

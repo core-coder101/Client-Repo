@@ -195,7 +195,7 @@ useEffect(() => {
     const GetStoredMessages = async (ID) =>{
       try {
         const response = await axios.post(
-            'http://127.0.0.1:8000/api/MessageStoredData',
+            `${import.meta.env.VITE_SECRET_KEY}api/MessageStoredData`,
             {
                 receiver_id : ID
             },
@@ -216,7 +216,7 @@ useEffect(() => {
     const GetEachStoredMessages = async () =>{
       try {
         const response = await axios.get(
-            'http://127.0.0.1:8000/api/GetEachStoredMessages',
+            `${import.meta.env.VITE_SECRET_KEY}api/GetEachStoredMessages`,
             {
                 headers: {
                     'X-CSRF-TOKEN': CSRFToken,
@@ -235,7 +235,7 @@ useEffect(() => {
     const Submit = async (e) => {
       try {
           const response = await axios.post(
-              'http://127.0.0.1:8000/api/PrivateMessage',
+              `${import.meta.env.VITE_SECRET_KEY}api/PrivateMessage`,
               {
                   message: message,
                   receiver_id: ID
