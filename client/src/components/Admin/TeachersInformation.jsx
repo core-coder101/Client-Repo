@@ -789,7 +789,7 @@ export default function TeachersInformation() {
               </h4>
               <QRCode
                 style={{ width: "130px", height: "130px", margin: "20px 0px" }}
-                value={`http://192.168.1.31:3000/markattendance?ClassID=${popupInput.classes[0].id}&UserID=${popupInput.id}`}
+                value={`${import.meta.env.VITE_APP_HOST}teacherattendance?UserID=${popupInput.users.id}`}
               />
               <div
                 style={{

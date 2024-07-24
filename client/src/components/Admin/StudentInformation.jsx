@@ -945,7 +945,7 @@ export default function StudentInformation() {
                       height: "130px",
                       margin: "20px 0px",
                     }}
-                    value={`http://192.168.1.2:3000/markattendance/${popupInput.id}`}
+                    value={`${import.meta.env.VITE_APP_HOST}markattendance/${popupInput.users.id}`}
                   />
                   {/* <ReactBarcode
                   style={{ backgroundColor: "transparent" }}

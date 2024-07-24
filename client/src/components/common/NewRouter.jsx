@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -18,7 +18,7 @@ import Markattendance from "../Admin/Markattendance";
 
 export default function NewRouter() {
   return (
-    <Router basename={import.meta.env.BASE_PATH}>
+    <Router>
       <Routes>
         <Route path="/" element={<PublicRoute />}>
           {MapRoutes(GetPublicRoutes())}

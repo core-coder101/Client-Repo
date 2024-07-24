@@ -17,6 +17,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@vitejs/plugin-legacy": "^5.4.1",
     "@vitejs/plugin-react": "^4.3.1",
     "apexcharts": "^3.50.0",
     "axios": "^1.7.2",
@@ -46,8 +47,10 @@
     "smoothscroll-polyfill": "^0.4.4",
     "styled-components": "^6.1.11",
     "vite": "^5.3.3",
+    "vite-plugin-html": "^3.2.2",
     "web-vitals": "^2.1.4"
   },
+  "homepage": "https://core-coder101.github.io/Client-Repo/",
   "resolutions": {
     "@emotion/react": "11.11.4",
     "@emotion/styled": "11.11.4"
@@ -55,7 +58,7 @@
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "start": "vite",
-    "build": "vite build",
+    "build": "vite build --production",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -64,6 +67,8 @@
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "gh-pages": "^6.1.1",
+    "vite-plugin-html": "^3.2.2",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.2",

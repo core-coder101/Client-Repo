@@ -619,7 +619,7 @@ const combinedResults = Object.keys(mergedData).map((month) => ({
                 </center>
               </div>
               <div id="chart">
-              <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={400}  className="smallchart mt-5" />
+              <ReactApexChart options={Radardata} series={Radarseries} type="radar" height={400}  className="smallchart mt-3" />
                 <br/>
             </div>
           </div>
