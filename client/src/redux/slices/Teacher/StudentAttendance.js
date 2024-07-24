@@ -124,6 +124,42 @@ export const GetTeacherAttendanceDashboard = createAsyncThunk(
 );
 
 
+export const GetTodayattendance = createAsyncThunk(
+  "GetTodayattendance",
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState();
+    const { teacherData } = state.studentAttendanceTeacher;
+    if (!teacherData?.classes?.length > 0) {
+      return rejectWithValue("You are not assigned a class yet");
+    }
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_HOST}api/GetTodayattendance`,
+        {
+          campus: "Main Campus",
+          ClassRank: parseInt(teacherData.classes[0].ClassRank),
+          ClassName: teacherData.classes[0].ClassName,
+        },
+        {
+          headers: {
+            "X-CSRF-TOKEN": state.auth.CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
+          },
+        }
+      );
+      if (data.success == true) {
+        return data.data;
+      } else {
+        return rejectWithValue(
+          handleResponse(data) || "Failed to fetch User Data"
+        );
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error));
+    }
+  }
+);
 export const GetStudentInformation = createAsyncThunk(
   "GetStudentInformation",
   async (_, { getState, rejectWithValue }) => {
@@ -167,6 +203,7 @@ const initialState = {
   popup: false,
   teacherData: null,
   studentsData: null,
+  todayClassAttendance: [],
   teacherAttendance: [],
   presentCount: 0,
   absentCount: 0,
@@ -261,6 +298,20 @@ const studentAttendanceSliceTeacher = createSlice({
         state.loading = false;
       })
       .addCase(GetTeacherAttendanceDashboard.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.popup = true;
+      })
+      .addCase(GetTodayattendance.pending, (state) => {
+        state.popup = false;
+        state.error = "Loading Today's Attendance Data";
+        state.loading = true;
+      })
+      .addCase(GetTodayattendance.fulfilled, (state, action) => {
+        state.todayClassAttendance = action.payload;
+        state.loading = false;
+      })
+      .addCase(GetTodayattendance.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.popup = true;

@@ -10,10 +10,8 @@ import "../../assets/css/StudentAttendance.css";
 import CustomFooter from "../Admin/CustomFooter";
 import { Tooltip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { GetStudentInformation, GetTeacherClassinfo, SubmitAttendance, setError, setLoading, setPopup } from "../../redux/slices/Teacher/StudentAttendance";
-import CustomPopup from "../common/CustomPopup";
+import { GetStudentInformation, GetTeacherClassinfo, GetTodayattendance, SubmitAttendance, setError, setLoading, setPopup } from "../../redux/slices/Teacher/StudentAttendance";
 import LoadingOverlay from "../common/LoadingOverlay";
-import axios from "axios";
 
 export default function StudentAttendance() {
   const navigate = useNavigate();
@@ -21,8 +19,7 @@ export default function StudentAttendance() {
   const [filteredRows, setFilteredRows] = useState([]);
   const [search, setSearch] = useState("");
 
-  const { teacherData, studentsData, loading, popup, error } = useSelector((state) => state.studentAttendanceTeacher);
-  const { CSRFToken } = useSelector((state) => state.auth);
+  const { teacherData, todayClassAttendance, studentsData, loading, popup, error } = useSelector((state) => state.studentAttendanceTeacher);
   const dispatch = useDispatch()
 
   const [localLoading, setLocalLoading] = useState(false)
@@ -46,8 +43,15 @@ export default function StudentAttendance() {
   useEffect(()=>{
     if(teacherData){
       dispatch(GetStudentInformation())
+      dispatch(GetTodayattendance())
     }
   }, [teacherData])
+
+  useEffect(() => {
+    if(todayClassAttendance && todayClassAttendance.length > 0){
+      setSelectedRows(todayClassAttendance)
+    }
+  }, [todayClassAttendance])
 
   const columns = [
     { field: "ID", headerName: "Sr no.", width: 75 },
@@ -162,6 +166,7 @@ export default function StudentAttendance() {
               },
             }}
             pageSizeOptions={[5, 10]}
+            rowSelectionModel={selectedRows}
             onRowSelectionModelChange={(newSelection) => {
               setSelectedRows(newSelection);
             }}

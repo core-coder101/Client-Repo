@@ -8,7 +8,9 @@ export const fetchCSRFToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_HOST}api/csrf-token`
+        `${import.meta.env.VITE_HOST}api/csrf-token`, {
+          withCredentials: true,
+        }
       );
       if (data.csrfToken) {
         return data;
@@ -50,12 +52,14 @@ export const login = createAsyncThunk(
   async (action, { getState, rejectWithValue }) => {
     try {
       const state = getState();
+      const CSRFToken = state.auth.CSRFToken;
       const { data } = await axios.post(
         "http://127.0.0.1:8000/api/login",
         action,
         {
+          withCredentials: true,
           headers: {
-            "X-CSRF-TOKEN": state.csrfToken,
+            "X-CSRF-TOKEN": CSRFToken,
             "Content-Type": "application/json",
             "API-TOKEN": "IT is to secret you cannot break it :)",
           },
