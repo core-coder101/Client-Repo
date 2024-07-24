@@ -42,7 +42,7 @@ export default function ClassDetails() {
     const GetClassData = async () =>{
         try {
           const response = await axios.get(
-              `http://127.0.0.1:8000/api/GetClassData?ID=${ID}`
+              `${import.meta.env.VITE_SECRET_KEY}api/GetClassData?ID=${ID}`
               ,{
                   headers: {
                       'X-CSRF-TOKEN': CSRFToken,
@@ -87,7 +87,7 @@ export default function ClassDetails() {
     const GetClasses = async () => {
         try {
             const response = await axios.get(
-                'http://127.0.0.1:8000/api/GetClasses', {
+                `${import.meta.env.VITE_SECRET_KEY}api/GetClasses`, {
                     headers: {
                         'X-CSRF-TOKEN': CSRFToken,
                         'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export default function ClassDetails() {
     const GetStudentClassDetailInfo = async () => {
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8000/api/GetStudentClassDetailInfo', {
+                `${import.meta.env.VITE_SECRET_KEY}api/GetStudentClassDetailInfo`, {
                     campus: ApiSearchData.campus,
                     ClassRank: ApiSearchData.ClassRank,
                     ClassName: ApiSearchData.ClassName

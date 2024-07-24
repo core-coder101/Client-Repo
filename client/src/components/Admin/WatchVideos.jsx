@@ -70,7 +70,7 @@ export default function WatchVideoes() {
   const GetplaylistData = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/GetplaylistData?PlaylistID=${videoInfo.VideoPlaylistID}`,
+        `${import.meta.env.VITE_SECRET_KEY}api/GetplaylistData?PlaylistID=${videoInfo.VideoPlaylistID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,
@@ -86,7 +86,7 @@ export default function WatchVideoes() {
   const SubmitComment = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/StoreComment`,
+        `${import.meta.env.VITE_SECRET_KEY}api/StoreComment`,
         {
           VideoID: ID,
           Comment: comment,

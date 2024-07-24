@@ -18,7 +18,7 @@ import Markattendance from "../Admin/Markattendance";
 
 export default function NewRouter() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_PATH}>
       <Routes>
         <Route path="/" element={<PublicRoute />}>
           {MapRoutes(GetPublicRoutes())}

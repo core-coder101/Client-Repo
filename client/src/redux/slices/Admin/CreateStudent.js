@@ -10,7 +10,7 @@ export const GetStudentData = createAsyncThunk(
     const CSRFToken = state.auth.CSRFToken;
     try {
       const { data } = await axios.get(
-        `http://127.0.0.1:8000/api/GetStudentData?ID=${ID}`,
+        `${import.meta.env.VITE_SECRET_KEY}api/GetStudentData?ID=${ID}`,
         {
           headers: {
             "X-CSRF-TOKEN": CSRFToken,

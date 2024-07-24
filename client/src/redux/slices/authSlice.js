@@ -54,7 +54,7 @@ export const login = createAsyncThunk(
       const state = getState();
       const CSRFToken = state.auth.CSRFToken;
       const { data } = await axios.post(
-        "http://127.0.0.1:8000/api/login",
+        `${import.meta.env.VITE_SECRET_KEY}api/login`,
         action,
         {
           withCredentials: true,

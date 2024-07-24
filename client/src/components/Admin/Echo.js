@@ -14,7 +14,7 @@ const echo = new Echo({
     wsPort: 6001,
     forceTLS: false,
     disableStats: true,
-    "authEndpoint": "http://127.0.0.1:8000/broadcasting/auth",
+    "authEndpoint": `${import.meta.env.VITE_SECRET_KEY}broadcasting/auth`,
     auth: {
         headers: {
             Authorization: `Bearer ${userFromLocalStorage?.token}`,
