@@ -19,25 +19,23 @@ import { IoMail } from "react-icons/io5";
 import { toPng } from "html-to-image";
 import converter from "number-to-words";
 import { useSelector } from "react-redux";
-import Dialog from '@mui/material/Dialog';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemButton from '@mui/material/ListItemButton';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
+import Dialog from "@mui/material/Dialog";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemButton from "@mui/material/ListItemButton";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+import Slide from "@mui/material/Slide";
 import QRCode from "react-qr-code";
 import CustomPopup from "../common/CustomPopup";
-
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
 
 export default function StudentInformation() {
   const navigate = useNavigate();
@@ -89,13 +87,16 @@ export default function StudentInformation() {
     setErrorMessage("Loading Class data");
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SECRET_KEY}api/GetClasses`, {
-        headers: {
-          "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
-        },
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GetClasses`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
       if (response.data && response.data.data.length > 0) {
         SetClasses(response.data);
         SetApiSearchData((prev) => {
@@ -119,7 +120,7 @@ export default function StudentInformation() {
     setErrorMessage("Loading Students' data");
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_SECRET_KEY}api/GetStudentInformation`,
+        `${import.meta.env.VITE_HOST}api/GetStudentInformation`,
         {
           campus: ApiSearchData.campus,
           ClassRank: ApiSearchData.ClassRank,
@@ -177,7 +178,7 @@ export default function StudentInformation() {
   const Delete = async (id) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_SECRET_KEY}api/DeleteStudent`,
+        `${import.meta.env.VITE_HOST}api/DeleteStudent`,
         { ID: id },
         {
           headers: {
@@ -265,7 +266,7 @@ export default function StudentInformation() {
       setLoading(false);
     }
   };
-  const ResetPassword = async (ID) =>{
+  const ResetPassword = async (ID) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_HOST}api/ResetPassword?ID=${ID}`,
@@ -290,9 +291,9 @@ export default function StudentInformation() {
       setErrorMessage("Failed to Reset Password");
       setPopup(true);
     }
-  }
+  };
 
-  const GenerateChallan = async() =>{
+  const GenerateChallan = async () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_HOST}api/GenerateStudentFee`,
@@ -317,23 +318,23 @@ export default function StudentInformation() {
       setErrorMessage("Failed to Generate Challan");
       setPopup(true);
     }
-  }
+  };
 
-  const FeeManagement = async(ID) =>{
+  const FeeManagement = async (ID) => {
     navigate(`/FeeManagement/${ID}`);
-  }
+  };
 
-  const [ProfileID , SetProfileID] = useState('');
+  const [ProfileID, SetProfileID] = useState("");
 
   return (
     <>
-     <Dialog
+      <Dialog
         fullScreen
         open={open}
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -352,404 +353,601 @@ export default function StudentInformation() {
           </Toolbar>
         </AppBar>
         <List>
-        {
-          filteredStudentsInfo && filteredStudentsInfo.filter(student => {
-            return student.id === ProfileID;
-          }).map((student, i)=>{
-            return(
-  <div key={i} className="bgColorProfile d-flex">
-        <table id="customers">
-  <tr>
-    <th className="">Profile Pic : <b className="ms-auto" style={{float:'right'}}>
-    <img style={{ objectFit: "cover", height:'50px', width:'50px'}} src={(student.users.images[0]?.data)
-                              ? `data:image/png;base64,${student.users.images[0].data}`
-                              : defaultImg
-                          } />
-    </b></th>
-  </tr>
-  <tr>
-    <th className="">Name : <b className="ms-auto" style={{float:'right'}}>{student.users.name}</b></th>
-  </tr>
-  <tr>
-    <th className="">Email : <b className="ms-auto" style={{float:'right'}}>{student.users.email}</b></th>
-  </tr>
-  <tr>
-    <th className="">UserName : <b className="ms-auto" style={{float:'right'}}>{student.users.userName}</b></th>
-  </tr>
-  <tr>
-    <th className="">Student CNIC : <b className="ms-auto" style={{float:'right'}}>{student.StudentCNIC}</b></th>
-  </tr>
-  <tr>
-    <th className="">Gender : <b className="ms-auto" style={{float:'right'}}>{student.StudentGender}</b></th>
-  </tr>
-  <tr>
-    <th className="">Date of Birth : <b className="ms-auto" style={{float:'right'}}>{student.StudentDOB}</b></th>
-  </tr>
-  <tr>
-    <th className="">Phone Number : <b className="ms-auto" style={{float:'right'}}>{student.StudentPhoneNumber}</b></th>
-  </tr>
-  <tr>
-    <th className="">Home Address : <b className="ms-auto" style={{float:'right'}}>{student.StudentHomeAddress}</b></th>
-  </tr>
-  <tr>
-    <th className="">Religion : <b className="ms-auto" style={{float:'right'}}>{student.StudentReligion}</b></th>
-  </tr>
-  <tr>
-    <th className="">Monthly Fee : <b className="ms-auto" style={{float:'right'}}>{student.StudentMonthlyFee} Pkr</b></th>
-  </tr>
-  <tr>
-    <th className="">Student Subjects : <b className="ms-auto" style={{float:'right'}}>{student.subjects.map((subject)=>( subject.SubjectName))}</b></th>
-  </tr>
-  <tr>
-    <th className="">Last Updated : <b className="ms-auto" style={{float:'right'}}>{student.users.updated_at}</b></th>
-  </tr>
-</table>
-<table id="customers">
-<tr>
-    <th className="">Father Name : <b className="ms-auto" style={{float:'right'}}>{student.parents.FatherName}</b></th>
-  </tr>
-  <tr>
-    <th className="">Mother Name : <b className="ms-auto" style={{float:'right'}}>{student.parents.MotherName}</b></th>
-  </tr>
-  <tr>
-    <th className="">Guardian's CNIC : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansCNIC}</b></th>
-  </tr>
-  <tr>
-    <th className="">Guardian's Phone Number : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansPhoneNumber}</b></th>
-  </tr>
-  <tr>
-    <th className="">Extra Phone Number : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansPhoneNumber2}</b></th>
-  </tr>
-  <tr>
-    <th className="">Guardian's Email : <b className="ms-auto" style={{float:'right'}}>{student.parents.GuardiansEmail}</b></th>
-  </tr>
-  <tr>
-    <th className="">HomeAddress : <b className="ms-auto" style={{float:'right'}}>{student.parents.HomeAddress}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  <tr>
-    <th className="">  <b className="ms-auto" style={{float:'right'}}>{}</b></th>
-  </tr>
-  
-</table>
-</div>
-            );
-          })
-        }
-  </List>
-</Dialog>
+          {filteredStudentsInfo &&
+            filteredStudentsInfo
+              .filter((student) => {
+                return student.id === ProfileID;
+              })
+              .map((student, i) => {
+                return (
+                  <div key={i} className="bgColorProfile d-flex">
+                    <table id="customers">
+                      <tr>
+                        <th className="">
+                          Profile Pic :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            <img
+                              style={{
+                                objectFit: "cover",
+                                height: "50px",
+                                width: "50px",
+                              }}
+                              src={
+                                student.users.images[0]?.data
+                                  ? `data:image/png;base64,${student.users.images[0].data}`
+                                  : defaultImg
+                              }
+                            />
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Name :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.users.name}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Email :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.users.email}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          UserName :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.users.userName}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Student CNIC :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentCNIC}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Gender :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentGender}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Date of Birth :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentDOB}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Phone Number :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentPhoneNumber}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Home Address :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentHomeAddress}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Religion :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentReligion}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Monthly Fee :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.StudentMonthlyFee} Pkr
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Student Subjects :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.subjects.map(
+                              (subject) => subject.SubjectName
+                            )}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Last Updated :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.users.updated_at}
+                          </b>
+                        </th>
+                      </tr>
+                    </table>
+                    <table id="customers">
+                      <tr>
+                        <th className="">
+                          Father Name :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.FatherName}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Mother Name :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.MotherName}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Guardian's CNIC :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.GuardiansCNIC}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Guardian's Phone Number :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.GuardiansPhoneNumber}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Extra Phone Number :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.GuardiansPhoneNumber2}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          Guardian's Email :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.GuardiansEmail}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          HomeAddress :{" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {student.parents.HomeAddress}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="">
+                          {" "}
+                          <b className="ms-auto" style={{ float: "right" }}>
+                            {}
+                          </b>
+                        </th>
+                      </tr>
+                    </table>
+                  </div>
+                );
+              })}
+        </List>
+      </Dialog>
 
-    <div style={{padding: "15px 20px"}}>
-      <div className="headingNavbar d-flex justify-content-center">
-        <div className="d-flex">
-          <FaRegArrowAltCircleLeft
-            onClick={() => {
-              navigate("/");
-            }}
-            className="arrow"
-          />
-          <h4>Dashboard \ Students Management</h4>
-        </div>
-        <div className="ms-auto me-4"><button onClick={GenerateChallan} className="btn btn-primary">Generate Challan</button></div>
-      </div>
-      <form>
-        <div className="inputsDiv">
-          <div className="inputDiv">
-            <p>Campus</p>
-            <select className="input" name="campus" onChange={handleChange}>
-              <option value="Main Campus">Main Campus</option>
-              <option value="Second Campus">Second Campus</option>
-            </select>
+      <div style={{ padding: "15px 20px" }}>
+        <div className="headingNavbar d-flex justify-content-center">
+          <div className="d-flex">
+            <FaRegArrowAltCircleLeft
+              onClick={() => {
+                navigate("/");
+              }}
+              className="arrow"
+            />
+            <h4>Dashboard \ Students Management</h4>
           </div>
-          <div className="inputDiv">
-            <p>Class</p>
-            <select className="input" name="ClassRank" onChange={handleChange}>
-              {Classes.data &&
-                Array.from(
-                  new Set(Classes.data.map((Class) => Class.ClassRank))
-                ).map((rank) => (
-                  <option key={rank} value={rank}>
-                    {rank}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="inputDiv">
-            <p>Name</p>
-            <select
-              className="input"
-              name="ClassName"
-              value={ApiSearchData.ClassName}
-              onChange={handleChange}
-            >
-              {Classes.data &&
-                Classes.data.map(
-                  (Class, index) =>
-                    ApiSearchData.ClassRank == Class.ClassRank && (
-                      <option key={Class.id} value={Class.ClassName}>
-                        {Class.ClassName}
-                      </option>
-                    )
-                )}
-            </select>
-          </div>
-          <div className="filterDataDiv">
-            <Tooltip title="Search on this page" arrow>
-              <input
-                type="text"
-                className="searchInput"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-                placeholder="Search Student"
-              ></input>
-            </Tooltip>
-            <Tooltip title="Search the Database" arrow>
-              <button type="button">
-                <CiSearch color="white" />
-              </button>
-            </Tooltip>
+          <div className="ms-auto me-4">
+            <button onClick={GenerateChallan} className="btn btn-primary">
+              Generate Challan
+            </button>
           </div>
         </div>
-      </form>
-      <div className="tableDiv">
-        <div className="card-body">
-          <table id="example1" className="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Roll no.</th>
-                <th>Photo</th>
-                <th>Name</th>
-                <th>Parent Name</th>
-                <th>Class</th>
-                <th>Class Name</th>
-                <th>Campus</th>
-                <th>Parent Phone</th>
-                <th>ID Card</th>
-                <th>Reset Password</th>
-                <th>Profile</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStudentsInfo && filteredStudentsInfo.length > 0 ? (
-                filteredStudentsInfo.map((student, index) => (
-                  <tr key={student.id}>
-                    <td>{student.id}</td>
-                    <td>
-                      <div
-                        style={{ width: "40px", height: "40px" }}
-                        className="profile-container ms-auto me-auto mb-3"
-                      >
-                        <img
-                          src={
-                            student.users.images[0]
-                              ? `data:image/png;base64,${student.users.images[0].data}`
-                              : defaultImg
-                          }
-                          alt="Profile Icon"
-                          className="profile-icon"
-                        />
-                      </div>
-                    </td>
-                    <td>{student.users.name}</td>
-                    <td>{student.parents.FatherName}</td>
-                    <td>{ApiSearchData.ClassRank}</td>
-                    <td>{ApiSearchData.ClassName}</td>
-                    <td>{ApiSearchData.campus}</td>
-                    <td>{student.parents.GuardiansPhoneNumber}</td>
-                    <td>
-                      <div
-                        onClick={() => {
-                          generatePopup(student, "id");
-                        }}
-                        className="filterDataDiv generateID innerButtonDiv"
-                      >
-                        <p>Generate ID</p>
-                        <button>
-                          <TiDocumentText
-                            color="white"
-                            style={{ width: "18px", height: "18px" }}
-                          />
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <div onClick={()=>{ ResetPassword(student.users.id) }} style={{textDecoration:'none'}} className="filterDataDiv resetPassword innerButtonDiv">
-                        <p style={{textDecoration:'none'}}>Reset Password</p>
-                        <button>
-                          <FaKey
-                            color="white"
-                            style={{ width: "18px", height: "18px" }}
-                          />
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <div onClick={()=>{handleClickOpen(); SetProfileID(student.id)}} className="filterDataDiv viewProfile innerButtonDiv">
-                        <p>View Profile</p>
-                        <button >
-                          <IoPerson
-                            color="white"
-                            style={{ width: "18px", height: "18px" }}
-                          />
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="dropdown">
-                        <button
-                          className="DeleteBtn dropdown-toggle customButton"
-                          type="button"
-                          id={`dropdownMenuButton-${student.id}`}
-                          data-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded={isOpen[student.id]}
-                          onClick={() => toggleDropdown(student.id)}
-                        >
-                          Actions
-                        </button>
+        <form>
+          <div className="inputsDiv">
+            <div className="inputDiv">
+              <p>Campus</p>
+              <select className="input" name="campus" onChange={handleChange}>
+                <option value="Main Campus">Main Campus</option>
+                <option value="Second Campus">Second Campus</option>
+              </select>
+            </div>
+            <div className="inputDiv">
+              <p>Class</p>
+              <select
+                className="input"
+                name="ClassRank"
+                onChange={handleChange}
+              >
+                {Classes.data &&
+                  Array.from(
+                    new Set(Classes.data.map((Class) => Class.ClassRank))
+                  ).map((rank) => (
+                    <option key={rank} value={rank}>
+                      {rank}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="inputDiv">
+              <p>Name</p>
+              <select
+                className="input"
+                name="ClassName"
+                value={ApiSearchData.ClassName}
+                onChange={handleChange}
+              >
+                {Classes.data &&
+                  Classes.data.map(
+                    (Class, index) =>
+                      ApiSearchData.ClassRank == Class.ClassRank && (
+                        <option key={Class.id} value={Class.ClassName}>
+                          {Class.ClassName}
+                        </option>
+                      )
+                  )}
+              </select>
+            </div>
+            <div className="filterDataDiv">
+              <Tooltip title="Search on this page" arrow>
+                <input
+                  type="text"
+                  className="searchInput"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                  placeholder="Search Student"
+                ></input>
+              </Tooltip>
+              <Tooltip title="Search the Database" arrow>
+                <button type="button">
+                  <CiSearch color="white" />
+                </button>
+              </Tooltip>
+            </div>
+          </div>
+        </form>
+        <div className="tableDiv">
+          <div className="card-body">
+            <table id="example1" className="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Roll no.</th>
+                  <th>Photo</th>
+                  <th>Name</th>
+                  <th>Parent Name</th>
+                  <th>Class</th>
+                  <th>Class Name</th>
+                  <th>Campus</th>
+                  <th>Parent Phone</th>
+                  <th>ID Card</th>
+                  <th>Reset Password</th>
+                  <th>Profile</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredStudentsInfo && filteredStudentsInfo.length > 0 ? (
+                  filteredStudentsInfo.map((student, index) => (
+                    <tr key={student.id}>
+                      <td>{student.id}</td>
+                      <td>
                         <div
-                          className={` customDropDown dropdown-menu${
-                            isOpen[student.id] ? " show" : ""
-                          }`}
-                          style={{ right: "0" }}
-                          aria-labelledby={`dropdownMenuButton-${student.id}`}
+                          style={{ width: "40px", height: "40px" }}
+                          className="profile-container ms-auto me-auto mb-3"
                         >
-                          <a
-                            className="dropdown-item"
-                            onClick={() => {
-                              Edit(student.users.id);
-                            }}
-                          >
-                            Edit
-                          </a>
-                          <a
-                            className="dropdown-item"
-                            onClick={() => {
-                              Delete(student.id);
-                            }}
-                          >
-                            Delete
-                          </a>
-                          <a className="dropdown-item" onClick={() => {}}>
-                            Deactivate Student
-                          </a>
-                          <a className="dropdown-item" onClick={() => {FeeManagement(student.users.id)}}>
-                            Fee Management
-                          </a>
+                          <img
+                            src={
+                              student.users.images[0]
+                                ? `data:image/png;base64,${student.users.images[0].data}`
+                                : defaultImg
+                            }
+                            alt="Profile Icon"
+                            className="profile-icon"
+                          />
                         </div>
-                      </div>
+                      </td>
+                      <td>{student.users.name}</td>
+                      <td>{student.parents.FatherName}</td>
+                      <td>{ApiSearchData.ClassRank}</td>
+                      <td>{ApiSearchData.ClassName}</td>
+                      <td>{ApiSearchData.campus}</td>
+                      <td>{student.parents.GuardiansPhoneNumber}</td>
+                      <td>
+                        <div
+                          onClick={() => {
+                            generatePopup(student, "id");
+                          }}
+                          className="filterDataDiv generateID innerButtonDiv"
+                        >
+                          <p>Generate ID</p>
+                          <button>
+                            <TiDocumentText
+                              color="white"
+                              style={{ width: "18px", height: "18px" }}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          onClick={() => {
+                            ResetPassword(student.users.id);
+                          }}
+                          style={{ textDecoration: "none" }}
+                          className="filterDataDiv resetPassword innerButtonDiv"
+                        >
+                          <p style={{ textDecoration: "none" }}>
+                            Reset Password
+                          </p>
+                          <button>
+                            <FaKey
+                              color="white"
+                              style={{ width: "18px", height: "18px" }}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          onClick={() => {
+                            handleClickOpen();
+                            SetProfileID(student.id);
+                          }}
+                          className="filterDataDiv viewProfile innerButtonDiv"
+                        >
+                          <p>View Profile</p>
+                          <button>
+                            <IoPerson
+                              color="white"
+                              style={{ width: "18px", height: "18px" }}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="dropdown">
+                          <button
+                            className="DeleteBtn dropdown-toggle customButton"
+                            type="button"
+                            id={`dropdownMenuButton-${student.id}`}
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded={isOpen[student.id]}
+                            onClick={() => toggleDropdown(student.id)}
+                          >
+                            Actions
+                          </button>
+                          <div
+                            className={` customDropDown dropdown-menu${
+                              isOpen[student.id] ? " show" : ""
+                            }`}
+                            style={{ right: "0" }}
+                            aria-labelledby={`dropdownMenuButton-${student.id}`}
+                          >
+                            <a
+                              className="dropdown-item"
+                              onClick={() => {
+                                Edit(student.users.id);
+                              }}
+                            >
+                              Edit
+                            </a>
+                            <a
+                              className="dropdown-item"
+                              onClick={() => {
+                                Delete(student.id);
+                              }}
+                            >
+                              Delete
+                            </a>
+                            <a className="dropdown-item" onClick={() => {}}>
+                              Deactivate Student
+                            </a>
+                            <a
+                              className="dropdown-item"
+                              onClick={() => {
+                                FeeManagement(student.users.id);
+                              }}
+                            >
+                              Fee Management
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="12" className="text-center">
+                      No Student Information Available
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="12" className="text-center">
-                    No Student Information Available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <CustomPopup
-        Visible={popup}
-        OnClose={() => {
-          setPopup(false);
-          setTimeout(() => {
-            setErrorMessage("");
-          }, 400);
-        }}
-        errorMessage={errorMessage}
+        <CustomPopup
+          Visible={popup}
+          OnClose={() => {
+            setPopup(false);
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 400);
+          }}
+          errorMessage={errorMessage}
         />
-      <CustomPopup
-        Visible={loading}
-        OnClose={() => {}}
-        errorMessage={errorMessage}
+        <CustomPopup
+          Visible={loading}
+          OnClose={() => {}}
+          errorMessage={errorMessage}
         />
-      {popupInput && (
-        <div className="popup">
-          <Popup
-            visible={idPopup}
-            animationDuration={400}
-            onClose={() => {
-              setIdPopup(false);
-              setTimeout(() => {
-                setPopupInput(null);
-              }, 400);
-            }}
-            style={{
-              backgroundColor: "#11101de9",
-              boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
-              padding: "40px 20px",
-              width: "700px",
-              height: "600px",
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <div
-              ref={pngElementRef}
-              className="studentIdCardDiv"
+        {popupInput && (
+          <div className="popup">
+            <Popup
+              visible={idPopup}
+              animationDuration={400}
+              onClose={() => {
+                setIdPopup(false);
+                setTimeout(() => {
+                  setPopupInput(null);
+                }, 400);
+              }}
               style={{
-                backgroundColor: "white",
+                backgroundColor: "#11101de9",
+                boxShadow: "rgba(0, 0, 0, 0.2) 5px 5px 5px 5px",
+                padding: "40px 20px",
+                width: "700px",
+                height: "600px",
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                borderRadius: "1rem",
-                padding: "15px 20px",
-                boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px",
-                whiteSpace: "nowrap",
-                width: "300px",
-                height: "460px",
+                flexDirection: "column",
               }}
             >
               <div
+                ref={pngElementRef}
+                className="studentIdCardDiv"
                 style={{
-                  width: "100%",
+                  backgroundColor: "white",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
+                  borderRadius: "1rem",
+                  padding: "15px 20px",
+                  boxShadow: "rgba(0, 0, 0, 0.5) 5px 5px 5px 5px",
+                  whiteSpace: "nowrap",
+                  width: "300px",
+                  height: "460px",
                 }}
               >
-                <h4 style={{ margin: "0", padding: "0" }}>
-                  {popupInput.users.name}
-                </h4>
-                <QRCode style={{width:"130px",height:'130px' , margin:'20px 0px'}} value={`http://192.168.1.2:3000/markattendance/${popupInput.id}`} />
-                {/* <ReactBarcode
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <h4 style={{ margin: "0", padding: "0" }}>
+                    {popupInput.users.name}
+                  </h4>
+                  <QRCode
+                    style={{
+                      width: "130px",
+                      height: "130px",
+                      margin: "20px 0px",
+                    }}
+                    value={`http://192.168.1.2:3000/markattendance/${popupInput.id}`}
+                  />
+                  {/* <ReactBarcode
                   style={{ backgroundColor: "transparent" }}
                   value={
                     ApiSearchData.campus.slice(0, 1) +
@@ -760,85 +958,80 @@ export default function StudentInformation() {
                   displayValue={false}
                   renderer="image"
                 /> */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
-                  }}
-                >
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>Class: </span>
-                    {converter.toWords(ApiSearchData.ClassRank)}
-                  </h6>
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>Campus: </span>
-                    {ApiSearchData.campus}
-                  </h6>
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>Student ID: </span>
-                    {popupInput.id}
-                  </h6>
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>Full Name: </span>
-                    {popupInput.users.name}
-                  </h6>
-                  <h6 style={{ paddingBottom: "30px", fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>
-                      Emergency Contact:{" "}
-                    </span>
-                    {popupInput.parents.GuardiansPhoneNumber}
-                  </h6>
-                </div>
-                <div style={{ display: "flex", width: "100%" }}>
-                  <FaLocationDot
-                    style={{ marginRight: "5px" }}
-                    color="#5b8beb"
-                  />
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>
-                      Faisalabad, Kohinoor City
-                    </span>
-                  </h6>
-                </div>
-                <div style={{ display: "flex", width: "100%" }}>
-                  <BsFillTelephoneFill
-                    style={{ marginRight: "5px" }}
-                    color="#5b8beb"
-                  />
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>
-                      +921234567890
-                    </span>
-                  </h6>
-                </div>
-                <div style={{ display: "flex", width: "100%" }}>
-                  <IoMail
-                    style={{ marginRight: "5px" }}
-                    color="#5b8beb"
-                  />
-                  <h6 style={{ fontSize: "14px" }}>
-                    <span style={{ color: "#5b8beb" }}>
-                      HustlersUniversity@gmail.com
-                    </span>
-                  </h6>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                    }}
+                  >
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>Class: </span>
+                      {converter.toWords(ApiSearchData.ClassRank)}
+                    </h6>
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>Campus: </span>
+                      {ApiSearchData.campus}
+                    </h6>
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>Student ID: </span>
+                      {popupInput.id}
+                    </h6>
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>Full Name: </span>
+                      {popupInput.users.name}
+                    </h6>
+                    <h6 style={{ paddingBottom: "30px", fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>
+                        Emergency Contact:{" "}
+                      </span>
+                      {popupInput.parents.GuardiansPhoneNumber}
+                    </h6>
+                  </div>
+                  <div style={{ display: "flex", width: "100%" }}>
+                    <FaLocationDot
+                      style={{ marginRight: "5px" }}
+                      color="#5b8beb"
+                    />
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>
+                        Faisalabad, Kohinoor City
+                      </span>
+                    </h6>
+                  </div>
+                  <div style={{ display: "flex", width: "100%" }}>
+                    <BsFillTelephoneFill
+                      style={{ marginRight: "5px" }}
+                      color="#5b8beb"
+                    />
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>+921234567890</span>
+                    </h6>
+                  </div>
+                  <div style={{ display: "flex", width: "100%" }}>
+                    <IoMail style={{ marginRight: "5px" }} color="#5b8beb" />
+                    <h6 style={{ fontSize: "14px" }}>
+                      <span style={{ color: "#5b8beb" }}>
+                        HustlersUniversity@gmail.com
+                      </span>
+                    </h6>
+                  </div>
                 </div>
               </div>
-            </div>
-            <Button
-              onClick={() => {
-                htmlToPng(popupInput.users.name);
-              }}
-              style={{ marginTop: "20px" }}
-              variant="contained"
-              color="primary"
-            >
-              Download
-            </Button>
-          </Popup>
-        </div>
-      )}
-    </div>
+              <Button
+                onClick={() => {
+                  htmlToPng(popupInput.users.name);
+                }}
+                style={{ marginTop: "20px" }}
+                variant="contained"
+                color="primary"
+              >
+                Download
+              </Button>
+            </Popup>
+          </div>
+        )}
+      </div>
     </>
   );
 }

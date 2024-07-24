@@ -41,14 +41,17 @@ export default function StudentAttendance() {
 
   const GetClasses = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SECRET_KEY}api/GetClasses`, {
-        headers: {
-          "X-CSRF-TOKEN": CSRFToken,
-          "Content-Type": "application/json",
-          "API-TOKEN": "IT is to secret you cannot break it :)",
-        },
-      });
-      if(response.data && response.data.data.length > 0){
+      const response = await axios.get(
+        `${import.meta.env.VITE_HOST}api/GetClasses`,
+        {
+          headers: {
+            "X-CSRF-TOKEN": CSRFToken,
+            "Content-Type": "application/json",
+            "API-TOKEN": "IT is to secret you cannot break it :)",
+          },
+        }
+      );
+      if (response.data && response.data.data.length > 0) {
         SetClasses(response.data);
         SetApiSearchData((prev) => {
           return {
@@ -56,7 +59,7 @@ export default function StudentAttendance() {
             ClassRank: response.data.data[0].ClassRank,
             ClassName: response.data.data[0].ClassName,
           };
-          })
+        });
       }
     } catch (error) {
       console.error(error);
@@ -68,7 +71,7 @@ export default function StudentAttendance() {
   const GetStudentInformation = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_SECRET_KEY}api/GetStudentInformation`,
+        `${import.meta.env.VITE_HOST}api/GetStudentInformation`,
         {
           campus: ApiSearchData.campus,
           ClassRank: ApiSearchData.ClassRank,
@@ -120,7 +123,7 @@ export default function StudentAttendance() {
         selectedRows: selectedRows,
       };
       const response = await axios.post(
-        `${import.meta.env.VITE_SECRET_KEY}api/studentattendance`,
+        `${import.meta.env.VITE_HOST}api/studentattendance`,
         dataToSend,
         {
           headers: {
@@ -300,7 +303,7 @@ export default function StudentAttendance() {
                 setErrorMessage("");
               }, 400);
             }}
-            errorMessage={handleResponse({message: errorMessage})}
+            errorMessage={handleResponse({ message: errorMessage })}
           />
           <Popup
             visible={loading}

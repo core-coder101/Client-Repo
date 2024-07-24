@@ -26,7 +26,7 @@ export default function App() {
 
   useEffect(() => {
     if(!CSRFToken){
-    dispatch(fetchCSRFToken());
+    // dispatch(fetchCSRFToken());
   }
   }, [CSRFToken]);
 
