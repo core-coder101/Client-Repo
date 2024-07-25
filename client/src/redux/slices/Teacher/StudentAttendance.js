@@ -59,7 +59,10 @@ export const teacherAttendance = createAsyncThunk(
 );
 export const SubmitAttendance = createAsyncThunk(
   "SubmitAttendance",
-  async (selectedRows, { getState, rejectWithValue }) => {
+  async (
+    { selectedRows, ClassName, ClassRank },
+    { getState, rejectWithValue }
+  ) => {
     const state = getState();
     const { teacherData } = state.studentAttendanceTeacher;
     if (!teacherData.classes) {
@@ -67,8 +70,8 @@ export const SubmitAttendance = createAsyncThunk(
     }
     try {
       let dataToSend = {
-        ClassName: teacherData.classes[0].ClassName,
-        ClassRank: teacherData.classes[0].ClassRank,
+        ClassName: ClassName,
+        ClassRank: ClassRank,
         campus: "Main Campus",
         selectedRows: selectedRows,
       };
@@ -123,10 +126,9 @@ export const GetTeacherAttendanceDashboard = createAsyncThunk(
   }
 );
 
-
 export const GetTodayattendance = createAsyncThunk(
   "GetTodayattendance",
-  async (_, { getState, rejectWithValue }) => {
+  async ({ ClassRank, ClassName }, { getState, rejectWithValue }) => {
     const state = getState();
     const { teacherData } = state.studentAttendanceTeacher;
     if (!teacherData?.classes?.length > 0) {
@@ -137,8 +139,8 @@ export const GetTodayattendance = createAsyncThunk(
         `${import.meta.env.VITE_HOST}api/GetTodayattendance`,
         {
           campus: "Main Campus",
-          ClassRank: parseInt(teacherData.classes[0].ClassRank),
-          ClassName: teacherData.classes[0].ClassName,
+          ClassRank: parseInt(ClassRank),
+          ClassName: ClassName,
         },
         {
           headers: {
@@ -162,7 +164,7 @@ export const GetTodayattendance = createAsyncThunk(
 );
 export const GetStudentInformation = createAsyncThunk(
   "GetStudentInformation",
-  async (_, { getState, rejectWithValue }) => {
+  async ({ ClassRank, ClassName }, { getState, rejectWithValue }) => {
     const state = getState();
     const { teacherData } = state.studentAttendanceTeacher;
     if (!teacherData.classes?.length > 0) {
@@ -173,8 +175,8 @@ export const GetStudentInformation = createAsyncThunk(
         `${import.meta.env.VITE_HOST}api/GetStudentInformation`,
         {
           campus: "Main Campus",
-          ClassRank: parseInt(teacherData.classes[0].ClassRank),
-          ClassName: teacherData.classes[0].ClassName,
+          ClassRank: parseInt(ClassRank),
+          ClassName: ClassName,
         },
         {
           headers: {
@@ -213,21 +215,11 @@ const studentAttendanceSliceTeacher = createSlice({
   name: "studentAttendanceTeacher",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.CSRFToken = "";
-      state.result = "";
-      localStorage.clear();
-      delete axios.defaults.headers.common["Authorization"];
-    },
     setError: (state, action) => {
       state.error = action.payload;
     },
     setPopup: (state, action) => {
       state.popup = !!action.payload;
-    },
-    setLoading: (state, action) => {
-      state.loading = !!action;
     },
   },
   extraReducers: (builder) => {
@@ -279,7 +271,7 @@ const studentAttendanceSliceTeacher = createSlice({
       .addCase(teacherAttendance.fulfilled, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.popup = true
+        state.popup = true;
       })
       .addCase(teacherAttendance.rejected, (state, action) => {
         state.loading = false;
@@ -315,11 +307,10 @@ const studentAttendanceSliceTeacher = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.popup = true;
-      })
+      });
   },
 });
 
-export const { setError, setPopup, setLoading } =
-  studentAttendanceSliceTeacher.actions;
+export const { setError, setPopup } = studentAttendanceSliceTeacher.actions;
 
 export default studentAttendanceSliceTeacher.reducer;

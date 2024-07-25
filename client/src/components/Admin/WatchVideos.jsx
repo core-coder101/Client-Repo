@@ -147,7 +147,7 @@ export default function WatchVideoes() {
     if (Number.isInteger(index) && PlaylistData.videos.length > index + 1) {
       navigate("/watchvideo/" + PlaylistData.videos[index + 1].id.toString());
     }
-  };
+  }
 
   let dateMsg = "";
   if (videoInfo?.created_at) {
@@ -175,7 +175,7 @@ export default function WatchVideoes() {
               Your browser does not support the video tag.
             </video>
           </div>
-          {PlaylistData && PlaylistData.videos && (
+          {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData && PlaylistData.videos && (
             <div
               className="Playlist d-block d-md-block d-lg-none"
               style={{ marginTop: "10px" }}
@@ -183,10 +183,10 @@ export default function WatchVideoes() {
               <div className="playlistItems">
                 <div className="fixedTopDiv">
                   <div className="info">
-                    <h6>{PlaylistData.PlaylistTitle}</h6>
+                    <h6>{videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.PlaylistTitle}</h6>
                     <p>
-                      {PlaylistData.PlaylistCategory} - {index + 1} /{" "}
-                      {PlaylistData?.videos?.length}
+                      {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.PlaylistCategory} - {index + 1} /{" "}
+                      {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData?.videos?.length}
                     </p>
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function WatchVideoes() {
                   className="overflowDiv"
                   style={{ width: "100%", overflowY: "auto", zIndex: "0" }}
                 >
-                  {PlaylistData.videos.map((video, index) => {
+                  {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.videos.map((video, index) => {
                     let highlight = "";
                     if (ID == video.id) {
                       highlight = "highlight";
@@ -275,7 +275,7 @@ export default function WatchVideoes() {
             </div>
           </div>
         </div>
-        {PlaylistData && PlaylistData.videos && (
+        {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.videos && (
           <div className="Playlist col-lg-4 d-lg-block d-none">
             <div className="playlistItems">
               <div className="fixedTopDiv">

@@ -3,42 +3,60 @@ import "../../assets/css/dashboard.css";
 import "../../assets/css/student/calender.css";
 import Calendar from "react-calendar";
 import moment from "moment";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { setError, setPopup } from "../../redux/slices/Student/StudentDashboard";
+import Chart from "react-apexcharts";
+import {
+  setError,
+  setPopup,
+} from "../../redux/slices/Student/StudentDashboard";
 import LoadingOverlay from "../common/LoadingOverlay";
-import { setError as setError2, setPopup as setPopup2, GetTimeTableForTeacherDashboard } from "../../redux/slices/Admin/CreateTimetables";
+import {
+  setError as setError2,
+  setPopup as setPopup2,
+  GetTimeTableForTeacherDashboard,
+} from "../../redux/slices/Admin/CreateTimetables";
 import { Snackbar } from "@mui/material";
 import { GetTeacherAttendanceDashboard } from "../../redux/slices/Teacher/StudentAttendance";
 
-
 export default function Dashboard() {
-  
-  const { teacherAttendance, presentCount, absentCount, loading, popup, error } = useSelector(state=>state.studentAttendanceTeacher)
-  const { teacherDashboardTimetable, loading: loading2, popup: popup2, error: error2 } = useSelector(state=>state.createTimeTable)
-  const dispatch = useDispatch()
-  const [localLoading, setLocalLoading] = useState(false)
+  const {
+    teacherAttendance,
+    presentCount,
+    absentCount,
+    loading,
+    popup,
+    error,
+  } = useSelector((state) => state.studentAttendanceTeacher);
+  const {
+    teacherDashboardTimetable,
+    loading: loading2,
+    popup: popup2,
+    error: error2,
+  } = useSelector((state) => state.createTimeTable);
+  const dispatch = useDispatch();
+  const [localLoading, setLocalLoading] = useState(false);
   // redux state update bug fix
-  useEffect(()=>{
-    setLocalLoading(loading)
-  }, [loading])
+  useEffect(() => {
+    setLocalLoading(loading);
+  }, [loading]);
 
   useEffect(() => {
-    if(teacherDashboardTimetable.length > 0){
-      setTimeTable(teacherDashboardTimetable)
+    if (teacherDashboardTimetable.length > 0) {
+      setTimeTable(teacherDashboardTimetable);
     }
-  }, [teacherDashboardTimetable])
+  }, [teacherDashboardTimetable]);
 
-  useEffect(()=>{
-    dispatch(GetTeacherAttendanceDashboard())
-    dispatch(GetTimeTableForTeacherDashboard("TImETableforfuckingteacher"))
-  }, [dispatch])
+  useEffect(() => {
+    dispatch(GetTeacherAttendanceDashboard());
+    dispatch(GetTimeTableForTeacherDashboard("TImETableforfuckingteacher"));
+  }, [dispatch]);
 
   const data = [
     { label: "Present", value: presentCount },
     { label: "Absent", value: absentCount },
   ];
-  
+
   const series = [
     {
       innerRadius: 110,
@@ -48,20 +66,47 @@ export default function Dashboard() {
     },
   ];
 
-  const [itemData, setItemData] = useState()
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const [timetable, setTimeTable] = useState([])
+  const pieData = {
+    options: {
+      labels: ["Present", "Absent"],
+      legend: {
+        show: true,
+        position: "bottom",
+      },
+      title: {
+        text: "Your Attendance",
+        align: "center",
+        style: {
+          fontSize: "24px",
+          color: "#666",
+        },
+      },
+      colors: ["#179c13", "#cc1d28"],
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "70%", // the lower the %, the thicker it gets
+          },
+        },
+      },
+    },
+    series: [presentCount, absentCount],
+  };
+
+  const [itemData, setItemData] = useState();
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [timetable, setTimeTable] = useState([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-        setCurrentTime(new Date());
+      setCurrentTime(new Date());
     }, 1000);
 
     return () => clearInterval(interval);
-}, []);
+  }, []);
 
-  let presentPercentage = 0
-  if(presentCount + absentCount > 0){
+  let presentPercentage = 0;
+  if (presentCount + absentCount > 0) {
     // denomenator can't be zero 💀
     presentPercentage = (
       (presentCount / (presentCount + absentCount)) *
@@ -73,17 +118,17 @@ export default function Dashboard() {
   const absent = [];
   // 2024-07-08
 
-  teacherAttendance.forEach((attendance)=>{
-    if(attendance.attendance === "Present"){
-      present.push(attendance.Date)
+  teacherAttendance.forEach((attendance) => {
+    if (attendance.attendance === "Present") {
+      present.push(attendance.Date);
     } else {
-      absent.push(attendance.Date)
+      absent.push(attendance.Date);
     }
-  })
+  });
 
   useEffect(() => {
-    console.log("timetable: ",timetable);
-  }, [timetable])
+    console.log("timetable: ", timetable);
+  }, [timetable]);
 
   return (
     <>
@@ -97,53 +142,71 @@ export default function Dashboard() {
             <div className="ms-auto me-4"></div>
           </div>
         </div>
-        <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
+        <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between">
           <div className="timeTableMainDiv">
-            <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
-            {timetable && timetable.length > 0 && timetable.map((lecture, index) => {
-              if(!(lecture?.StartingTime && lecture?.EndingTime)){
-                return
-              }
-              let ongoing = false;
-              let start = lecture.StartingTime;
-              let end = lecture.EndingTime;
-              let [startHours, startMinutes, startSeconds] = start?.split(":");
-              let [endHours, endMinutes, endSeconds] = end?.split(":");
-              
-              let currentSeconds = currentTime.getSeconds();
-              let currentTimeInSeconds = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentSeconds;
-              let startTimeInSeconds = parseInt(startHours) * 3600 + parseInt(startMinutes) * 60 + parseInt(startSeconds);
-              let endTimeInSeconds = parseInt(endHours) * 3600 + parseInt(endMinutes) * 60 + parseInt(endSeconds);
-              
-              if (currentTimeInSeconds >= startTimeInSeconds && currentTimeInSeconds < endTimeInSeconds) {
+            <h2 style={{ textAlign: "center", marginTop: "5px" }}>Timetable</h2>
+            {timetable &&
+              timetable.length > 0 &&
+              timetable.map((lecture, index) => {
+                if (!(lecture?.StartingTime && lecture?.EndingTime)) {
+                  return;
+                }
+                let ongoing = false;
+                let start = lecture.StartingTime;
+                let end = lecture.EndingTime;
+                let [startHours, startMinutes, startSeconds] =
+                  start?.split(":");
+                let [endHours, endMinutes, endSeconds] = end?.split(":");
+
+                let currentSeconds = currentTime.getSeconds();
+                let currentTimeInSeconds =
+                  currentTime.getHours() * 3600 +
+                  currentTime.getMinutes() * 60 +
+                  currentSeconds;
+                let startTimeInSeconds =
+                  parseInt(startHours) * 3600 +
+                  parseInt(startMinutes) * 60 +
+                  parseInt(startSeconds);
+                let endTimeInSeconds =
+                  parseInt(endHours) * 3600 +
+                  parseInt(endMinutes) * 60 +
+                  parseInt(endSeconds);
+
+                if (
+                  currentTimeInSeconds >= startTimeInSeconds &&
+                  currentTimeInSeconds < endTimeInSeconds
+                ) {
                   ongoing = true;
-              }
-              
-              const startMessage = new Date("2024-09-11T" + start).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
-              const endMessage = new Date("2024-09-11T" + end).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
-              
-              return (
-                  <div key={index} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
-                      <h6>{lecture.class?.ClassRank} {lecture.class?.ClassName} (Floor {lecture.class?.ClassFloor})</h6>
-                      <p>{`${startMessage} - ${endMessage}`}</p>
+                }
+
+                const startMessage = new Date(
+                  "2024-09-11T" + start
+                ).toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                });
+                const endMessage = new Date("2024-09-11T" + end).toLocaleString(
+                  "en-US",
+                  { hour: "numeric", minute: "numeric" }
+                );
+
+                return (
+                  <div
+                    key={index}
+                    className={"timetable " + (ongoing ? "onGoingLecture" : "")}
+                  >
+                    <h6>
+                      {lecture.class?.ClassRank} {lecture.class?.ClassName}{" "}
+                      (Floor {lecture.class?.ClassFloor})
+                    </h6>
+                    <p>{`${startMessage} - ${endMessage}`}</p>
                   </div>
-              );
-            })}
+                );
+              })}
           </div>
           <div className="d-flex flex-wrap itemsContainer justify-content-center justify-content-md-start">
-            <div
-              className="attendanceMAINDIV"
-              style={{
-                margin: "5px",
-                boxShadow: "rgba(0, 0, 0, 0.122) 0px 0px 5px 5px",
-                border: "1px solid rgb(218, 207, 207)",
-              }}
-            >
-              <h2 style={{ textAlign: "center", margin: "0", margin: "5px 0px" }}>
-                Attendance
-              </h2>
-              <div className="attendanceOuterDiv">
-                <PieChart
+            <div className=" attendanceOuterDiv">
+              {/* <PieChart
                   colors={["rgb(1, 128, 35)", "rgb(199, 14, 33)"]}
                   series={series}
                   width={350}
@@ -152,52 +215,15 @@ export default function Dashboard() {
                     legend: { hidden: true },
                   }}
                   onItemClick={(event, d) => setItemData(d)}
-                />
-                <div className="percentageDiv">{`${presentPercentage}%`}</div>
-                <ul
-                  style={{
-                    display: "flex",
-                    listStyle: "none",
-                    padding: 0,
-                    width: "max-content",
-                    position: "relative",
-                    right: "25px",
-                  }}
-                >
-                  <li
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: "10px",
-                        height: "10px",
-                        backgroundColor: "green",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                        marginRight: "5px",
-                      }}
-                    ></span>
-                    Present
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center" }}>
-                    <span
-                      style={{
-                        width: "10px",
-                        height: "10px",
-                        backgroundColor: "red",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                        marginRight: "5px",
-                      }}
-                    ></span>
-                    Absent
-                  </li>
-                </ul>
-              </div>
+                /> */}
+
+              <Chart
+                series={pieData.series}
+                options={pieData.options}
+                type="donut"
+                width="350"
+                className="smallchart"
+              />
             </div>
             <div className="calendarDiv" style={{ margin: "5px" }}>
               <Calendar
@@ -221,10 +247,10 @@ export default function Dashboard() {
       <Snackbar
         open={popup2}
         onClose={() => {
-          dispatch(setPopup2(false))
+          dispatch(setPopup2(false));
         }}
-        onAnimationEnd={()=>{
-          dispatch(setError2(""))
+        onAnimationEnd={() => {
+          dispatch(setError2(""));
         }}
         message={error2}
         autoHideDuration={3000}
@@ -233,10 +259,10 @@ export default function Dashboard() {
       <Snackbar
         open={popup}
         onClose={() => {
-          dispatch(setPopup(false))
+          dispatch(setPopup(false));
         }}
-        onAnimationEnd={()=>{
-          dispatch(setError(""))
+        onAnimationEnd={() => {
+          dispatch(setError(""));
         }}
         message={error}
         autoHideDuration={3000}

@@ -13,6 +13,7 @@ import manageClassesReducer from "./slices/Admin/ManageClasses"
 import createTimetablesReducer from "./slices/Admin/CreateTimetables"
 import createDashboardsReducer from "./slices/Admin/Dashboard"
 import announcementReducer from "./slices/common/announcement"
+import todayStudentAttendanceForAdminReducer from "./slices/Admin/StudentAttendance"
 
 const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ const store = configureStore({
     createTimeTable: createTimetablesReducer,
     adminDashboard: createDashboardsReducer,
     showAnnouncement: announcementReducer,
+    todayStudentAttendanceForAdmin: todayStudentAttendanceForAdminReducer,
   },
   devTools: true,
 });

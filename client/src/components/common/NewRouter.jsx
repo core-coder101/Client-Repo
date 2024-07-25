@@ -28,7 +28,7 @@ export default function NewRouter() {
             {MapRoutes(GetUserRoutes())}
           </Route>
         </Route>
-        <Route path='/markattendance/:UserID' element={<Markattendance />} />
+        <Route path='/markattendance/' element={<Markattendance />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
     </Router>

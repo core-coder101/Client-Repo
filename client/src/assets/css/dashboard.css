@@ -40,14 +40,20 @@
 }
 .attendanceOuterDiv{
     transition: all 0.25s ease;
-    position: relative;
     width: 350px;
-    height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
     left: 40px;
+    margin: 5px;
+    box-shadow: rgba(0, 0, 0, 0.122) 0px 0px 5px 5px;
+    border: 1px solid rgb(218, 207, 207);
 }
+
+.attendanceOuterDiv .smallchart {
+    box-shadow: none;
+}
+
 .percentageDiv{
     transition: all 0.25s ease;
     position: absolute;

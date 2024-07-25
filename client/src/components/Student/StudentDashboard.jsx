@@ -9,7 +9,7 @@ import { GetStudentAttendance, setError, setPopup } from "../../redux/slices/Stu
 import LoadingOverlay from "../common/LoadingOverlay";
 import { GetTimeTableForStudentDashboard, setError as setError2, setPopup as setPopup2 } from "../../redux/slices/Admin/CreateTimetables";
 import { Snackbar } from "@mui/material";
-
+import Chart from "react-apexcharts";
 
 
 export default function Dashboard() {
@@ -82,6 +82,34 @@ export default function Dashboard() {
     }
   })
 
+
+  const pieData = {
+    options: {
+      labels: ["Present", "Absent"],
+      legend: {
+        show: true,
+        position: "bottom",
+      },
+      title: {
+        text: "Your Attendance",
+        align: "center",
+        style: {
+          fontSize: "24px",
+          color: "#666",
+        },
+      },
+      colors: ["#179c13", "#cc1d28"],
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "70%", // the lower the %, the thicker it gets
+          },
+        },
+      },
+    },
+    series: [presentCount, absentCount],
+  };
+
   return (
     <>
       <LoadingOverlay loading={localLoading || loading2} />
@@ -94,50 +122,70 @@ export default function Dashboard() {
             <div className="ms-auto me-4"></div>
           </div>
         </div>
-        <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between" >
+        <div className="d-flex align-items-start flex-wrap flex-md-nowrap justify-content-center justify-content-md-between">
           <div className="timeTableMainDiv">
-            <h2 style={{textAlign: "center", marginTop: "5px"}}>Timetable</h2>
-            {timetable.map(lecture => {
-              let ongoing = false;
-              let start = lecture.StartingTime;
-              let end = lecture.EndingTime;
-              let [startHours, startMinutes, startSeconds] = start?.split(":");
-              let [endHours, endMinutes, endSeconds] = end?.split(":");
-              
-              let currentSeconds = currentTime.getSeconds();
-              let currentTimeInSeconds = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentSeconds;
-              let startTimeInSeconds = parseInt(startHours) * 3600 + parseInt(startMinutes) * 60 + parseInt(startSeconds);
-              let endTimeInSeconds = parseInt(endHours) * 3600 + parseInt(endMinutes) * 60 + parseInt(endSeconds);
-              
-              if (currentTimeInSeconds >= startTimeInSeconds && currentTimeInSeconds < endTimeInSeconds) {
+            <h2 style={{ textAlign: "center", marginTop: "5px" }}>Timetable</h2>
+            {timetable &&
+              timetable.length > 0 &&
+              timetable.map((lecture, index) => {
+                if (!(lecture?.StartingTime && lecture?.EndingTime)) {
+                  return;
+                }
+                let ongoing = false;
+                let start = lecture.StartingTime;
+                let end = lecture.EndingTime;
+                let [startHours, startMinutes, startSeconds] =
+                  start?.split(":");
+                let [endHours, endMinutes, endSeconds] = end?.split(":");
+
+                let currentSeconds = currentTime.getSeconds();
+                let currentTimeInSeconds =
+                  currentTime.getHours() * 3600 +
+                  currentTime.getMinutes() * 60 +
+                  currentSeconds;
+                let startTimeInSeconds =
+                  parseInt(startHours) * 3600 +
+                  parseInt(startMinutes) * 60 +
+                  parseInt(startSeconds);
+                let endTimeInSeconds =
+                  parseInt(endHours) * 3600 +
+                  parseInt(endMinutes) * 60 +
+                  parseInt(endSeconds);
+
+                if (
+                  currentTimeInSeconds >= startTimeInSeconds &&
+                  currentTimeInSeconds < endTimeInSeconds
+                ) {
                   ongoing = true;
-              }
-              
-              const startMessage = new Date("2024-09-11T" + start).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
-              const endMessage = new Date("2024-09-11T" + end).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric' });
-              
-              return (
-                  <div key={lecture.Subject} className={"timetable " + (ongoing ? "onGoingLecture" : "")}>
-                      <h6>{lecture.Subject}</h6>
-                      <p>{`${startMessage} - ${endMessage}`}</p>
+                }
+
+                const startMessage = new Date(
+                  "2024-09-11T" + start
+                ).toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                });
+                const endMessage = new Date("2024-09-11T" + end).toLocaleString(
+                  "en-US",
+                  { hour: "numeric", minute: "numeric" }
+                );
+
+                return (
+                  <div
+                    key={index}
+                    className={"timetable " + (ongoing ? "onGoingLecture" : "")}
+                  >
+                    <h6>
+                      {lecture.Subject}{" "}
+                    </h6>
+                    <p>{`${startMessage} - ${endMessage}`}</p>
                   </div>
-              );
-            })}
+                );
+              })}
           </div>
           <div className="d-flex flex-wrap itemsContainer justify-content-center justify-content-md-start">
-            <div
-              className="attendanceMAINDIV"
-              style={{
-                margin: "5px",
-                boxShadow: "rgba(0, 0, 0, 0.122) 0px 0px 5px 5px",
-                border: "1px solid rgb(218, 207, 207)",
-              }}
-            >
-              <h2 style={{ textAlign: "center", margin: "0", margin: "5px 0px" }}>
-                Attendance
-              </h2>
-              <div className="attendanceOuterDiv">
-                <PieChart
+            <div className=" attendanceOuterDiv">
+              {/* <PieChart
                   colors={["rgb(1, 128, 35)", "rgb(199, 14, 33)"]}
                   series={series}
                   width={350}
@@ -146,52 +194,15 @@ export default function Dashboard() {
                     legend: { hidden: true },
                   }}
                   onItemClick={(event, d) => setItemData(d)}
-                />
-                <div className="percentageDiv">{`${presentPercentage}%`}</div>
-                <ul
-                  style={{
-                    display: "flex",
-                    listStyle: "none",
-                    padding: 0,
-                    width: "max-content",
-                    position: "relative",
-                    right: "25px",
-                  }}
-                >
-                  <li
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: "10px",
-                        height: "10px",
-                        backgroundColor: "green",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                        marginRight: "5px",
-                      }}
-                    ></span>
-                    Present
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center" }}>
-                    <span
-                      style={{
-                        width: "10px",
-                        height: "10px",
-                        backgroundColor: "red",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                        marginRight: "5px",
-                      }}
-                    ></span>
-                    Absent
-                  </li>
-                </ul>
-              </div>
+                /> */}
+
+              <Chart
+                series={pieData.series}
+                options={pieData.options}
+                type="donut"
+                width="350"
+                className="smallchart"
+              />
             </div>
             <div className="calendarDiv" style={{ margin: "5px" }}>
               <Calendar

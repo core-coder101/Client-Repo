@@ -11,10 +11,11 @@ import "../../assets/css/StudentAttendance.css";
 import CustomFooter from "../Admin/CustomFooter";
 import { Tooltip } from "@mui/material";
 import Popup from "react-animated-popup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomPopup from "../common/CustomPopup";
 import { handleError } from "../../redux/errorHandler";
 import { handleResponse } from "../../redux/responseHandler";
+import { GetTodayattendanceForAdmin } from "../../redux/slices/Admin/StudentAttendance";
 
 export default function StudentAttendance() {
   const navigate = useNavigate();
@@ -28,10 +29,8 @@ export default function StudentAttendance() {
   const [search, setSearch] = useState("");
 
   const { CSRFToken, user } = useSelector((state) => state.auth);
-
-  if (user.token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
-  }
+  const { todayAttendance } = useSelector((state) => state.todayStudentAttendanceForAdmin);
+  const dispatch = useDispatch()
 
   const [ApiSearchData, SetApiSearchData] = useState({
     campus: "Main Campus",
@@ -151,8 +150,15 @@ export default function StudentAttendance() {
   }, []);
 
   useEffect(() => {
+    if(todayAttendance && todayAttendance.length > 0){
+      setSelectedRows(todayAttendance)
+    }
+  }, [todayAttendance])
+
+  useEffect(() => {
     if (ApiSearchData.ClassRank && ApiSearchData.ClassName) {
       GetStudentInformation();
+      dispatch(GetTodayattendanceForAdmin({ ClassRank: ApiSearchData.ClassRank, ClassName: ApiSearchData.ClassName}))
     }
   }, [ApiSearchData]);
 
@@ -278,8 +284,8 @@ export default function StudentAttendance() {
                 placeholder="Search Student"
               ></input>
             </Tooltip>
-            <Tooltip title="Search the Database" arrow>
-              <button type="button" onClick={GetStudentInformation}>
+            <Tooltip title="" arrow>
+              <button type="button" onClick={()=>{}}>
                 <CiSearch color="white" />
               </button>
             </Tooltip>
@@ -325,6 +331,7 @@ export default function StudentAttendance() {
             </div>
           </Popup>
           <DataGrid
+            rowSelectionModel={selectedRows}
             rows={filteredRows}
             columns={columns}
             pageSize={5}

@@ -1,132 +1,141 @@
-.main{
-    width: auto;
-    margin-left: 78px;
-    height: 100vh;
-    transition: all 0.5s ease;
-    /* background-color: rgb(17, 17, 61); */
-    background-color: white;
-    position: relative;
-    overflow: hidden;
+.main {
+  width: auto;
+  margin-left: 78px;
+  height: 100vh;
+  transition: all 0.5s ease;
+  /* background-color: rgb(17, 17, 61); */
+  background-color: white;
+  position: relative;
+  overflow: hidden;
 }
-.sidebarOpen{
-    margin-left: 250px;
+.sidebarOpen {
+  margin-left: 250px;
 }
-.contentArea{
-    padding-top: 70px;
-    height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;    
+.contentArea {
+  padding-top: 70px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 }
-.contentArea::-webkit-scrollbar{
-    width: 5px; 
+.contentArea::-webkit-scrollbar {
+  width: 5px;
 }
-.contentArea::-webkit-scrollbar-track{
-    margin-top: 70px;
-    background: transparent !important;
+.contentArea::-webkit-scrollbar-track {
+  margin-top: 70px;
+  background: transparent !important;
 }
-.contentArea::-webkit-scrollbar-thumb{
-    background: rgb(26,27,30) !important;
-    border-radius: 5px;
-    transition: all 0.3s;
+.contentArea::-webkit-scrollbar-thumb {
+  background: rgb(26, 27, 30) !important;
+  border-radius: 5px;
+  transition: all 0.3s;
 }
 .protest-revolution-regular {
-    font-family: "Protest Revolution", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Protest Revolution", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
-
 
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
-.contentArea.SidebarOpen .LoadingOverlay{
-    left: 250px;
+.contentArea.SidebarOpen .LoadingOverlay {
+  left: 250px;
 }
-.popup{
-    width: 0 !important;
-    height: 0 !important;
+.popup {
+  width: 0 !important;
+  height: 0 !important;
 }
-.popup > div{
-    position: fixed !important;
+.popup > div {
+  position: fixed !important;
 }
-.css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root{
-    background-color: #1D1B31 !important;
-    border: 1px solid #5a586e !important;
+.css-1eqdgzv-MuiPaper-root-MuiSnackbarContent-root {
+  background-color: #1d1b31 !important;
+  border: 1px solid #5a586e !important;
+}
+.AnnouncementOuterDiv > div > div {
+  padding: 30px;
 }
 
-@media (max-width : 576px) {
-.sidebar{
+@media (max-width: 576px) {
+  .sidebar {
     transition: all 0.5s ease;
     left: -250px !important;
-}
-.profile{
+  }
+  .profile {
     transition: all 0.5s ease;
     left: -250px !important;
-}
-.main{
+  }
+  .main {
     margin-left: 0;
-}
-.Searchbar{
+  }
+  .Searchbar {
     display: none;
-}
-.videoSideDiv{
+  }
+  .videoSideDiv {
     padding: 10px !important;
-}
-.headingNavbar h4{
+  }
+  .headingNavbar h4 {
     transition: all 0.5s ease;
     font-size: 12px !important;
-}
-.headingNavbar button{
+  }
+  .headingNavbar button {
     font-size: 12px;
-}
-.inputsDiv{
+  }
+  .inputsDiv {
     flex-wrap: wrap;
-}
-.filterDataDiv{
+  }
+  .filterDataDiv {
     margin: 10px 10px 0px 0px;
     width: 100%;
-}
-.LoadingOverlay{
+  }
+  .LoadingOverlay {
     left: 0 !important;
-}
-.calendarDiv{
-    width: 280px !important;
-    margin-top: 10px;
-}
-.attendanceMAINDIV{
-    width: 280px !important;
-}
-.attendanceOuterDiv{
+  }
+  .calendarDiv {
+    min-width: 340px !important;
+    max-width: 470px !important;
+    width: 74% !important;
     left: 3px !important;
-}
-.itemsContainer{
+  }
+  .attendanceMAINDIV {
+    width: 380px !important;
+    aspect-ratio: 1;
+  }
+  .attendanceOuterDiv {
+    min-width: 340px !important;
+    max-width: 470px !important;
+    width: 74% !important;
+    left: 3px !important;
+  }
+  .itemsContainer {
     justify-content: center;
-}
-.timeTableMainDiv{
-    width: 280px !important;
-}
-.Login .Main{
+  }
+  .timeTableMainDiv {
+    min-width: 340px !important;
+    max-width: 470px !important;
+    width: 74% !important;
+    left: 3px !important;
+    height: unset !important;
+    padding: 0 10px 10px 10px;
+  }
+  .Login .Main {
     width: 300px !important;
-
-}
-.arrow{
+  }
+  .arrow {
     color: rgb(255, 255, 255);
     margin: auto;
     margin-left: 10px !important;
     min-width: 20px !important;
-    max-height: 20px !important; 
+    max-height: 20px !important;
     max-width: 20px !important;
     min-height: 20px !important;
-}
-}
-.AnnouncementOuterDiv > div > div{
-    padding: 30px;
+  }
 }
