@@ -138,4 +138,7 @@
     max-width: 20px !important;
     min-height: 20px !important;
   }
+  .Navbar{
+    left: 0 !important;
+  }
 }

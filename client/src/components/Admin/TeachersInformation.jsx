@@ -263,6 +263,8 @@ export default function TeachersInformation() {
   }, [loading]);
 
   const AllTeacherPayPaid = async () => {
+    setErrorMessage("Generating image. . .");
+    setLoading(true);
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_HOST}api/TeacherPayPaid`,

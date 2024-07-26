@@ -4,9 +4,12 @@ html{
 h1, h2, h3, h4, h5, h6, p {
     user-select: none !important;
 }
-.contentArea:has(.noScroll) {
+body:has(.noScroll) {
     overflow: hidden !important;
 }
-.contentArea:has(.LoadingOverlay.visible) {
+body:has(.LoadingOverlay.visible) {
     overflow: hidden !important;
 }
+body {
+    -webkit-overflow-scrolling: touch;
+  }
