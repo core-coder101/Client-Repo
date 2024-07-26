@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../assets/css/WatchVideo.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -65,7 +65,7 @@ export default function WatchVideoes() {
 
   const [comment, setcomment] = useState("");
 
-  const videoRef = React.useRef(null);
+  const videoRef = useRef(null);
 
   const GetplaylistData = async () => {
     try {
@@ -106,10 +106,55 @@ export default function WatchVideoes() {
 
   useEffect(() => {
     if (ID) {
-      dispatch(fetchVideoRange({ ID, startByte: 0, endByte: 83886080 })); // 83,886,080 bits == 10MB
       dispatch(getVideoInfoByID(ID));
+      dispatch(fetchVideoRange({ ID, ...currentByteRange }));
     }
   }, [ID]);
+
+  const [currentByteRange, setCurrentByteRange] = useState({
+    startByte: 0,
+    endByte: 1048576,
+  }); // Start with 1MB
+
+  // useEffect(() => {
+  //   if (ID) {
+  //     dispatch(fetchVideoRange({ ID, ...currentByteRange }));
+  //   }
+  // }, [ID, currentByteRange]);
+
+  // useEffect(() => {
+  //   const videoElement = videoRef.current;
+
+  //   const handleTimeUpdate = () => {
+  //     if (videoElement) {
+  //       const currentTime = videoElement.currentTime;
+  //       const bufferedEnd =
+  //         videoElement.buffered.length > 0
+  //           ? videoElement.buffered.end(videoElement.buffered.length - 1)
+  //           : 0;
+
+  //       // Check if we're close to the end of the buffered range
+  //       if (bufferedEnd - currentTime <= 5) {
+  //         // Fetch more data when within 5 seconds of the end
+  //         const nextStartByte = currentByteRange.end + 1; // Start after the last byte fetched
+  //         const nextEndByte = nextStartByte + 1048576; // Fetch the next 1MB
+
+  //         setCurrentByteRange({ start: nextStartByte, end: nextEndByte });
+  //       }
+  //     }
+  //   };
+
+  //   if (videoElement) {
+  //     videoElement.addEventListener("timeupdate", handleTimeUpdate);
+  //   }
+
+  //   return () => {
+  //     if (videoElement) {
+  //       videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+  //     }
+  //   };
+  // }, [currentByteRange]);
+
   useEffect(() => {
     if (videoInfo) {
       if (videoInfo.VideoPlaylistID != null) {
@@ -147,7 +192,7 @@ export default function WatchVideoes() {
     if (Number.isInteger(index) && PlaylistData.videos.length > index + 1) {
       navigate("/watchvideo/" + PlaylistData.videos[index + 1].id.toString());
     }
-  }
+  };
 
   let dateMsg = "";
   if (videoInfo?.created_at) {
@@ -166,59 +211,73 @@ export default function WatchVideoes() {
             <video
               ref={videoRef}
               autoPlay
-              src={file}
               className="video"
               controls
+              src={file}
               onEnded={handleEnded}
             >
               <source type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
-          {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData && PlaylistData.videos && (
-            <div
-              className="Playlist d-block d-md-block d-lg-none"
-              style={{ marginTop: "10px" }}
-            >
-              <div className="playlistItems">
-                <div className="fixedTopDiv">
-                  <div className="info">
-                    <h6>{videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.PlaylistTitle}</h6>
-                    <p>
-                      {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.PlaylistCategory} - {index + 1} /{" "}
-                      {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData?.videos?.length}
-                    </p>
+          {videoInfo?.VideoPlaylistID &&
+            PlaylistData &&
+            PlaylistData &&
+            PlaylistData.videos && (
+              <div
+                className="Playlist d-block d-md-block d-lg-none"
+                style={{ marginTop: "10px" }}
+              >
+                <div className="playlistItems">
+                  <div className="fixedTopDiv">
+                    <div className="info">
+                      <h6>
+                        {videoInfo?.VideoPlaylistID &&
+                          PlaylistData &&
+                          PlaylistData.PlaylistTitle}
+                      </h6>
+                      <p>
+                        {videoInfo?.VideoPlaylistID &&
+                          PlaylistData &&
+                          PlaylistData.PlaylistCategory}{" "}
+                        - {index + 1} /{" "}
+                        {videoInfo?.VideoPlaylistID &&
+                          PlaylistData &&
+                          PlaylistData?.videos?.length}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className="overflowDiv"
+                    style={{ width: "100%", overflowY: "auto", zIndex: "0" }}
+                  >
+                    {videoInfo?.VideoPlaylistID &&
+                      PlaylistData &&
+                      PlaylistData.videos.map((video, index) => {
+                        let highlight = "";
+                        if (ID == video.id) {
+                          highlight = "highlight";
+                        }
+
+                        return (
+                          <PlaylistItem
+                            index={index + 1}
+                            key={video.id}
+                            Title={video.VideoTitle}
+                            VideoLength={video.VideoLength}
+                            image={video.images.data}
+                            UName="Ahmad"
+                            onClickFunction={() => {
+                              navigate("/watchvideo/" + video.id.toString());
+                            }}
+                            highlight={highlight}
+                          />
+                        );
+                      })}
                   </div>
                 </div>
-                <div
-                  className="overflowDiv"
-                  style={{ width: "100%", overflowY: "auto", zIndex: "0" }}
-                >
-                  {videoInfo?.VideoPlaylistID && PlaylistData && PlaylistData.videos.map((video, index) => {
-                    let highlight = "";
-                    if (ID == video.id) {
-                      highlight = "highlight";
-                    }
-
-                    return (
-                      <PlaylistItem
-                        index={index + 1}
-                        key={video.id}
-                        Title={video.VideoTitle}
-                        VideoLength={video.VideoLength}
-                        image={video.images.data}
-                        UName="Ahmad"
-                        onClickFunction={() => {
-                          navigate("/watchvideo/" + video.id.toString());
-                        }}
-                        highlight={highlight}
-                      />
-                    );
-                  })}
-                </div>
               </div>
-            </div>
-          )}
+            )}
           <div className="video-Details">
             <h4 className="Video-Title roboto-black-italic">
               {videoInfo ? videoInfo.VideoTitle : ""}

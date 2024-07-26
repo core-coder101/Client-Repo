@@ -75,31 +75,40 @@ export const fetchVideoRange = createAsyncThunk(
   async ({ ID, startByte, endByte }, { getState, rejectWithValue }) => {
     const url = `${import.meta.env.VITE_HOST}api/show-video?ID=${ID}`;
     const state = getState();
-    const CSRFToken = state.auth.CSRFToken;
+    const { CSRFToken } = state.auth;
+    let videoBytes = [...state.watchVideos.videoBytes];
     const headers = {
       "X-CSRF-TOKEN": CSRFToken,
       "Content-Type": "application/json",
       "API-TOKEN": import.meta.env.VITE_SECRET_KEY,
-      Range: `bytes=${startByte}-${endByte}`,
+      // Range: `bytes=${startByte}-${endByte}`,
     };
 
     try {
       const response = await axios.get(url, {
         headers,
-        responseType: "arraybuffer",
+        responseType: "blob",
       });
 
       if (response.status === 206 || response.status === 200) {
         const arrayBuffer = response.data;
-        const blob = new Blob([arrayBuffer], { type: "video/mp4" });
+        const videoURL = URL.createObjectURL(arrayBuffer);
+        return videoURL;
+        console.log("arrayBuffer: ", arrayBuffer);
+        const blob = new Blob([arrayBuffer], {
+          type: "video/mp4",
+        });
+
         const videoUrl = URL.createObjectURL(blob);
-        return videoUrl;
+        console.log("blob: ", blob);
+        console.log("videoUrl: ", videoUrl);
+        return { videoUrl, videoBytes };
       } else {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      return rejectWithValue(error.message);
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -110,6 +119,7 @@ const initialState = {
   popup: false,
   videoInfo: null,
   file: null,
+  videoBytes: [],
 };
 
 const watchVideosSlice = createSlice({
@@ -158,6 +168,7 @@ const watchVideosSlice = createSlice({
       })
       .addCase(fetchVideoRange.fulfilled, (state, action) => {
         state.file = action.payload;
+        // state.videoBytes = action.payload.videoBytes;
         state.loading = false;
       })
       .addCase(fetchVideoRange.rejected, (state, action) => {

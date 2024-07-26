@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "../../assets/css/dashboard.css";
 
 import Chart from "react-apexcharts";
 import ReactApexChart from "react-apexcharts"
 import { useDispatch, useSelector } from "react-redux";
-import axios from 'axios';
-import CustomPopup from "../common/CustomPopup";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { GetGeneratedChallans, GetGeneratedPaidFee, GetStudentWeekAttendance, GetTeacherAttendance, GetTotalExpenses, setError, setPopup } from "../../redux/slices/Admin/Dashboard";
 import { Snackbar } from "@mui/material";
