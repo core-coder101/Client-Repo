@@ -22,6 +22,8 @@
 }
 .Searchbar{
     margin-left: 30px;
+    transition: all 0.5s ease;
+    width: 238px;
 }
 .Searchbar input{
     padding: 10px 0;
@@ -31,6 +33,8 @@
     background-color: transparent;
     color: white;
     outline: none;
+    width: 202px;
+    transition: all 0.5s ease;
 }
 .Searchbar button{
     border: none;
@@ -38,6 +42,8 @@
     border-bottom-right-radius: 0.25rem;
     padding: 10px;
     background-color: #1D1B31;
+    width: 36px;
+    transition: all 0.5s ease;
 }
 .campus{
     margin-left: 10px;
@@ -86,4 +92,19 @@
     user-select: none;
     color: white;
     font-size: 15px;
+}
+
+@media (max-width: 830px) {
+    .Navbar.Admin.SidebarOpen .Searchbar, .Navbar.Admin.SidebarOpen .Searchbar input, .Navbar.Admin.SidebarOpen .Searchbar button, .Navbar.Admin.SidebarOpen .Searchbar svg{
+        width: 0 !important;
+        margin: 0;
+        padding: 0;
+    }
+}
+@media (max-width: 660px) {
+    .Navbar.Admin .Searchbar, .Navbar.Admin .Searchbar input, .Navbar.Admin .Searchbar button, .Navbar.Admin .Searchbar svg{
+        width: 0 !important;
+        margin: 0;
+        padding: 0;
+    }
 }

@@ -34,7 +34,7 @@ export default function Navbar({ setSidebarOpen, sidebarOpen }) {
   ];
 
   return (
-    <div className={"Navbar " + (sidebarOpen ? "SidebarOpen" : "")}>
+    <div className={"Navbar Admin " + (sidebarOpen ? "SidebarOpen" : "")}>
       <div className="leftItems">
         <MdMenu color="white" style={{width: "30px", height: "30px", margin: "5px"}} className="menuSidebarBtn d-block d-sm-none" onClick={()=>{setSidebarOpen(prev=>!prev)}}/>
         <div className="Searchbar d-none d-sm-block">
