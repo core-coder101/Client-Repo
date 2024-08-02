@@ -2,7 +2,7 @@
     position: fixed;
     z-index: 99;
     background-color: #11101D;
-    width: 100%;
+    width: calc(100% - 78px);
     height: 70px;
     display: flex;
     align-items: center;
